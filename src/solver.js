@@ -1,4 +1,4 @@
-import GLPK from './node_modules/glpk.js/dist/index.js';
+import GLPK from '../node_modules/glpk.js/dist/index.js';
 
 async function solve() {
     const glpk = await GLPK();
