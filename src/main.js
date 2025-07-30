@@ -1,9 +1,10 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
-import { get_item_key, get_recipe_variable_key } from './solver.js';
+import { get_item_key } from './solver.js';
 import data from './data/testData.js';
-import { get_all_producible_item_keys } from './data.js';
+import { get_all_producible_item_keys, get_all_recipe_variables } from './data.js';
 import { calculate_quality_probability_factor } from './util.js';
 import { Preferences } from './preferences.js';
+import { ParsedData } from './parsedData.js';
 
 const MAX_QUALITY_UNLOCKED = 4;
 const NUM_MODULE_SLOTS = 4;
@@ -26,6 +27,8 @@ async function solve_simple_factorio() {
     const glpk = await GLPK();
 
     let preferences = new Preferences();
+
+    let parsed_data = new ParsedData(data);
 
     // initialize costs
     let variable_costs = new Map();
@@ -58,43 +61,37 @@ async function solve_simple_factorio() {
     // set recipes
 
     // setup crafting recipes
-    for(let recipe of data.recipes) {
-        for(let starting_quality = 0; starting_quality <= MAX_QUALITY_UNLOCKED; starting_quality++) {
-            let num_allowed_prod_modules = recipe.allow_productivity ? NUM_MODULE_SLOTS : 0;
-            for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
-                let num_quality_modules = NUM_MODULE_SLOTS - num_prod_modules;
-                let recipe_name = recipe.key;
-                let recipe_variable_key = get_recipe_variable_key(recipe_name, starting_quality, num_prod_modules, num_quality_modules)
+    let recipe_variables = get_all_recipe_variables(data, preferences);
+    for(let recipe_variable of recipe_variables) {
+        let recipe_data = parsed_data.recipe(recipe_variable.recipe_key);
+        for(let ingredient of recipe_data.ingredients) {
+            let ingredient_name = ingredient.name;
+            let ingredient_variable = get_item_key(ingredient_name, recipe_variable.ingredient_quality);
+            let ingredient_amount = ingredient.amount;
+            item_variables.get(ingredient_variable).push({
+                name: recipe_variable.key,
+                coef: (-1.0)*ingredient_amount
+            });
+        }
 
-                for(let ingredient of recipe.ingredients) {
-                    let ingredient_name = ingredient.name;
-                    let ingredient_variable = get_item_key(ingredient_name, starting_quality);
-                    let ingredient_amount = ingredient.amount;
-                    item_variables.get(ingredient_variable).push({
-                        name: recipe_variable_key,
-                        coef: (-1.0)*ingredient_amount
-                    });
-                }
-
-                for(let result of recipe.results) {
-                    let result_name = result.name;
-                    let result_base_amount = result.amount;
-                    for(let ending_quality = starting_quality; ending_quality <= MAX_QUALITY_UNLOCKED; ending_quality++) {
-                        let result_variable = get_item_key(result_name, ending_quality);
-                        let total_prod_factor = 1.0 + (num_prod_modules * PROD_BONUS);
-                        let total_quality_factor = calculate_quality_probability_factor(starting_quality, ending_quality, MAX_QUALITY_UNLOCKED, num_quality_modules*QUALITY_PROBABILITY);
-                        let result_amount = result_base_amount * total_prod_factor * total_quality_factor;
-                        item_variables.get(result_variable).push({
-                            name: recipe_variable_key,
-                            coef: result_amount
-                        });
-                    }
-                }
-
-                variable_costs.set(recipe_variable_key, RECIPE_COST);
+        for(let result of recipe_data.results) {
+            let result_name = result.name;
+            let result_base_amount = result.amount;
+            for(let ending_quality = recipe_variable.ingredient_quality; ending_quality <= MAX_QUALITY_UNLOCKED; ending_quality++) {
+                let result_variable = get_item_key(result_name, ending_quality);
+                let total_prod_factor = 1.0 + (recipe_variable.num_prod_modules * PROD_BONUS);
+                let total_quality_factor = calculate_quality_probability_factor(recipe_variable.ingredient_quality, ending_quality, MAX_QUALITY_UNLOCKED, recipe_variable.num_quality_modules*QUALITY_PROBABILITY);
+                let result_amount = result_base_amount * total_prod_factor * total_quality_factor;
+                item_variables.get(result_variable).push({
+                    name: recipe_variable.key,
+                    coef: result_amount
+                });
             }
         }
+
+        variable_costs.set(recipe_variable.key, RECIPE_COST);
     }
+
 
     let formatted_variable_costs = [];
     variable_costs.forEach( (value, key, map) => {
