@@ -1,4 +1,5 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
+import data from './data/testData.js';
 
 const MAX_QUALITY_UNLOCKED = 4;
 const JUMP_QUALITY_PROBABILITY = 0.1;
@@ -8,11 +9,8 @@ const PROD_BONUS = 0.25; // legendary tier-3
 const INPUT_COST = 1.0;
 const RECIPE_COST = 0.0;
 const OUTPUT_AMOUNT = 1.0;
-const INPUT_ITEM_NAME = 'example_ingredient';
-const OUTPUT_ITEM_NAME = 'example_product';
-const CRAFTING_RECIPE_NAME = 'example_crafting';
-const RECYCLING_RECIPE_NAME = 'example_recycling';
-const ITEM_NAMES = [INPUT_ITEM_NAME, OUTPUT_ITEM_NAME];
+const INPUT_ITEM_NAME = 'item-1';
+const OUTPUT_ITEM_NAME = 'item-2';
 
 function print(res) {
     const el = window.document.getElementById('out');
@@ -66,8 +64,9 @@ async function solve_simple_factorio() {
 
     // initialize item-variable connections
     let item_variables = new Map();
-    for(let item_name of ITEM_NAMES) {
+    for(let item of data.items) {
         for(let quality = 0; quality <= MAX_QUALITY_UNLOCKED; quality++) {
+            let item_name = item.key;
             let item_variable = get_item_variable(item_name, quality);
             item_variables.set(item_variable, []);
         }
@@ -75,8 +74,9 @@ async function solve_simple_factorio() {
 
     // initialize item constraints
     let item_constraints = new Map();
-    for(let item_name of ITEM_NAMES) {
+    for(let item of data.items) {
         for(let quality = 0; quality <= MAX_QUALITY_UNLOCKED; quality++) {
+            let item_name = item.key;
             let item_variable = get_item_variable(item_name, quality);
             item_constraints.set(item_variable, 0);
         }
@@ -93,62 +93,44 @@ async function solve_simple_factorio() {
     });
     variable_costs.set(input_variable, INPUT_COST);
 
+    // set recipes
+
     // setup crafting recipes
-    for(let starting_quality = 0; starting_quality <= MAX_QUALITY_UNLOCKED; starting_quality++) {
-        for(let num_quality_modules = 0; num_quality_modules <= NUM_MODULE_SLOTS; num_quality_modules++) {
-            let num_prod_modules = NUM_MODULE_SLOTS - num_quality_modules;
-            let recipe_name = CRAFTING_RECIPE_NAME;
-            let recipe_variable = get_solver_variable(recipe_name, starting_quality, num_prod_modules, num_quality_modules)
+    for(let recipe of data.recipes) {
+        for(let starting_quality = 0; starting_quality <= MAX_QUALITY_UNLOCKED; starting_quality++) {
+            let num_allowed_prod_modules = recipe.allow_productivity ? NUM_MODULE_SLOTS : 0;
+            for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
+                let num_quality_modules = NUM_MODULE_SLOTS - num_prod_modules;
+                let recipe_name = recipe.key;
+                let recipe_variable = get_solver_variable(recipe_name, starting_quality, num_prod_modules, num_quality_modules)
 
-            let ingredient_name = INPUT_ITEM_NAME;
-            let ingredient_variable = get_item_variable(ingredient_name, starting_quality);
-            let ingredient_amount = 1.0;
-            item_variables.get(ingredient_variable).push({
-                name: recipe_variable,
-                coef: (-1.0)*ingredient_amount
-            });
+                for(let ingredient of recipe.ingredients) {
+                    let ingredient_name = ingredient.name;
+                    let ingredient_variable = get_item_variable(ingredient_name, starting_quality);
+                    let ingredient_amount = ingredient.amount;
+                    item_variables.get(ingredient_variable).push({
+                        name: recipe_variable,
+                        coef: (-1.0)*ingredient_amount
+                    });
+                }
 
-            for(let ending_quality = starting_quality; ending_quality <= MAX_QUALITY_UNLOCKED; ending_quality++) {
-                let product_name = OUTPUT_ITEM_NAME;
-                let product_variable = get_item_variable(product_name, ending_quality);
-                let total_prod_factor = 1.0 + (num_prod_modules * PROD_BONUS);
-                let total_quality_factor = calculate_quality_probability_factor(starting_quality, ending_quality, MAX_QUALITY_UNLOCKED, num_quality_modules*QUALITY_PROBABILITY);
-                let product_amount = 1.0 * total_prod_factor * total_quality_factor;
-                item_variables.get(product_variable).push({
-                    name: recipe_variable,
-                    coef: product_amount
-                });
+                for(let result of recipe.results) {
+                    let result_name = result.name;
+                    let result_base_amount = result.amount;
+                    for(let ending_quality = starting_quality; ending_quality <= MAX_QUALITY_UNLOCKED; ending_quality++) {
+                        let result_variable = get_item_variable(result_name, ending_quality);
+                        let total_prod_factor = 1.0 + (num_prod_modules * PROD_BONUS);
+                        let total_quality_factor = calculate_quality_probability_factor(starting_quality, ending_quality, MAX_QUALITY_UNLOCKED, num_quality_modules*QUALITY_PROBABILITY);
+                        let result_amount = result_base_amount * total_prod_factor * total_quality_factor;
+                        item_variables.get(result_variable).push({
+                            name: recipe_variable,
+                            coef: result_amount
+                        });
+                    }
+                }
+
+                variable_costs.set(recipe_variable, RECIPE_COST);
             }
-
-            variable_costs.set(recipe_variable, RECIPE_COST);
-        }
-    }
-
-    // setup recycling recipes
-    for(let starting_quality = 0; starting_quality <= MAX_QUALITY_UNLOCKED; starting_quality++) {
-        let num_quality_modules = NUM_MODULE_SLOTS;
-        let num_prod_modules = 0;
-        let recipe_name = RECYCLING_RECIPE_NAME;
-        let recipe_variable = get_solver_variable(recipe_name, starting_quality, num_prod_modules, num_quality_modules)
-
-        let ingredient_name = OUTPUT_ITEM_NAME;
-        let ingredient_variable = get_item_variable(ingredient_name, starting_quality);
-        let ingredient_amount = 1.0;
-        item_variables.get(ingredient_variable).push({
-            name: recipe_variable,
-            coef: (-1.0)*ingredient_amount
-        });
-
-        for(let ending_quality = starting_quality; ending_quality <= MAX_QUALITY_UNLOCKED; ending_quality++) {
-            let product_name = INPUT_ITEM_NAME;
-            let product_variable = get_item_variable(product_name, ending_quality);
-            let total_prod_factor = 1.0 + (num_prod_modules * PROD_BONUS);
-            let total_quality_factor = calculate_quality_probability_factor(starting_quality, ending_quality, MAX_QUALITY_UNLOCKED, num_quality_modules*QUALITY_PROBABILITY);
-            let product_amount = 0.25 * total_prod_factor * total_quality_factor;
-            item_variables.get(product_variable).push({
-                name: recipe_variable,
-                coef: product_amount
-            });
         }
     }
 
