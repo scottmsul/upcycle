@@ -1,4 +1,4 @@
-import { get_item_key } from "./solver.js";
+import { get_item_constraint_key } from "./solver.js";
 
 class RecipeVariable {
     constructor(recipe_key, ingredient_quality, num_prod_modules, num_quality_modules) {
@@ -13,29 +13,30 @@ class RecipeVariable {
     }
 }
 
-export function get_all_producible_item_keys(data, preferences) {
+export function get_all_producible_item_constraint_keys(data, preferences) {
     /**
-     * Returns a set of all solver item keys reachable from recipes.
-     * Note that solver item keys include quality information.
+     * An item constraint key is a unique item in the solver.
+     * Generally this will be an item_id combined with a quality level.
+     * Returns a set of all solver item constraint keys reachable from the given recipes.
      * Best to not use data.items because it contains some unproducible things.
      * Could be optimized to exclude unreachable recipes given a user's settings.
      */
-    let item_keys = new Set();
+    let item_constraint_keys = new Set();
     for(let recipe of data.recipes) {
         for(let ingredient of recipe.ingredients) {
             for(let quality = 0; quality <= preferences.max_quality_unlocked; quality++) {
-                let item_key = get_item_key(ingredient.name, quality);
-                item_keys.add(item_key);
+                let item_constraint_key = get_item_constraint_key(ingredient.name, quality);
+                item_constraint_keys.add(item_constraint_key);
             }
         }
         for(let result of recipe.results) {
             for(let quality = 0; quality <= preferences.max_quality_unlocked; quality++) {
-                let item_key = get_item_key(result.name, quality);
-                item_keys.add(item_key);
+                let item_constraint_key = get_item_constraint_key(result.name, quality);
+                item_constraint_keys.add(item_constraint_key);
             }
         }
     }
-    return item_keys;
+    return item_constraint_keys;
 }
 
 export function get_all_recipe_variables(data, preferences) {

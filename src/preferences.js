@@ -1,4 +1,5 @@
-import { get_item_key } from "./solver.js";
+import { get_item_constraint_key } from "./solver.js";
+import { get_input_item_constraint_key, get_output_item_constraint_key } from "./ui.js";
 
 export class Preferences {
     constructor() {
@@ -15,13 +16,13 @@ export class Preferences {
         // may want to generalize these somehow
         // like if we wanted byproduct costs or fixed inputs
         this.outputs = new Map();
-        let output_item_key = get_item_key('item-2', 4);
         let output_amount = 1.0;
-        this.outputs.set(output_item_key, output_amount);
+        let output_item_constraint_key = get_output_item_constraint_key();
+        this.outputs.set(output_item_constraint_key, output_amount);
 
         this.inputs = new Map();
-        let input_item_key = get_item_key('item-1', 0);
         let input_cost = 1.0;
-        this.inputs.set(input_item_key, input_cost);
+        let input_item_constraint_key = get_input_item_constraint_key();
+        this.inputs.set(input_item_constraint_key, input_cost);
     }
 }

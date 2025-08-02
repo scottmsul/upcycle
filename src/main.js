@@ -1,12 +1,13 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
-import { get_item_constraints, get_item_key, get_item_variable_coefficients, get_variable_costs } from './solver.js';
+import { get_item_constraints, get_item_constraint_key, get_item_variable_coefficients, get_variable_costs } from './solver.js';
 import data from './data/testData.js';
-import { get_all_producible_item_keys, get_all_recipe_variables } from './data.js';
+import { get_all_producible_item_constraint_keys, get_all_recipe_variables } from './data.js';
 import { Preferences } from './preferences.js';
 import { ParsedData } from './parsedData.js';
+import { initialize_ui } from './ui.js';
 
-const INPUT_COST = 1.0;
-const INPUT_ITEM_NAME = 'item-1';
+let parsed_data = new ParsedData(data);
+initialize_ui(parsed_data);
 
 function print(res) {
     const el = window.document.getElementById('out');
@@ -19,12 +20,11 @@ async function solve_simple_factorio() {
     const glpk = await GLPK();
 
     let preferences = new Preferences();
-    let parsed_data = new ParsedData(data);
 
-    let item_keys = get_all_producible_item_keys(data, preferences);
+    let item_constraint_keys = get_all_producible_item_constraint_keys(data, preferences);
     let recipe_variables = get_all_recipe_variables(data, preferences);
-    let item_constraints = get_item_constraints(item_keys, preferences);
-    let item_variable_coefficients = get_item_variable_coefficients(item_keys, recipe_variables, parsed_data, preferences);
+    let item_constraints = get_item_constraints(item_constraint_keys, preferences);
+    let item_variable_coefficients = get_item_variable_coefficients(item_constraint_keys, recipe_variables, parsed_data, preferences);
     let variable_costs = get_variable_costs(recipe_variables, preferences);
 
     // glpk-specific code
@@ -35,8 +35,6 @@ async function solve_simple_factorio() {
             coef: value
         })
     });
-
-    //console.log(`glpk_formatted_variable_costs: ${JSON.stringify([...glpk_formatted_variable_costs], 2, null)}`);
 
     let glpk_formatted_item_variable_coefficients = [];
     item_variable_coefficients.forEach( (coefficients, item_constraint_key, map1) => {
@@ -57,7 +55,6 @@ async function solve_simple_factorio() {
             }
         });
     });
-    //console.log(`glpk_formatted_item_variable_coefficients: ${JSON.stringify([...glpk_formatted_item_variable_coefficients], 2, null)}`);
 
     const lp = {
         name: 'LP',
