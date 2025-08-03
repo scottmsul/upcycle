@@ -1,4 +1,3 @@
-import { get_item_constraint_key } from "./solver.js";
 import { get_input_item_constraint_key, get_output_item_constraint_key } from "./ui.js";
 
 export class Preferences {

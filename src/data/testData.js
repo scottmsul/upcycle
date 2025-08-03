@@ -1,4 +1,11 @@
-const data = {
+export const defaults = {
+    INPUT_ITEM_ID: "item-1",
+    INPUT_ITEM_QUALITY: 0,
+    OUTPUT_ITEM_ID: "item-2",
+    OUTPUT_ITEM_QUALITY: 4
+}
+
+export const data = {
     "crafting_machines": [
         {
             "key": "assembling-machine-3",

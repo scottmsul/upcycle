@@ -1,6 +1,7 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
-import { get_item_constraints, get_item_constraint_key, get_item_variable_coefficients, get_variable_costs } from './solver.js';
-import data from './data/testData.js';
+import { get_item_constraints, get_item_variable_coefficients, get_variable_costs } from './solver.js';
+//import data from './data/testData.js';
+import { data } from './data/spaceAge2.0.11.js';
 import { get_all_producible_item_constraint_keys, get_all_recipe_variables } from './data.js';
 import { Preferences } from './preferences.js';
 import { ParsedData } from './parsedData.js';

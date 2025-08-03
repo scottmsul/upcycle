@@ -1,9 +1,5 @@
 import { get_item_constraint_key } from "./solver.js";
-
-export const DEFAULT_INPUT_ITEM_ID = "item-1"; //todo: figure out what to do for different configs
-export const DEFAULT_INPUT_ITEM_QUALITY = 0;
-export const DEFAULT_OUTPUT_ITEM_ID = "item-2"; //todo: figure out what to do for different configs
-export const DEFAULT_OUTPUT_ITEM_QUALITY = 4;
+import { defaults } from "./data/spaceAge2.0.11.js";
 
 export const INPUT_ITEM_SELECT_ID = "input-item";
 export const INPUT_QUALITY_SELECT_ID = "input-quality";
@@ -13,10 +9,10 @@ export const OUTPUT_QUALITY_SELECT_ID = "output-quality";
 export function initialize_ui(parsed_data) {
     let item_keys = Array.from(parsed_data.items.keys());
     let max_quality_unlocked = 4; // todo: make this an option
-    initialize_item_select(item_keys, INPUT_ITEM_SELECT_ID, DEFAULT_INPUT_ITEM_ID);
-    initialize_quality_select(max_quality_unlocked, INPUT_QUALITY_SELECT_ID, DEFAULT_INPUT_ITEM_QUALITY);
-    initialize_item_select(item_keys, OUTPUT_ITEM_SELECT_ID, DEFAULT_OUTPUT_ITEM_ID);
-    initialize_quality_select(max_quality_unlocked, OUTPUT_QUALITY_SELECT_ID, DEFAULT_OUTPUT_ITEM_QUALITY);
+    initialize_item_select(item_keys, INPUT_ITEM_SELECT_ID, defaults.INPUT_ITEM_ID);
+    initialize_quality_select(max_quality_unlocked, INPUT_QUALITY_SELECT_ID, defaults.INPUT_ITEM_QUALITY);
+    initialize_item_select(item_keys, OUTPUT_ITEM_SELECT_ID, defaults.OUTPUT_ITEM_ID);
+    initialize_quality_select(max_quality_unlocked, OUTPUT_QUALITY_SELECT_ID, defaults.OUTPUT_ITEM_QUALITY);
 }
 
 function initialize_item_select(item_keys, select_id, default_item_id) {
