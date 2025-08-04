@@ -1,8 +1,7 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
-import { get_item_constraints, get_item_variable_coefficients, get_variable_costs } from './solver.js';
+import { Solver } from './solver.js';
 //import { data, defaults } from './data/testData.js';
 import { data, defaults } from './data/spaceAge2.0.11.js';
-import { get_all_producible_item_constraint_keys, get_all_recipe_variables } from './data.js';
 import { Preferences } from './preferences.js';
 import { ParsedData } from './parsedData.js';
 import { display_result, initialize_ui } from './ui.js';
@@ -22,15 +21,11 @@ async function solve_simple_factorio() {
 
     let preferences = new Preferences();
 
-    let item_constraint_keys = get_all_producible_item_constraint_keys(parsed_data, preferences);
-    let recipe_variables = get_all_recipe_variables(parsed_data, preferences);
-    let item_constraints = get_item_constraints(item_constraint_keys, preferences);
-    let item_variable_coefficients = get_item_variable_coefficients(item_constraint_keys, recipe_variables, parsed_data, preferences);
-    let variable_costs = get_variable_costs(recipe_variables, preferences);
+    let solver = new Solver(parsed_data, preferences);
 
     // glpk-specific code
     let glpk_formatted_variable_costs = [];
-    variable_costs.forEach( (value, key, map) => {
+    solver.variable_costs.forEach( (value, key, map) => {
         glpk_formatted_variable_costs.push({
             name: key,
             coef: value
@@ -38,7 +33,7 @@ async function solve_simple_factorio() {
     });
 
     let glpk_formatted_item_variable_coefficients = [];
-    item_variable_coefficients.forEach( (coefficients, item_constraint_key, map1) => {
+    solver.item_variable_coefficients.forEach( (coefficients, item_constraint_key, map1) => {
         let glpk_formatted_coefficients = [];
         coefficients.forEach( (coefficient, variable_key, map2) => {
             glpk_formatted_coefficients.push({
@@ -51,8 +46,8 @@ async function solve_simple_factorio() {
             vars: glpk_formatted_coefficients,
             bnds: {
                 type: glpk.GLP_FX,
-                ub: item_constraints.get(item_constraint_key),
-                lb: item_constraints.get(item_constraint_key)
+                ub: solver.item_constraints.get(item_constraint_key),
+                lb: solver.item_constraints.get(item_constraint_key)
             }
         });
     });
