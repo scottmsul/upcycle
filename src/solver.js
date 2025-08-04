@@ -1,4 +1,4 @@
-import { calculate_quality_probability_factor } from './util.js';
+import { calculate_expected_result_amount, calculate_quality_transition_probability } from './util.js';
 
 export function get_item_constraint_key(item_name, item_quality) {
     return `item=${item_name}__quality=${item_quality}`;
@@ -38,22 +38,35 @@ export function get_item_variable_coefficients(item_constraint_keys, recipe_vari
         item_variable_coefficients.set(item_constraint_key, new Map());
     }
 
+
     for(let recipe_variable of recipe_variables) {
         let recipe_data = parsed_data.recipe(recipe_variable.recipe_key);
-        for(let ingredient of recipe_data.ingredients) {
-            let ingredient_item_constraint_key = get_item_constraint_key(ingredient.name, recipe_variable.ingredient_quality);
+        for(let ingredient_data of recipe_data.ingredients) {
+            let item_data = parsed_data.items.get(ingredient_data.name);
+            let ingredient_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
+            let ingredient_item_constraint_key = get_item_constraint_key(ingredient_data.name, ingredient_quality);
             let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_item_constraint_key);
-            ingredient_item_coefficients.set(recipe_variable.key, (-1.0)*ingredient.amount);
+            // todo: add buildings
+            let ingredient_amount_per_second_per_machine = ingredient_data.amount / recipe_data.energy_required;
+            ingredient_item_coefficients.set(recipe_variable.key, (-1.0)*ingredient_amount_per_second_per_machine);
         }
 
-        for(let result of recipe_data.results) {
-            for(let ending_quality = recipe_variable.ingredient_quality; ending_quality <= preferences.max_quality_unlocked; ending_quality++) {
-                let result_item_constraint_key = get_item_constraint_key(result.name, ending_quality);
-                let total_prod_factor = 1.0 + (recipe_variable.num_prod_modules * preferences.prod_bonus);
-                let total_quality_factor = calculate_quality_probability_factor(recipe_variable.ingredient_quality, ending_quality, preferences.max_quality_unlocked, recipe_variable.num_quality_modules*preferences.quality_probability);
-                let total_result_amount = result.amount * total_prod_factor * total_quality_factor;
+        for(let result_data of recipe_data.results) {
+            let item_data = parsed_data.items.get(result_data.name);
+            let starting_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
+            let min_ending_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
+            let max_ending_quality = item_data.allows_quality ? preferences.max_quality_unlocked : 0;
+            for(let ending_quality = min_ending_quality; ending_quality <= max_ending_quality; ending_quality++) {
+                let result_item_constraint_key = get_item_constraint_key(result_data.name, ending_quality);
+                let quality_percent = recipe_variable.num_quality_modules*preferences.quality_probability;
+                let quality_transition_probability = calculate_quality_transition_probability(starting_quality, ending_quality, preferences.max_quality_unlocked, quality_percent);
+                // todo: account for other prod bonuses
+                let prod_bonus = recipe_variable.num_prod_modules * preferences.prod_bonus;
+                let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
+                // todo: add buildings
+                let result_amount_per_second_per_machine = expected_result_amount * quality_transition_probability / recipe_data.energy_required;
                 let result_item_coefficients = item_variable_coefficients.get(result_item_constraint_key);
-                result_item_coefficients.set(recipe_variable.key, total_result_amount);
+                result_item_coefficients.set(recipe_variable.key, result_amount_per_second_per_machine);
             }
         }
     }

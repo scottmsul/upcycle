@@ -1,12 +1,12 @@
 import { get_item_constraint_key } from "./solver.js";
-import { defaults } from "./data/spaceAge2.0.11.js";
 
-export const INPUT_ITEM_SELECT_ID = "input-item";
-export const INPUT_QUALITY_SELECT_ID = "input-quality";
-export const OUTPUT_ITEM_SELECT_ID = "output-item";
-export const OUTPUT_QUALITY_SELECT_ID = "output-quality";
+const INPUT_ITEM_SELECT_ID = "input-item";
+const INPUT_QUALITY_SELECT_ID = "input-quality";
+const OUTPUT_ITEM_SELECT_ID = "output-item";
+const OUTPUT_QUALITY_SELECT_ID = "output-quality";
+const RESULT_ID = 'result';
 
-export function initialize_ui(parsed_data) {
+export function initialize_ui(parsed_data, defaults) {
     let item_keys = Array.from(parsed_data.items.keys());
     let max_quality_unlocked = 4; // todo: make this an option
     initialize_item_select(item_keys, INPUT_ITEM_SELECT_ID, defaults.INPUT_ITEM_ID);
@@ -53,4 +53,16 @@ export function get_output_item_constraint_key() {
 
 function get_select_value(select_id) {
     return document.getElementById(select_id).value;
+}
+
+export function display_result(vars) {
+    let result = document.getElementById(RESULT_ID);
+    result.innerHTML = "";
+    for(const [variable_key, amount] of Object.entries(vars)) {
+        if(amount > 0) {
+            let curr_line = document.createElement("div");
+            curr_line.innerHTML = `${variable_key}: ${amount}`;
+            result.appendChild(curr_line);
+        }
+    }
 }

@@ -1,14 +1,14 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
 import { get_item_constraints, get_item_variable_coefficients, get_variable_costs } from './solver.js';
-//import data from './data/testData.js';
-import { data } from './data/spaceAge2.0.11.js';
+//import { data, defaults } from './data/testData.js';
+import { data, defaults } from './data/spaceAge2.0.11.js';
 import { get_all_producible_item_constraint_keys, get_all_recipe_variables } from './data.js';
 import { Preferences } from './preferences.js';
 import { ParsedData } from './parsedData.js';
-import { initialize_ui } from './ui.js';
+import { display_result, initialize_ui } from './ui.js';
 
 let parsed_data = new ParsedData(data);
-initialize_ui(parsed_data);
+initialize_ui(parsed_data, defaults);
 
 function print(res) {
     const el = window.document.getElementById('out');
@@ -22,8 +22,8 @@ async function solve_simple_factorio() {
 
     let preferences = new Preferences();
 
-    let item_constraint_keys = get_all_producible_item_constraint_keys(data, preferences);
-    let recipe_variables = get_all_recipe_variables(data, preferences);
+    let item_constraint_keys = get_all_producible_item_constraint_keys(parsed_data, preferences);
+    let recipe_variables = get_all_recipe_variables(parsed_data, preferences);
     let item_constraints = get_item_constraints(item_constraint_keys, preferences);
     let item_variable_coefficients = get_item_variable_coefficients(item_constraint_keys, recipe_variables, parsed_data, preferences);
     let variable_costs = get_variable_costs(recipe_variables, preferences);
@@ -68,9 +68,13 @@ async function solve_simple_factorio() {
     }
 
     const opt = {
-        msglev: glpk.GLP_MSG_OFF
+        msglev: glpk.GLP_MSG_DBG
     };
 
+    const result = await glpk.solve(lp, opt);
+    display_result(result.result.vars);
+
+    /*
     glpk.solve(lp, opt)
         .then(res => print(res))
         .catch(err => console.log(err));
@@ -78,6 +82,7 @@ async function solve_simple_factorio() {
     console.log(await glpk.solve(lp, glpk.GLP_MSG_DBG));
 
     window.document.getElementById('cplex').innerHTML = await glpk.write(lp);
+    */
 }
 
 async function solve_glpk_example() {

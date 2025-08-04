@@ -1,6 +1,18 @@
 const JUMP_QUALITY_PROBABILITY = 0.1;
 
-export function calculate_quality_probability_factor(starting_quality, ending_quality, max_quality_unlocked, quality_percent) {
+export function calculate_expected_result_amount(result_data, prod_bonus) {
+    // see here: https://lua-api.factorio.com/latest/types/ItemProductPrototype.html
+    let base_amount = result_data.amount || 0.5 * (result_data.amount_min + result_data.amount_max);
+    let probabiity_factor = result_data.probability || 1.0;
+    let ignored_by_productivity = result_data.ignored_by_productivity || 0.0;
+    let extra_count_fraction = result_data.extra_count_fraction || 0.0;
+
+    let base_amount_after_prod = ignored_by_productivity + (base_amount - ignored_by_productivity) * (1.0 + prod_bonus);
+    let amount_after_probabilities = base_amount_after_prod * probabiity_factor * (1.0 + extra_count_fraction);
+    return amount_after_probabilities;
+}
+
+export function calculate_quality_transition_probability(starting_quality, ending_quality, max_quality_unlocked, quality_percent) {
     if (starting_quality > max_quality_unlocked) {
         throw new Error('Starting quality cannot be above max quality unlocked');
     } else if(ending_quality > max_quality_unlocked) {
@@ -24,6 +36,6 @@ export function calculate_quality_probability_factor(starting_quality, ending_qu
         // this is the same case as above but without any probability of jumping further
         return quality_percent * JUMP_QUALITY_PROBABILITY**(ending_quality - starting_quality - 1);
     } else {
-        throw new Error(`Reached impossible condition in calculate_quality_probability_factor. Starting_quality=${starting_quality}, ending_quality=${ending_quality}, max_quality_unlocked=${max_quality_unlocked}`);
+        throw new Error(`Reached impossible condition in calculate_quality_transition_probability. Starting_quality=${starting_quality}, ending_quality=${ending_quality}, max_quality_unlocked=${max_quality_unlocked}`);
     }
 }
