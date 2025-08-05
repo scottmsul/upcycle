@@ -6,32 +6,20 @@
  * The job of actually translating this data into a specific packaged solver format is handled elsewhere.
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
+import { DistinctRecipe } from './distinctRecipe.js';
 import { calculate_expected_result_amount, calculate_quality_transition_probability } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
         let distinct_items = get_all_distinct_items(parsed_data, preferences);
-        let recipe_variables = get_all_recipe_variables(parsed_data, preferences);
+        let distinct_recipes = get_all_distinct_recipes(parsed_data, preferences);
         let distinct_item_constraints = get_distinct_item_constraints(distinct_items, preferences);
-        let item_variable_coefficients = get_item_variable_coefficients(distinct_items, recipe_variables, parsed_data, preferences);
-        let variable_costs = get_variable_costs(recipe_variables, preferences);
+        let item_variable_coefficients = get_item_variable_coefficients(distinct_items, distinct_recipes, parsed_data, preferences);
+        let variable_costs = get_variable_costs(distinct_recipes, preferences);
         // things needed for glpk
         this.distinct_item_constraints = distinct_item_constraints;
         this.item_variable_coefficients = item_variable_coefficients;
         this.variable_costs = variable_costs;
-    }
-}
-
-class RecipeVariable {
-    constructor(recipe_key, recipe_quality, num_prod_modules, num_quality_modules) {
-        this.recipe_key = recipe_key;
-        this.recipe_quality = recipe_quality;
-        this.num_prod_modules = num_prod_modules;
-        this.num_quality_modules = num_quality_modules;
-    }
-
-    get key() {
-        return `recipe_key=${this.recipe_key}__recipe_quality=${this.recipe_quality}__num_prod_modules=${this.num_prod_modules}__num_quality_modules=${this.num_quality_modules}`;
     }
 }
 
@@ -63,9 +51,10 @@ function get_all_distinct_items(parsed_data, preferences) {
     return distinct_items;
 }
 
-function get_all_recipe_variables(parsed_data, preferences) {
+function get_all_distinct_recipes(parsed_data, preferences) {
     /**
-     * Returns a list of RecipeVariable objects
+     * Returns a map data structure containing all distinct recipes for this solve.
+     * Keys are distinct recipe keys, values are distinct recipe objects.
      * In this context, each returned recipe will correspond to a single solver variable,
      * which represent every unique combination of input quality and prod/qual modules.
      * We don't bother checking empty module slots or module slots with speed modules,
@@ -75,7 +64,7 @@ function get_all_recipe_variables(parsed_data, preferences) {
      * with the logic for calculating true input/output amounts and solver costs later on.
      * Fluid handling to be added later.
      */
-    let recipe_variables = [];
+    let distinct_recipes = new Map();
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
         let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? preferences.max_quality_unlocked : 0;
         for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
@@ -83,12 +72,12 @@ function get_all_recipe_variables(parsed_data, preferences) {
             for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
                 // todo: get num_module_slots from the actual building
                 let num_quality_modules = preferences.num_module_slots - num_prod_modules;
-                let recipe_variable = new RecipeVariable(recipe_key, recipe_quality, num_prod_modules, num_quality_modules);
-                recipe_variables.push(recipe_variable);
+                let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules);
+                distinct_recipes.set(distinct_recipe.key, distinct_recipe);
             }
         }
     })
-    return recipe_variables;
+    return distinct_recipes;
 }
 
 function get_input_item_variable_key(disinct_item_key) {
@@ -112,7 +101,7 @@ function get_distinct_item_constraints(distinct_items, preferences) {
     return distinct_item_constraints;
 }
 
-function get_item_variable_coefficients(distinct_items, recipe_variables, parsed_data, preferences) {
+function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed_data, preferences) {
     /**
      * A map whose keys are all the distinct item keys and whose values are another map.
      * The pointed-to map's keys are variable keys and the values are amounts.
@@ -125,37 +114,37 @@ function get_item_variable_coefficients(distinct_items, recipe_variables, parsed
         item_variable_coefficients.set(distinct_item_key, new Map());
     }
 
-    for(let recipe_variable of recipe_variables) {
-        let recipe_data = parsed_data.recipe(recipe_variable.recipe_key);
+    distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {
+        let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
-            let ingredient_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
+            let ingredient_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
             let ingredient_distinct_item_key = get_distinct_item_key(ingredient_data.name, ingredient_quality);
             let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_distinct_item_key);
             // todo: add buildings
             let ingredient_amount_per_second_per_machine = ingredient_data.amount / recipe_data.energy_required;
-            ingredient_item_coefficients.set(recipe_variable.key, (-1.0)*ingredient_amount_per_second_per_machine);
+            ingredient_item_coefficients.set(distinct_recipe_key, (-1.0)*ingredient_amount_per_second_per_machine);
         }
 
         for(let result_data of recipe_data.results) {
             let item_data = parsed_data.items.get(result_data.name);
-            let starting_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
-            let min_ending_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
+            let starting_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
+            let min_ending_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
             let max_ending_quality = item_data.allows_quality ? preferences.max_quality_unlocked : 0;
             for(let ending_quality = min_ending_quality; ending_quality <= max_ending_quality; ending_quality++) {
-                let quality_percent = recipe_variable.num_quality_modules*preferences.quality_probability;
+                let quality_percent = distinct_recipe.num_quality_modules*preferences.quality_probability;
                 let quality_transition_probability = calculate_quality_transition_probability(starting_quality, ending_quality, preferences.max_quality_unlocked, quality_percent);
                 // todo: account for other prod bonuses
-                let prod_bonus = recipe_variable.num_prod_modules * preferences.prod_bonus;
+                let prod_bonus = distinct_recipe.num_prod_modules * preferences.prod_bonus;
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
                 // todo: add buildings
                 let result_amount_per_second_per_machine = expected_result_amount * quality_transition_probability / recipe_data.energy_required;
                 let result_distinct_item_key = get_distinct_item_key(result_data.name, ending_quality);
                 let result_item_coefficients = item_variable_coefficients.get(result_distinct_item_key);
-                result_item_coefficients.set(recipe_variable.key, result_amount_per_second_per_machine);
+                result_item_coefficients.set(distinct_recipe_key, result_amount_per_second_per_machine);
             }
         }
-    }
+    });
 
     // for each unit of an input free variable, we make 1 unit of that item
     // we use the input cost data structure to determine what the inputs are,
@@ -169,7 +158,7 @@ function get_item_variable_coefficients(distinct_items, recipe_variables, parsed
     return item_variable_coefficients;
 }
 
-function get_variable_costs(recipe_variables, preferences) {
+function get_variable_costs(distinct_recipes, preferences) {
     let variable_costs = new Map();
 
     // input item variable costs
@@ -179,8 +168,8 @@ function get_variable_costs(recipe_variables, preferences) {
     });
 
     // recipe variable costs
-    for(let recipe_variable of recipe_variables) {
-        variable_costs.set(recipe_variable.key, preferences.recipe_cost);
+    for(let distinct_recipe_key of distinct_recipes.keys()) {
+        variable_costs.set(distinct_recipe_key, preferences.recipe_cost);
     }
 
     return variable_costs;
