@@ -41,13 +41,13 @@ export const data = {
             "ingredients": [
                 {
                     "name": "item-1",
-                    "amount": 1.0
+                    "amount": 1
                 }
             ],
             "results": [
                 {
                     "name": "item-2",
-                    "amount": 1.0
+                    "amount": 1
                 }
             ]
         },
@@ -59,13 +59,14 @@ export const data = {
             "ingredients": [
                 {
                     "name": "item-2",
-                    "amount": 1.0
+                    "amount": 1
                 }
             ],
             "results": [
                 {
                     "name": "item-1",
-                    "amount": 0.25
+                    "amount": 1,
+                    "probability": 0.25
                 }
             ]
         }

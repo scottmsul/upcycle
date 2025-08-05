@@ -59,7 +59,7 @@ export function display_result(vars) {
     let result = document.getElementById(RESULT_ID);
     result.innerHTML = "";
     for(const [variable_key, amount] of Object.entries(vars)) {
-        if(amount > 0) {
+        if(amount != 0) {
             let curr_line = document.createElement("div");
             curr_line.innerHTML = `${variable_key}: ${amount}`;
             result.appendChild(curr_line);

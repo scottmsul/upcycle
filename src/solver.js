@@ -119,11 +119,14 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
             let ingredient_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
-            let ingredient_distinct_item_key = get_distinct_item_key(ingredient_data.name, ingredient_quality);
-            let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_distinct_item_key);
             // todo: add buildings
             let ingredient_amount_per_second_per_machine = ingredient_data.amount / recipe_data.energy_required;
-            ingredient_item_coefficients.set(distinct_recipe_key, (-1.0)*ingredient_amount_per_second_per_machine);
+
+            let ingredient_distinct_item_key = get_distinct_item_key(ingredient_data.name, ingredient_quality);
+            let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_distinct_item_key);
+            let curr_coefficient = ingredient_item_coefficients.get(distinct_recipe_key) || 0.0;
+            let new_coefficient = curr_coefficient - ingredient_amount_per_second_per_machine;
+            ingredient_item_coefficients.set(distinct_recipe_key, new_coefficient);
         }
 
         for(let result_data of recipe_data.results) {
@@ -139,9 +142,12 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
                 // todo: add buildings
                 let result_amount_per_second_per_machine = expected_result_amount * quality_transition_probability / recipe_data.energy_required;
+
                 let result_distinct_item_key = get_distinct_item_key(result_data.name, ending_quality);
                 let result_item_coefficients = item_variable_coefficients.get(result_distinct_item_key);
-                result_item_coefficients.set(distinct_recipe_key, result_amount_per_second_per_machine);
+                let curr_coefficient = result_item_coefficients.get(distinct_recipe_key) || 0.0;
+                let new_coefficient = curr_coefficient + result_amount_per_second_per_machine;
+                result_item_coefficients.set(distinct_recipe_key, new_coefficient);
             }
         }
     });
