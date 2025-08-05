@@ -33,7 +33,7 @@ async function solve_simple_factorio() {
     });
 
     let glpk_formatted_item_variable_coefficients = [];
-    solver.item_variable_coefficients.forEach( (coefficients, item_constraint_key, map1) => {
+    solver.item_variable_coefficients.forEach( (coefficients, disinct_item_key, map1) => {
         let glpk_formatted_coefficients = [];
         coefficients.forEach( (coefficient, variable_key, map2) => {
             glpk_formatted_coefficients.push({
@@ -42,12 +42,12 @@ async function solve_simple_factorio() {
             });
         })
         glpk_formatted_item_variable_coefficients.push({
-            name: item_constraint_key,
+            name: disinct_item_key,
             vars: glpk_formatted_coefficients,
             bnds: {
                 type: glpk.GLP_FX,
-                ub: solver.item_constraints.get(item_constraint_key),
-                lb: solver.item_constraints.get(item_constraint_key)
+                ub: solver.distinct_item_constraints.get(disinct_item_key),
+                lb: solver.distinct_item_constraints.get(disinct_item_key)
             }
         });
     });

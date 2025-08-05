@@ -1,4 +1,4 @@
-import { get_input_item_constraint_key, get_output_item_constraint_key } from "./ui.js";
+import { get_input_distinct_item, get_output_distinct_item } from "./ui.js";
 
 export class Preferences {
     constructor() {
@@ -16,12 +16,12 @@ export class Preferences {
         // like if we wanted byproduct costs or fixed inputs
         this.outputs = new Map();
         let output_amount = 1.0;
-        let output_item_constraint_key = get_output_item_constraint_key();
-        this.outputs.set(output_item_constraint_key, output_amount);
+        let output_distinct_item = get_output_distinct_item();
+        this.outputs.set(output_distinct_item.key, output_amount);
 
         this.inputs = new Map();
         let input_cost = 1.0;
-        let input_item_constraint_key = get_input_item_constraint_key();
-        this.inputs.set(input_item_constraint_key, input_cost);
+        let input_distinct_item = get_input_distinct_item();
+        this.inputs.set(input_distinct_item.key, input_cost);
     }
 }

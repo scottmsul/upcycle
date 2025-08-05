@@ -1,4 +1,4 @@
-import { get_item_constraint_key } from "./solver.js";
+import { DistinctItem } from "./distinctItem.js";
 
 const INPUT_ITEM_SELECT_ID = "input-item";
 const INPUT_QUALITY_SELECT_ID = "input-quality";
@@ -37,18 +37,18 @@ function initialize_quality_select(max_quality_unlocked, select_id, default_qual
     select.value = default_quality;
 }
 
-export function get_input_item_constraint_key() {
+export function get_input_distinct_item() {
     let input_item_key = get_select_value(INPUT_ITEM_SELECT_ID);
     let input_item_quality = get_select_value(INPUT_QUALITY_SELECT_ID);
-    let input_item_constraint_key = get_item_constraint_key(input_item_key, input_item_quality);
-    return input_item_constraint_key;
+    let input_distinct_item = new DistinctItem(input_item_key, input_item_quality);
+    return input_distinct_item;
 }
 
-export function get_output_item_constraint_key() {
+export function get_output_distinct_item() {
     let output_item_key = get_select_value(OUTPUT_ITEM_SELECT_ID);
     let output_item_quality = get_select_value(OUTPUT_QUALITY_SELECT_ID);
-    let output_item_constraint_key = get_item_constraint_key(output_item_key, output_item_quality);
-    return output_item_constraint_key;
+    let output_distinct_item = new DistinctItem(output_item_key, output_item_quality);
+    return output_distinct_item;
 }
 
 function get_select_value(select_id) {

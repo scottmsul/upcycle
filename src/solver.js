@@ -5,24 +5,21 @@
  * with the Solver object containing all the variables and constraints needed to run a solver.
  * The job of actually translating this data into a specific packaged solver format is handled elsewhere.
  */
+import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { calculate_expected_result_amount, calculate_quality_transition_probability } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
-        let item_constraint_keys = get_all_producible_item_constraint_keys(parsed_data, preferences);
+        let distinct_items = get_all_distinct_items(parsed_data, preferences);
         let recipe_variables = get_all_recipe_variables(parsed_data, preferences);
-        let item_constraints = get_item_constraints(item_constraint_keys, preferences);
-        let item_variable_coefficients = get_item_variable_coefficients(item_constraint_keys, recipe_variables, parsed_data, preferences);
+        let distinct_item_constraints = get_distinct_item_constraints(distinct_items, preferences);
+        let item_variable_coefficients = get_item_variable_coefficients(distinct_items, recipe_variables, parsed_data, preferences);
         let variable_costs = get_variable_costs(recipe_variables, preferences);
         // things needed for glpk
-        this.item_constraints = item_constraints;
+        this.distinct_item_constraints = distinct_item_constraints;
         this.item_variable_coefficients = item_variable_coefficients;
         this.variable_costs = variable_costs;
     }
-}
-
-export function get_item_constraint_key(item_name, item_quality) {
-    return `item=${item_name}__quality=${item_quality}`;
 }
 
 class RecipeVariable {
@@ -38,7 +35,7 @@ class RecipeVariable {
     }
 }
 
-function get_all_producible_item_constraint_keys(parsed_data, preferences) {
+function get_all_distinct_items(parsed_data, preferences) {
     /**
      * An item constraint key is a unique item in the solver.
      * Generally this will be an item_id combined with a quality level.
@@ -46,24 +43,24 @@ function get_all_producible_item_constraint_keys(parsed_data, preferences) {
      * Best to not use data.items because it contains some unproducible things.
      * Could be optimized to exclude unreachable recipes given a user's settings.
      */
-    let item_constraint_keys = new Set();
+    let distinct_items = new Map();
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
         for(let ingredient of recipe_data.ingredients) {
             let max_allowed_quality = parsed_data.items.get(ingredient.name).allows_quality ? preferences.max_quality_unlocked : 0;
             for(let quality = 0; quality <= max_allowed_quality; quality++) {
-                let item_constraint_key = get_item_constraint_key(ingredient.name, quality);
-                item_constraint_keys.add(item_constraint_key);
+                let distinct_item = new DistinctItem(ingredient.name, quality);
+                distinct_items.set(distinct_item.key, distinct_item);
             }
         }
         for(let result of recipe_data.results) {
             let max_allowed_quality = parsed_data.items.get(result.name).allows_quality ? preferences.max_quality_unlocked : 0;
             for(let quality = 0; quality <= max_allowed_quality; quality++) {
-                let item_constraint_key = get_item_constraint_key(result.name, quality);
-                item_constraint_keys.add(item_constraint_key);
+                let distinct_item = new DistinctItem(result.name, quality);
+                distinct_items.set(distinct_item.key, distinct_item);
             }
         }
     });
-    return item_constraint_keys;
+    return distinct_items;
 }
 
 function get_all_recipe_variables(parsed_data, preferences) {
@@ -94,11 +91,11 @@ function get_all_recipe_variables(parsed_data, preferences) {
     return recipe_variables;
 }
 
-function get_input_item_variable_key(item_constraint_key) {
-    return `input_item_variable__${item_constraint_key}`;
+function get_input_item_variable_key(disinct_item_key) {
+    return `input_distinct_item_variable__${disinct_item_key}`;
 }
 
-function get_item_constraints(item_constraint_keys, preferences) {
+function get_distinct_item_constraints(distinct_items, preferences) {
     /**
      * A map whose keys are solver item keys and whose values are amounts.
      * Essentially if we're solving the matrix equation Ax=b, this sets up b.
@@ -107,25 +104,25 @@ function get_item_constraints(item_constraint_keys, preferences) {
      * For items that are allowed to be inputs or byproducts to the system,
      * we set these up with additional (column) variables constrained in the desired direciton.
      */
-    let item_constraints = new Map();
-    for(let item_constraint_key of item_constraint_keys) {
-        let constraint_value = preferences.outputs.get(item_constraint_key) || 0.0;
-        item_constraints.set(item_constraint_key, constraint_value);
+    let distinct_item_constraints = new Map();
+    for(let distinct_item_key of distinct_items.keys()) {
+        let constraint_value = preferences.outputs.get(distinct_item_key) || 0.0;
+        distinct_item_constraints.set(distinct_item_key, constraint_value);
     }
-    return item_constraints;
+    return distinct_item_constraints;
 }
 
-function get_item_variable_coefficients(item_constraint_keys, recipe_variables, parsed_data, preferences) {
+function get_item_variable_coefficients(distinct_items, recipe_variables, parsed_data, preferences) {
     /**
-     * A map whose keys are solver item keys and whose values are another map.
+     * A map whose keys are all the distinct item keys and whose values are another map.
      * The pointed-to map's keys are variable keys and the values are amounts.
      * This data structure specifies how much each item is produced or consumed by each unit of a given variable.
      * This function also performs the logical work of computing ingredient and result amounts
      * given the various influencing factors such as different modules, beacons, etc.
      */
     let item_variable_coefficients = new Map();
-    for(let item_constraint_key of item_constraint_keys) {
-        item_variable_coefficients.set(item_constraint_key, new Map());
+    for(let distinct_item_key of distinct_items.keys()) {
+        item_variable_coefficients.set(distinct_item_key, new Map());
     }
 
     for(let recipe_variable of recipe_variables) {
@@ -133,8 +130,8 @@ function get_item_variable_coefficients(item_constraint_keys, recipe_variables, 
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
             let ingredient_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
-            let ingredient_item_constraint_key = get_item_constraint_key(ingredient_data.name, ingredient_quality);
-            let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_item_constraint_key);
+            let ingredient_distinct_item_key = get_distinct_item_key(ingredient_data.name, ingredient_quality);
+            let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_distinct_item_key);
             // todo: add buildings
             let ingredient_amount_per_second_per_machine = ingredient_data.amount / recipe_data.energy_required;
             ingredient_item_coefficients.set(recipe_variable.key, (-1.0)*ingredient_amount_per_second_per_machine);
@@ -146,7 +143,6 @@ function get_item_variable_coefficients(item_constraint_keys, recipe_variables, 
             let min_ending_quality = item_data.allows_quality ? recipe_variable.recipe_quality : 0;
             let max_ending_quality = item_data.allows_quality ? preferences.max_quality_unlocked : 0;
             for(let ending_quality = min_ending_quality; ending_quality <= max_ending_quality; ending_quality++) {
-                let result_item_constraint_key = get_item_constraint_key(result_data.name, ending_quality);
                 let quality_percent = recipe_variable.num_quality_modules*preferences.quality_probability;
                 let quality_transition_probability = calculate_quality_transition_probability(starting_quality, ending_quality, preferences.max_quality_unlocked, quality_percent);
                 // todo: account for other prod bonuses
@@ -154,7 +150,8 @@ function get_item_variable_coefficients(item_constraint_keys, recipe_variables, 
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
                 // todo: add buildings
                 let result_amount_per_second_per_machine = expected_result_amount * quality_transition_probability / recipe_data.energy_required;
-                let result_item_coefficients = item_variable_coefficients.get(result_item_constraint_key);
+                let result_distinct_item_key = get_distinct_item_key(result_data.name, ending_quality);
+                let result_item_coefficients = item_variable_coefficients.get(result_distinct_item_key);
                 result_item_coefficients.set(recipe_variable.key, result_amount_per_second_per_machine);
             }
         }
@@ -163,9 +160,9 @@ function get_item_variable_coefficients(item_constraint_keys, recipe_variables, 
     // for each unit of an input free variable, we make 1 unit of that item
     // we use the input cost data structure to determine what the inputs are,
     // even though we don't require the actual cost value here
-    preferences.inputs.forEach( (cost, input_item_constraint_key, map) => {
-        let input_item_coefficients = item_variable_coefficients.get(input_item_constraint_key);
-        let input_item_variable_key = get_input_item_variable_key(input_item_constraint_key);
+    preferences.inputs.forEach( (cost, disinct_item_key, map) => {
+        let input_item_coefficients = item_variable_coefficients.get(disinct_item_key);
+        let input_item_variable_key = get_input_item_variable_key(disinct_item_key);
         input_item_coefficients.set(input_item_variable_key, 1.0);
     });
 
@@ -176,8 +173,8 @@ function get_variable_costs(recipe_variables, preferences) {
     let variable_costs = new Map();
 
     // input item variable costs
-    preferences.inputs.forEach( (cost, item_constraint_key, map) => {
-        let key = get_input_item_variable_key(item_constraint_key);
+    preferences.inputs.forEach( (cost, disinct_item_key, map) => {
+        let key = get_input_item_variable_key(disinct_item_key);
         variable_costs.set(key, cost);
     });
 
