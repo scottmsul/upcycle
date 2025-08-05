@@ -10,11 +10,31 @@ export class ParsedData {
             this.items.set(item.key, item);
         }
 
+        this.crafting_machines = new Map();
+        this.crafting_categories = new Set();
+        this.crafting_categories_to_crafting_machines = new Map();
+
+        for(let crafting_machine of raw_data.crafting_machines) {
+            this.crafting_machines.set(crafting_machine.key, crafting_machine);
+
+            for(let crafting_category of crafting_machine.crafting_categories) {
+                this.crafting_categories.add(crafting_category);
+
+                if(!this.crafting_categories_to_crafting_machines.has(crafting_category)) {
+                    this.crafting_categories_to_crafting_machines.set(crafting_category, [crafting_machine.key]);
+                } else {
+                    this.crafting_categories_to_crafting_machines.get(crafting_category).push(crafting_machine.key);
+                }
+            }
+        }
+
         this.recipes = new Map();
         for(let recipe of raw_data.recipes) {
             // don't store recipes with items not in the items list (ie copper wire)
+            // also don't store recipes with category not in the categories list (ie rocket part)
             if(recipe.ingredients.every(o => this.items.has(o.name))
-                && recipe.results.every(o => this.items.has(o.name))) {
+                && recipe.results.every(o => this.items.has(o.name))
+                && this.crafting_categories.has(recipe.category)) {
                 this.recipes.set(recipe.key, recipe);
             }
         }

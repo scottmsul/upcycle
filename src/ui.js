@@ -1,5 +1,7 @@
 import { DistinctItem } from "./distinctItem.js";
 
+let EPSILON = 1e-9;
+
 const INPUT_ITEM_SELECT_ID = "input-item";
 const INPUT_QUALITY_SELECT_ID = "input-quality";
 const OUTPUT_ITEM_SELECT_ID = "output-item";
@@ -59,7 +61,7 @@ export function display_result(vars) {
     let result = document.getElementById(RESULT_ID);
     result.innerHTML = "";
     for(const [variable_key, amount] of Object.entries(vars)) {
-        if(amount != 0) {
+        if(Math.abs(amount) > EPSILON) {
             let curr_line = document.createElement("div");
             curr_line.innerHTML = `${variable_key}: ${amount}`;
             result.appendChild(curr_line);

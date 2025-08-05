@@ -66,12 +66,14 @@ function get_all_distinct_recipes(parsed_data, preferences) {
      */
     let distinct_recipes = new Map();
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
+        let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category);
+        let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
+        let num_module_slots = crafting_machine_data.module_slots;
         let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? preferences.max_quality_unlocked : 0;
         for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
-            let num_allowed_prod_modules = recipe_data.allow_productivity ? preferences.num_module_slots : 0;
+            let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
             for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
-                // todo: get num_module_slots from the actual building
-                let num_quality_modules = preferences.num_module_slots - num_prod_modules;
+                let num_quality_modules = num_module_slots - num_prod_modules;
                 let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules);
                 distinct_recipes.set(distinct_recipe.key, distinct_recipe);
             }
@@ -116,11 +118,13 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
 
     distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {
         let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
+        let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category)
+        let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
             let ingredient_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
             // todo: add buildings
-            let ingredient_amount_per_second_per_machine = ingredient_data.amount / recipe_data.energy_required;
+            let ingredient_amount_per_second_per_machine = crafting_machine_data.crafting_speed * ingredient_data.amount / recipe_data.energy_required;
 
             let ingredient_distinct_item_key = get_distinct_item_key(ingredient_data.name, ingredient_quality);
             let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_distinct_item_key);
@@ -137,11 +141,10 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
             for(let ending_quality = min_ending_quality; ending_quality <= max_ending_quality; ending_quality++) {
                 let quality_percent = distinct_recipe.num_quality_modules*preferences.quality_probability;
                 let quality_transition_probability = calculate_quality_transition_probability(starting_quality, ending_quality, preferences.max_quality_unlocked, quality_percent);
-                // todo: account for other prod bonuses
-                let prod_bonus = distinct_recipe.num_prod_modules * preferences.prod_bonus;
+                // todo: account for research prod bonuses
+                let prod_bonus = crafting_machine_data.prod_bonus + distinct_recipe.num_prod_modules * preferences.prod_bonus;
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
-                // todo: add buildings
-                let result_amount_per_second_per_machine = expected_result_amount * quality_transition_probability / recipe_data.energy_required;
+                let result_amount_per_second_per_machine = crafting_machine_data.crafting_speed * expected_result_amount * quality_transition_probability / recipe_data.energy_required;
 
                 let result_distinct_item_key = get_distinct_item_key(result_data.name, ending_quality);
                 let result_item_coefficients = item_variable_coefficients.get(result_distinct_item_key);

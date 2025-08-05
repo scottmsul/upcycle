@@ -19,7 +19,7 @@ async function solve_simple_factorio() {
     // one crafting recipe with one ingredient -> one product
     const glpk = await GLPK();
 
-    let preferences = new Preferences();
+    let preferences = new Preferences(parsed_data);
 
     let solver = new Solver(parsed_data, preferences);
 
