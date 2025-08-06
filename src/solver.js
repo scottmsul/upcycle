@@ -11,15 +11,11 @@ import { calculate_expected_result_amount, calculate_quality_transition_probabil
 
 export class Solver {
     constructor(parsed_data, preferences) {
-        let distinct_items = get_all_distinct_items(parsed_data, preferences);
-        let distinct_recipes = get_all_distinct_recipes(parsed_data, preferences);
-        let distinct_item_constraints = get_distinct_item_constraints(distinct_items, preferences);
-        let item_variable_coefficients = get_item_variable_coefficients(distinct_items, distinct_recipes, parsed_data, preferences);
-        let variable_costs = get_variable_costs(distinct_recipes, preferences);
-        // things needed for glpk
-        this.distinct_item_constraints = distinct_item_constraints;
-        this.item_variable_coefficients = item_variable_coefficients;
-        this.variable_costs = variable_costs;
+        this.distinct_items = get_all_distinct_items(parsed_data, preferences);
+        this.distinct_recipes = get_all_distinct_recipes(parsed_data, preferences);
+        this.distinct_item_constraints = get_distinct_item_constraints(this.distinct_items, preferences);
+        this.item_variable_coefficients = get_item_variable_coefficients(this.distinct_items, this.distinct_recipes, parsed_data, preferences);
+        this.variable_costs = get_variable_costs(this.distinct_recipes, preferences);
     }
 }
 

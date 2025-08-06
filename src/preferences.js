@@ -1,4 +1,4 @@
-import { get_input_distinct_item, get_output_distinct_item } from "./ui.js";
+import { get_input_distinct_item, get_output_distinct_item } from "./ui/getters.js";
 
 export class Preferences {
     constructor(parsed_data) {

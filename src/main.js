@@ -4,7 +4,8 @@ import { Solver } from './solver.js';
 import { data, defaults } from './data/spaceAge2.0.11.js';
 import { Preferences } from './preferences.js';
 import { ParsedData } from './parsedData.js';
-import { display_result, initialize_ui } from './ui.js';
+import { initialize_ui } from './ui/initialize.js';
+import { display_result } from './ui/result.js';
 
 let parsed_data = new ParsedData(data);
 initialize_ui(parsed_data, defaults);
@@ -67,7 +68,7 @@ async function solve_simple_factorio() {
     };
 
     const result = await glpk.solve(lp, opt);
-    display_result(result.result.vars);
+    display_result(solver, result.result.vars);
 
     /*
     glpk.solve(lp, opt)
