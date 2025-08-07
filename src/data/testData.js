@@ -1,11 +1,15 @@
+import { ParsedData } from "../parsedData.js";
+
 export const defaults = {
     INPUT_ITEM_ID: "item-1",
     INPUT_ITEM_QUALITY: 0,
+    INPUT_ITEM_COST: 1.0,
     OUTPUT_ITEM_ID: "item-2",
-    OUTPUT_ITEM_QUALITY: 4
+    OUTPUT_ITEM_QUALITY: 4,
+    OUTPUT_AMOUNT_PER_SECOND: 60.0
 }
 
-export const data = {
+export const raw_data = {
     "crafting_machines": [
         {
             "key": "assembling-machine-3",
@@ -73,4 +77,4 @@ export const data = {
     ]
 };
 
-export default data;
+export const parsed_data = new ParsedData(data);

@@ -1,13 +1,12 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
 import { Solver } from './solver.js';
 //import { data, defaults } from './data/testData.js';
-import { data, defaults } from './data/spaceAge2.0.11.js';
+import { parsed_data, defaults } from './data/spaceAge2.0.11.js';
 import { Preferences } from './preferences.js';
-import { ParsedData } from './parsedData.js';
 import { initialize_ui } from './ui/initialize.js';
 import { display_result } from './ui/result.js';
+import { add_input_item, add_output_item } from './ui/itemTables.js';
 
-let parsed_data = new ParsedData(data);
 initialize_ui(parsed_data, defaults);
 
 function print(res) {
@@ -128,4 +127,6 @@ async function solve_glpk_example() {
 }
 
 //window.document.getElementById('solve').onclick = solve_glpk_example;
+window.document.getElementById('add-input-item').onclick = add_input_item;
+window.document.getElementById('add-output-item').onclick = add_output_item;
 window.document.getElementById('solve').onclick = solve_simple_factorio;

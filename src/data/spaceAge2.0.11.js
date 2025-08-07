@@ -1,11 +1,15 @@
+import { ParsedData } from "../parsedData.js"
+
 export const defaults = {
     INPUT_ITEM_ID: "iron-plate",
     INPUT_ITEM_QUALITY: 0,
+    INPUT_ITEM_COST: 1.0,
     OUTPUT_ITEM_ID: "iron-gear-wheel",
-    OUTPUT_ITEM_QUALITY: 4
+    OUTPUT_ITEM_QUALITY: 4,
+    OUTPUT_AMOUNT_PER_SECOND: 60.0
 }
 
-export const data = {
+export const raw_data = {
     "agricultural_tower": [ {
         "energy_source": {
             "emissions_per_minute": {
@@ -21352,3 +21356,5 @@ export const data = {
         "name": "solar-power"
     } ]
 }
+
+export const parsed_data = new ParsedData(raw_data);

@@ -1,4 +1,5 @@
-import { get_input_distinct_item, get_output_distinct_item } from "./ui/getters.js";
+import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID } from "./ui/constants.js";
+import { get_item_table_data } from "./ui/itemTables.js";
 
 export class Preferences {
     constructor(parsed_data) {
@@ -26,14 +27,7 @@ export class Preferences {
 
         // may want to generalize these somehow
         // like if we wanted byproduct costs or fixed inputs
-        this.outputs = new Map();
-        let output_amount = 1.0;
-        let output_distinct_item = get_output_distinct_item();
-        this.outputs.set(output_distinct_item.key, output_amount);
-
-        this.inputs = new Map();
-        let input_cost = 1.0;
-        let input_distinct_item = get_input_distinct_item();
-        this.inputs.set(input_distinct_item.key, input_cost);
+        this.inputs = get_item_table_data(INPUT_ITEMS_TABLE_ID);
+        this.outputs = get_item_table_data(OUTPUT_ITEMS_TABLE_ID);
     }
 }

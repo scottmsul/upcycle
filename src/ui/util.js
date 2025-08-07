@@ -1,7 +1,3 @@
-export function get_value(element_id) {
-    return document.getElementById(element_id).value;
-}
-
 export function append_new(parent_element, child_type) {
     let child_element = document.createElement(child_type);
     parent_element.appendChild(child_element);
