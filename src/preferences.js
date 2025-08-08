@@ -1,10 +1,10 @@
 import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID } from "./ui/constants.js";
 import { get_item_table_data } from "./ui/itemTables.js";
+import { get_max_quality_unlocked } from "./ui/quality.js";
 
 export class Preferences {
     constructor(parsed_data) {
-        // legendary
-        this.max_quality_unlocked = 4;
+        this.max_quality_unlocked = get_max_quality_unlocked();
 
         // legendary tier-3
         this.prod_bonus = 0.25;

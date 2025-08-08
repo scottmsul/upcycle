@@ -1,7 +1,6 @@
 import GLPK from '../node_modules/glpk.js/dist/index.js';
 import { Solver } from './solver.js';
-//import { data, defaults } from './data/testData.js';
-import { parsed_data, defaults } from './data/spaceAge2.0.11.js';
+import { parsed_data, defaults } from './data.js';
 import { Preferences } from './preferences.js';
 import { initialize_ui } from './ui/initialize.js';
 import { display_result } from './ui/result.js';

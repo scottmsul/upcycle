@@ -1,8 +1,10 @@
 import { add_input_item, add_output_item } from "./itemTables.js";
 import { SOLVER_TAB_BUTTON_ID, SOLVER_TAB_ID, PREFERENCES_TAB_BUTTON_ID, PREFERENCES_TAB_ID } from "./constants.js";
+import { initialize_max_quality_unlocked_selector } from "./quality.js";
 
 export function initialize_ui() {
     // run these each once to have some starting items
+    initialize_max_quality_unlocked_selector();
     add_input_item();
     add_output_item();
     initialize_tabs();

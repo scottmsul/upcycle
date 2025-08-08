@@ -1,4 +1,4 @@
-import { RESULT_ID, RECIPE_RESULT_HEADERS, EPSILON } from './constants.js';
+import { RESULT_ID, RECIPE_RESULT_HEADERS, EPSILON, QUALITY_FRIENDLY_NAMES } from './constants.js';
 import { append_new, append_new_set } from "./util.js";
 
 export function display_result(solver, vars) {
@@ -19,7 +19,7 @@ export function display_result(solver, vars) {
                 let distinct_recipe = solver.distinct_recipes.get(variable_key);
 
                 append_new_set(table_row, 'td', distinct_recipe.recipe_key);
-                append_new_set(table_row, 'td', distinct_recipe.recipe_quality);
+                append_new_set(table_row, 'td', QUALITY_FRIENDLY_NAMES[distinct_recipe.recipe_quality]);
                 append_new_set(table_row, 'td', distinct_recipe.num_prod_modules);
                 append_new_set(table_row, 'td', distinct_recipe.num_quality_modules);
                 append_new_set(table_row, 'td', amount);
