@@ -1,4 +1,39 @@
+const MINIMUM_MODULE_SPEED_FACTOR = 0.2;
 const JUMP_QUALITY_PROBABILITY = 0.1;
+const QUALITY_MODULE_PERCENTS = [
+    [.01, .013, .016, .019, .025],
+    [.02, .026, .032, .038, .05],
+    [.025, .032, .04, .047, .062]
+];
+
+export const QUALITY_MODULE_SPEED_PENALTY = .05;
+
+const PROD_MODULE_BONUSES = [
+    [.04, .05, .06, .07, 0.1],
+    [.06, .07, .09, .11, .15],
+    [.1, .13, .16, .19, .25]
+]
+
+const PROD_MODULE_SPEED_PENALTIES = [0.05, 0.1, 0.15];
+
+export function get_quality_module_percent(module_tier, module_quality) {
+    return QUALITY_MODULE_PERCENTS[module_tier][module_quality];
+}
+
+export function get_prod_module_bonus(module_tier, module_quality) {
+    return PROD_MODULE_BONUSES[module_tier][module_quality];
+}
+
+export function get_prod_module_speed_penalty(module_tier) {
+    return PROD_MODULE_SPEED_PENALTIES[module_tier];
+}
+
+export function calculate_module_speed_factor(distinct_recipe, preferences) {
+    let module_speed_factor = 1.0
+        - distinct_recipe.num_quality_modules * preferences.speed_penalty_per_quality_module
+        - distinct_recipe.num_prod_modules * preferences.speed_penalty_per_prod_module;
+    return Math.max(module_speed_factor, MINIMUM_MODULE_SPEED_FACTOR);
+}
 
 export function calculate_expected_result_amount(result_data, prod_bonus) {
     // see here: https://lua-api.factorio.com/latest/types/ItemProductPrototype.html

@@ -1,4 +1,4 @@
-import { MIN_QUALITY_TYPE, MAX_QUALITY_TYPE, MAX_QUALITY_UNLOCKED_SELECT_ID, LOWEST_MAX_QUALITY_UNLOCKED, HIGHEST_MAX_QUALITY_UNLOCKED, QUALITY_FRIENDLY_NAMES } from "./constants.js";
+import { MIN_QUALITY_TYPE, MAX_QUALITY_TYPE, MAX_QUALITY_UNLOCKED_SELECT_ID, LOWEST_MAX_QUALITY_UNLOCKED, HIGHEST_MAX_QUALITY_UNLOCKED, QUALITY_FRIENDLY_NAMES, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID } from "./constants.js";
 import { defaults } from "../data.js";
 
 export function initialize_max_quality_unlocked_selector() {
@@ -16,15 +16,16 @@ export function get_max_quality_unlocked() {
     return window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID).value;
 }
 
-export function new_quality_select_element(quality_type) {
+export function new_quality_select_element(initial_quality_type) {
     let quality_select_element = document.createElement('select');
-    let max_quality_unlocked = get_max_quality_unlocked();
-    let initial_quality = quality_type == MIN_QUALITY_TYPE ? 0 : max_quality_unlocked;
-    initialize_quality_select_element(quality_select_element, initial_quality, max_quality_unlocked);
+    initialize_quality_select_element(quality_select_element, initial_quality_type);
     return quality_select_element;
 }
 
-export function initialize_quality_select_element(quality_select_element, initial_quality, initial_max_quality_unlocked) {
+export function initialize_quality_select_element(quality_select_element, initial_quality_type) {
+    let initial_max_quality_unlocked = get_max_quality_unlocked();
+    let initial_quality = initial_quality_type == MIN_QUALITY_TYPE ? 0 : initial_max_quality_unlocked;
+
     set_quality_select_state(quality_select_element, initial_quality, initial_max_quality_unlocked)
 
     // makes sure quality selectors can only select up to max_quality_unlocked

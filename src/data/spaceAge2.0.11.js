@@ -1,14 +1,8 @@
 import { ParsedData } from "../parsedData.js"
-import { MAX_QUALITY_TYPE, MIN_QUALITY_TYPE } from "../ui/constants.js";
 
 export const defaults = {
-    MAX_QUALITY_UNLOCKED: 4,
     INPUT_ITEM_ID: "iron-plate",
-    INPUT_ITEM_QUALITY_TYPE: MIN_QUALITY_TYPE,
-    INPUT_ITEM_COST: 1.0,
     OUTPUT_ITEM_ID: "iron-gear-wheel",
-    OUTPUT_ITEM_QUALITY_TYPE: MAX_QUALITY_TYPE,
-    OUTPUT_AMOUNT_PER_SECOND: 60.0
 }
 
 export const raw_data = {
@@ -21358,5 +21352,3 @@ export const raw_data = {
         "name": "solar-power"
     } ]
 }
-
-export const parsed_data = new ParsedData(raw_data);

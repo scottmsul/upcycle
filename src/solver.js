@@ -7,7 +7,7 @@
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
-import { calculate_expected_result_amount, calculate_quality_transition_probability } from './util.js';
+import { calculate_expected_result_amount, calculate_module_speed_factor, calculate_quality_transition_probability } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
@@ -116,11 +116,15 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
         let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
         let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category)
         let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
+
+        let module_speed_factor = calculate_module_speed_factor(distinct_recipe, preferences);
+        let machine_speed_factor = crafting_machine_data.crafting_speed;
+        let speed_factor = module_speed_factor * machine_speed_factor;
+
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
             let ingredient_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
-            // todo: add buildings
-            let ingredient_amount_per_second_per_machine = crafting_machine_data.crafting_speed * ingredient_data.amount / recipe_data.energy_required;
+            let ingredient_amount_per_second_per_machine = speed_factor * ingredient_data.amount / recipe_data.energy_required;
 
             let ingredient_distinct_item_key = get_distinct_item_key(ingredient_data.name, ingredient_quality);
             let ingredient_item_coefficients = item_variable_coefficients.get(ingredient_distinct_item_key);
@@ -140,7 +144,7 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
                 // todo: account for research prod bonuses
                 let prod_bonus = crafting_machine_data.prod_bonus + distinct_recipe.num_prod_modules * preferences.prod_bonus;
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
-                let result_amount_per_second_per_machine = crafting_machine_data.crafting_speed * expected_result_amount * quality_transition_probability / recipe_data.energy_required;
+                let result_amount_per_second_per_machine = speed_factor * expected_result_amount * quality_transition_probability / recipe_data.energy_required;
 
                 let result_distinct_item_key = get_distinct_item_key(result_data.name, ending_quality);
                 let result_item_coefficients = item_variable_coefficients.get(result_distinct_item_key);

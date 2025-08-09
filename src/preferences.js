@@ -1,14 +1,21 @@
-import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID } from "./ui/constants.js";
+import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID } from "./ui/constants.js";
 import { get_item_table_data } from "./ui/itemTables.js";
 import { get_max_quality_unlocked } from "./ui/quality.js";
+import { get_prod_module_bonus, get_prod_module_speed_penalty, get_quality_module_percent, QUALITY_MODULE_SPEED_PENALTY } from "./util.js";
 
 export class Preferences {
     constructor(parsed_data) {
         this.max_quality_unlocked = get_max_quality_unlocked();
 
-        // legendary tier-3
-        this.prod_bonus = 0.25;
-        this.quality_probability = 0.062;
+        let quality_module_tier = window.document.getElementById(QUALITY_MODULE_TIER_SELECT_ID).value;
+        let quality_module_quality = window.document.getElementById(QUALITY_MODULE_QUALITY_SELECT_ID).value;
+        this.quality_probability = get_quality_module_percent(quality_module_tier, quality_module_quality);
+        this.speed_penalty_per_quality_module = QUALITY_MODULE_SPEED_PENALTY;
+
+        let prod_module_tier = window.document.getElementById(PROD_MODULE_TIER_SELECT_ID).value;
+        let prod_module_quality = window.document.getElementById(PROD_MODULE_QUALITY_SELECT_ID).value;
+        this.prod_bonus = get_prod_module_bonus(prod_module_tier, prod_module_quality);
+        this.speed_penalty_per_prod_module = get_prod_module_speed_penalty(prod_module_tier);
 
         // for now just get the best building for each category
         this.preferred_crafting_machine_by_category = new Map();
