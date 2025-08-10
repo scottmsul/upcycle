@@ -3,7 +3,7 @@ import { Solver } from './solver.js';
 import { parsed_data, defaults } from './data.js';
 import { Preferences } from './preferences.js';
 import { initialize_ui } from './ui/initialize.js';
-import { display_result } from './ui/result.js';
+import { display_results } from './ui/results.js';
 import { add_input_item, add_output_item } from './ui/itemTables.js';
 
 initialize_ui(parsed_data, defaults);
@@ -65,8 +65,8 @@ async function solve_simple_factorio() {
         msglev: glpk.GLP_MSG_DBG
     };
 
-    const result = await glpk.solve(lp, opt);
-    display_result(solver, result.result.vars);
+    const results = await glpk.solve(lp, opt);
+    display_results(solver, results.result.vars);
 
     /*
     glpk.solve(lp, opt)
