@@ -78,10 +78,6 @@ function get_all_distinct_recipes(parsed_data, preferences) {
     return distinct_recipes;
 }
 
-function get_input_item_variable_key(disinct_item_key) {
-    return `input_distinct_item_variable__${disinct_item_key}`;
-}
-
 function get_distinct_item_constraints(distinct_items, preferences) {
     /**
      * A map whose keys are solver item keys and whose values are amounts.
@@ -160,8 +156,7 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
     // even though we don't require the actual cost value here
     preferences.inputs.forEach( (cost, disinct_item_key, map) => {
         let input_item_coefficients = item_variable_coefficients.get(disinct_item_key);
-        let input_item_variable_key = get_input_item_variable_key(disinct_item_key);
-        input_item_coefficients.set(input_item_variable_key, 1.0);
+        input_item_coefficients.set(disinct_item_key, 1.0);
     });
 
     return item_variable_coefficients;
@@ -172,8 +167,7 @@ function get_variable_costs(distinct_recipes, preferences) {
 
     // input item variable costs
     preferences.inputs.forEach( (cost, disinct_item_key, map) => {
-        let key = get_input_item_variable_key(disinct_item_key);
-        variable_costs.set(key, cost);
+        variable_costs.set(disinct_item_key, cost);
     });
 
     // recipe variable costs

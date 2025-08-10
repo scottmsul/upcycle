@@ -1,7 +1,8 @@
 export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
 export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 export const RESULTS_ID = 'results';
-export const RECIPE_RESULTS_TABLE_ID = 'result-recipes-tbody';
+export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';
+export const RECIPE_RESULTS_TABLE_ID = 'recipe-results-tbody';
 export const QUALITY_MODULE_TIER_SELECT_ID = 'quality-module-tier';
 export const QUALITY_MODULE_QUALITY_SELECT_ID = 'quality-module-quality';
 export const PROD_MODULE_TIER_SELECT_ID = 'prod-module-tier';
