@@ -1,11 +1,6 @@
-export const SOLVER_TAB_BUTTON_ID = 'solver-tab-button';
-export const PREFERENCES_TAB_BUTTON_ID = 'preferences-tab-button';
-export const SOLVER_TAB_ID = 'solver-tab';
-export const PREFERENCES_TAB_ID = 'preferences-tab';
-
 export const RESULT_ID = 'result';
-export const INPUT_ITEMS_TABLE_ID = 'input-items';
-export const OUTPUT_ITEMS_TABLE_ID = 'output-items';
+export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
+export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 export const QUALITY_MODULE_TIER_SELECT_ID = 'quality-module-tier';
 export const QUALITY_MODULE_QUALITY_SELECT_ID = 'quality-module-quality';
 export const PROD_MODULE_TIER_SELECT_ID = 'prod-module-tier';

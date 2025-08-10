@@ -7,34 +7,15 @@
         <script type="module" src="./src/main.js"></script>
     </head>
     <body>
-        <button id="solver-tab-button">Solver</button>
-        <button id="preferences-tab-button">Preferences</button>
-        <div class="tab" id="solver-tab" style="display: block;">
-            <h1>Output Items</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quality</th>
-                        <th>Amount/Sec</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="output-items"></tbody>
-            </table>
-            <button id="add-output-item">+</button>
-            <br>
-            <h1>Solver</h1>
-            <button id="solve">solve</button>
-            <div id="result"></div>
-        </div>
-        <div class="tab" id="preferences-tab" style="display: none;">
-            <br>
+        <div id="preferences">
+            <h1>Preferences</h1>
 
             <label>Max Quality Unlocked: </label>
             <select id="max-quality-unlocked"></select>
 
-            <br>
+        </div>
+        <div id="modules">
+            <h1>Modules</h1>
 
             <label>Quality Module: </label>
             <select id="quality-module-tier"></select>
@@ -45,9 +26,8 @@
             <label>Productivity Module: </label>
             <select id="prod-module-tier"></select>
             <select id="prod-module-quality"></select>
-
-            <br>
-
+        </div>
+        <div id="input-items">
             <h1>Input Items</h1>
             <table>
                 <thead>
@@ -58,9 +38,29 @@
                         <th>Delete</th>
                     </tr>
                 </thead>
-                <tbody id="input-items"></tbody>
+                <tbody id="input-items-tbody"></tbody>
             </table>
             <button id="add-input-item">+</button>
+        </div>
+        <div id="output-items">
+            <h1>Output Items</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quality</th>
+                        <th>Amount/Sec</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="output-items-tbody"></tbody>
+            </table>
+            <button id="add-output-item">+</button>
+        </div>
+        <div id="solver">
+            <h1>Solver</h1>
+            <button id="solve">solve</button>
+            <div id="result"></div>
         </div>
     </body>
 </html>
