@@ -7,7 +7,7 @@
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
-import { calculate_expected_result_amount, calculate_module_speed_factor, calculate_quality_transition_probability } from './util.js';
+import { calculate_expected_result_amount, calculate_module_speed_factor, calculate_quality_transition_probability, MACHINE_QUALITY_SPEED_FACTORS } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
@@ -114,8 +114,9 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
         let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
 
         let module_speed_factor = calculate_module_speed_factor(distinct_recipe, preferences);
-        let machine_speed_factor = crafting_machine_data.crafting_speed;
-        let speed_factor = module_speed_factor * machine_speed_factor;
+        let crafting_machine_type_speed_factor = crafting_machine_data.crafting_speed;
+        let crafting_machine_quality_speed_factor = preferences.crafting_machine_quality_speed_factor;
+        let speed_factor = module_speed_factor * crafting_machine_type_speed_factor * crafting_machine_quality_speed_factor;
 
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
@@ -172,9 +173,10 @@ function get_variable_costs(distinct_recipes, preferences) {
 
     // recipe variable costs
     distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {
+        let crafting_machine_unit_cost = preferences.crafting_machine_cost;
         let quality_module_unit_cost = distinct_recipe.num_quality_modules * preferences.quality_module_cost;
         let prod_module_unit_cost = distinct_recipe.num_prod_modules * preferences.prod_module_cost;
-        let recipe_unit_cost = quality_module_unit_cost + prod_module_unit_cost;
+        let recipe_unit_cost = crafting_machine_unit_cost + quality_module_unit_cost + prod_module_unit_cost;
         variable_costs.set(distinct_recipe_key, recipe_unit_cost);
     });
 

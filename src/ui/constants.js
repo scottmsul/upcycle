@@ -1,3 +1,6 @@
+export const MAX_QUALITY_UNLOCKED_SELECT_ID = 'max-quality-unlocked';
+export const CRAFTING_MACHINE_QUALITY_SELECT_ID = 'crafting-machine-quality';
+export const CRAFTING_MACHINE_COST_INPUT_ID = 'crafting-machine-cost';
 export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
 export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 export const RESULTS_ID = 'results';
@@ -20,5 +23,4 @@ export const MIN_QUALITY_TYPE = 0;
 export const MAX_QUALITY_TYPE = 1;
 export const LOWEST_MAX_QUALITY_UNLOCKED = 2;
 export const HIGHEST_MAX_QUALITY_UNLOCKED = 4;
-export const MAX_QUALITY_UNLOCKED_SELECT_ID = 'max-quality-unlocked';
 export const QUALITY_FRIENDLY_NAMES = ['common', 'uncommon', 'rare', 'epic', 'legendary'];

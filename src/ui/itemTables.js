@@ -27,8 +27,8 @@ export function get_item_table_data(table_id) {
     for(let row of Array.from(table.children)) {
         //<tr><th><select>
         let item_id = row.children[0].firstChild.value;
-        let quality = row.children[1].firstChild.value;
-        let amount = row.children[2].firstChild.value;
+        let quality = parseInt(row.children[1].firstChild.value);
+        let amount = parseFloat(row.children[2].firstChild.value);
         let key = get_distinct_item_key(item_id, quality);
         data.set(key, amount);
     }

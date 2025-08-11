@@ -13,7 +13,7 @@ export function initialize_max_quality_unlocked_selector() {
 }
 
 export function get_max_quality_unlocked() {
-    return window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID).value;
+    return parseInt(window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID).value);
 }
 
 export function new_quality_select_element(initial_quality_type) {
@@ -32,8 +32,9 @@ export function initialize_quality_select_element(quality_select_element, initia
     // uses a closure on quality_select_element
     let max_quality_select_element = window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID);
     max_quality_select_element.addEventListener('change', (event) => {
-        let new_max_quality_unlocked = event.target.value;
-        let new_quality_value = Math.min(quality_select_element.value, new_max_quality_unlocked);
+        let prev_quality_value = parseInt(quality_select_element.value);
+        let new_max_quality_unlocked = parseInt(event.target.value);
+        let new_quality_value = Math.min(prev_quality_value, new_max_quality_unlocked);
         set_quality_select_state(quality_select_element, new_quality_value, new_max_quality_unlocked);
     });
 }
