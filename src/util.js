@@ -16,7 +16,9 @@ const PROD_MODULE_BONUSES = [
     [.1, .13, .16, .19, .25]
 ]
 
-const PROD_MODULE_SPEED_PENALTIES = [0.05, 0.1, 0.15];
+export const PROD_MODULE_SPEED_PENALTIES = [0.05, 0.1, 0.15];
+
+export const MAXIMUM_PROD_BONUS = 3.0;
 
 export function get_quality_module_percent(module_tier, module_quality) {
     return QUALITY_MODULE_PERCENTS[module_tier][module_quality];

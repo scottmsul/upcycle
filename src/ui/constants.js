@@ -6,6 +6,7 @@ export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 export const RESULTS_ID = 'results';
 export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';
 export const RECIPE_RESULTS_TABLE_ID = 'recipe-results-tbody';
+export const PRODUCTIVITY_RESEARCH_TABLE_ID = 'productivity-research-tbody';
 export const QUALITY_MODULE_TIER_SELECT_ID = 'quality-module-tier';
 export const QUALITY_MODULE_QUALITY_SELECT_ID = 'quality-module-quality';
 export const QUALITY_MODULE_COST_INPUT_ID = 'quality-module-cost';

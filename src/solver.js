@@ -7,7 +7,7 @@
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
-import { calculate_expected_result_amount, calculate_module_speed_factor, calculate_quality_transition_probability, MACHINE_QUALITY_SPEED_FACTORS } from './util.js';
+import { calculate_expected_result_amount, calculate_module_speed_factor, calculate_quality_transition_probability, MAXIMUM_PROD_BONUS } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
@@ -138,8 +138,9 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
             for(let ending_quality = min_ending_quality; ending_quality <= max_ending_quality; ending_quality++) {
                 let quality_percent = distinct_recipe.num_quality_modules*preferences.quality_probability;
                 let quality_transition_probability = calculate_quality_transition_probability(starting_quality, ending_quality, preferences.max_quality_unlocked, quality_percent);
-                // todo: account for research prod bonuses
-                let prod_bonus = crafting_machine_data.prod_bonus + distinct_recipe.num_prod_modules * preferences.prod_bonus;
+                let research_prod_bonus = preferences.productivity_research.has(distinct_recipe.recipe_key) ? preferences.productivity_research.get(distinct_recipe.recipe_key) : 0;
+                let total_prod_bonus = crafting_machine_data.prod_bonus + distinct_recipe.num_prod_modules * preferences.prod_bonus + research_prod_bonus;
+                let prod_bonus = Math.min(total_prod_bonus, MAXIMUM_PROD_BONUS);
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
                 let result_amount_per_second_per_machine = speed_factor * expected_result_amount * quality_transition_probability / recipe_data.energy_required;
 
