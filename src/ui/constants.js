@@ -5,8 +5,10 @@ export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';
 export const RECIPE_RESULTS_TABLE_ID = 'recipe-results-tbody';
 export const QUALITY_MODULE_TIER_SELECT_ID = 'quality-module-tier';
 export const QUALITY_MODULE_QUALITY_SELECT_ID = 'quality-module-quality';
+export const QUALITY_MODULE_COST_INPUT_ID = 'quality-module-cost';
 export const PROD_MODULE_TIER_SELECT_ID = 'prod-module-tier';
 export const PROD_MODULE_QUALITY_SELECT_ID = 'prod-module-quality';
+export const PROD_MODULE_COST_INPUT_ID = 'prod-module-cost';
 
 // these are item keys which could matter for localization stuff later
 export const QUALITY_MODULE_TIERS = ['quality-module-1', 'quality-module-2', 'quality-module-3'];

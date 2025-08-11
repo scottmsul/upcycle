@@ -171,9 +171,12 @@ function get_variable_costs(distinct_recipes, preferences) {
     });
 
     // recipe variable costs
-    for(let distinct_recipe_key of distinct_recipes.keys()) {
-        variable_costs.set(distinct_recipe_key, preferences.recipe_cost);
-    }
+    distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {
+        let quality_module_unit_cost = distinct_recipe.num_quality_modules * preferences.quality_module_cost;
+        let prod_module_unit_cost = distinct_recipe.num_prod_modules * preferences.prod_module_cost;
+        let recipe_unit_cost = quality_module_unit_cost + prod_module_unit_cost;
+        variable_costs.set(distinct_recipe_key, recipe_unit_cost);
+    });
 
     return variable_costs;
 }

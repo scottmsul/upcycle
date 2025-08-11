@@ -11,10 +11,10 @@ export function display_results(solver, vars) {
     recipe_results_table.innerHTML = '';
 
     for(const [variable_key, amount] of Object.entries(vars)) {
+        let unit_cost = solver.variable_costs.get(variable_key);
         if(solver.distinct_items.has(variable_key) && (Math.abs(amount) > FLOATING_POINT_CUTOFF)) {
             let row_element = document.createElement('tr');
             let distinct_item = solver.distinct_items.get(variable_key);
-            let unit_cost = solver.variable_costs.get(variable_key);
 
             row_element
                 .appendChild(document.createElement('td'))
@@ -61,6 +61,14 @@ export function display_results(solver, vars) {
             row_element
                 .appendChild(document.createElement('td'))
                 .innerHTML = amount;
+
+            row_element
+                .appendChild(document.createElement('td'))
+                .innerHTML = unit_cost;
+
+            row_element
+                .appendChild(document.createElement('td'))
+                .innerHTML = amount*unit_cost;
 
             recipe_results_table.appendChild(row_element);
         }

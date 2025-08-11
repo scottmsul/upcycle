@@ -16,16 +16,30 @@
         </div>
         <div id="modules">
             <h1>Modules</h1>
-
-            <label>Quality Module: </label>
-            <select id="quality-module-tier"></select>
-            <select id="quality-module-quality"></select>
-
-            <br>
-
-            <label>Productivity Module: </label>
-            <select id="prod-module-tier"></select>
-            <select id="prod-module-quality"></select>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Tier</th>
+                        <th>Quality</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Quality</td>
+                        <td><select id="quality-module-tier"></select></td>
+                        <td><select id="quality-module-quality"></select></td>
+                        <td><input type="number" id="quality-module-cost" value="1"></td>
+                    </tr>
+                    <tr>
+                        <td>Productivity</td>
+                        <td><select id="prod-module-tier"></select></td>
+                        <td><select id="prod-module-quality"></select></td>
+                        <td><input type="number" id="prod-module-cost" value="1"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div id="input-items">
             <h1>Input Items</h1>
@@ -84,6 +98,8 @@
                             <th>Productivity Modules</th>
                             <th>Quality Modules</th>
                             <th>Machines</th>
+                            <th>Unit Cost</th>
+                            <th>Total Cost</th>
                         </tr>
                     </thead>
                     <tbody id="recipe-results-tbody"></tbody>
