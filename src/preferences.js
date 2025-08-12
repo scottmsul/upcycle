@@ -1,6 +1,6 @@
 import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID } from "./ui/constants.js";
 import { get_item_table_data } from "./ui/itemTables.js";
-import { get_productivity_research_table_data } from "./ui/productivity_research.js";
+import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { get_max_quality_unlocked } from "./ui/quality.js";
 import { get_prod_module_bonus, get_prod_module_speed_penalty, get_quality_module_percent, MACHINE_QUALITY_SPEED_FACTORS, QUALITY_MODULE_SPEED_PENALTY } from "./util.js";
 

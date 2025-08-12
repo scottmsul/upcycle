@@ -1,6 +1,6 @@
 import { QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_TIERS, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_TIERS, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID } from "./constants.js";
 import { initialize_max_quality_unlocked_selector, initialize_quality_select_element } from "./quality.js";
-import { initialize_productivity_research } from "./productivity_research.js";
+import { initialize_productivity_research } from "./productivityResearch.js";
 import { add_input_item, add_output_item } from "./itemTables.js";
 import { defaults } from "../data.js";
 
