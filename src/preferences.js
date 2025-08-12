@@ -1,4 +1,4 @@
-import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID } from "./ui/constants.js";
+import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID, ALLOW_BYPRODUCTS_INPUT_ID } from "./ui/constants.js";
 import { get_item_table_data } from "./ui/itemTables.js";
 import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { get_max_quality_unlocked } from "./ui/quality.js";
@@ -11,6 +11,7 @@ export class Preferences {
         let crafting_machine_quality = parseInt(window.document.getElementById(CRAFTING_MACHINE_QUALITY_SELECT_ID).value);
         this.crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[crafting_machine_quality];
         this.crafting_machine_cost = parseFloat(window.document.getElementById(CRAFTING_MACHINE_COST_INPUT_ID).value);
+        this.allow_byproducts = window.document.getElementById(ALLOW_BYPRODUCTS_INPUT_ID).checked;
 
         let quality_module_tier = parseInt(window.document.getElementById(QUALITY_MODULE_TIER_SELECT_ID).value);
         let quality_module_quality = parseInt(window.document.getElementById(QUALITY_MODULE_QUALITY_SELECT_ID).value);

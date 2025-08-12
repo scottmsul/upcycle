@@ -1,10 +1,13 @@
 export const MAX_QUALITY_UNLOCKED_SELECT_ID = 'max-quality-unlocked';
 export const CRAFTING_MACHINE_QUALITY_SELECT_ID = 'crafting-machine-quality';
 export const CRAFTING_MACHINE_COST_INPUT_ID = 'crafting-machine-cost';
+export const ALLOW_BYPRODUCTS_INPUT_ID = 'allow-byproducts';
 export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
 export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 export const RESULTS_ID = 'results';
 export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';
+export const BYPRODUCT_RESULTS_SECTION_ID = 'byproduct-results';
+export const BYPRODUCT_RESULTS_TABLE_ID = 'byproduct-results-tbody';
 export const RECIPE_RESULTS_TABLE_ID = 'recipe-results-tbody';
 export const PRODUCTIVITY_RESEARCH_TABLE_ID = 'productivity-research-tbody';
 export const QUALITY_MODULE_TIER_SELECT_ID = 'quality-module-tier';

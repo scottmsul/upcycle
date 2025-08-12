@@ -15,7 +15,7 @@ export class Solver {
         this.distinct_recipes = get_all_distinct_recipes(parsed_data, preferences);
         this.distinct_item_constraints = get_distinct_item_constraints(this.distinct_items, preferences);
         this.item_variable_coefficients = get_item_variable_coefficients(this.distinct_items, this.distinct_recipes, parsed_data, preferences);
-        this.variable_costs = get_variable_costs(this.distinct_recipes, preferences);
+        this.variable_costs = get_variable_costs(this.distinct_items, this.distinct_recipes, preferences);
     }
 }
 
@@ -161,16 +161,35 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
         input_item_coefficients.set(disinct_item_key, 1.0);
     });
 
+    // if we allow byproducts then every single (non-input) item needs a variable which voids it
+    if(preferences.allow_byproducts) {
+        distinct_items.forEach( (distinct_item, distinct_item_key, map) => {
+            if(!preferences.inputs.has(distinct_item_key)) {
+                let byproduct_item_coefficients = item_variable_coefficients.get(distinct_item_key);
+                byproduct_item_coefficients.set(distinct_item_key, -1.0);
+            }
+        });
+    }
+
     return item_variable_coefficients;
 }
 
-function get_variable_costs(distinct_recipes, preferences) {
+function get_variable_costs(distinct_items, distinct_recipes, preferences) {
     let variable_costs = new Map();
 
     // input item variable costs
     preferences.inputs.forEach( (cost, disinct_item_key, map) => {
         variable_costs.set(disinct_item_key, cost);
     });
+
+    // if we allow byproducts then these get voided for free
+    if(preferences.allow_byproducts) {
+        distinct_items.forEach( (distinct_item, distinct_item_key, map) => {
+            if(!preferences.inputs.has(distinct_item_key)) {
+                variable_costs.set(distinct_item_key, 0.0);
+            }
+        });
+    }
 
     // recipe variable costs
     distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {

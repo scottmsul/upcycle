@@ -66,7 +66,7 @@ async function solve_simple_factorio() {
     };
 
     const results = await glpk.solve(lp, opt);
-    display_results(solver, results.result.vars);
+    display_results(preferences, solver, results.result.vars);
 
     /*
     glpk.solve(lp, opt)

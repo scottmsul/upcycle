@@ -9,20 +9,24 @@
     <body>
         <div id="preferences">
             <h1>Preferences</h1>
-
-            <label>Max Quality Unlocked: </label>
-            <select id="max-quality-unlocked"></select>
-
-            <br>
-
-            <label>Crafting Machine Quality: </label>
-            <td><select id="crafting-machine-quality"></select></td>
-
-            <br>
-
-            <label>Crafting Machine Cost: </label>
-            <td><input type="number" id="crafting-machine-cost" value="1"></td>
-
+            <table>
+                <tr>
+                    <td>Max Quality Unlocked: </td>
+                    <td><select id="max-quality-unlocked"></select></td>
+                </tr>
+                <tr>
+                    <td>Crafting Machine Quality: </td>
+                    <td><select id="crafting-machine-quality"></select></td>
+                </tr>
+                <tr>
+                    <td>Crafting Machine Cost: </td>
+                    <td><input type="number" id="crafting-machine-cost" value="1"></td>
+                </tr>
+                <tr>
+                    <td>Allow Byproducts: </td>
+                    <td><input type="checkbox" id="allow-byproducts"></td>
+                </tr>
+            </table>
         </div>
         <div id="modules">
             <h1>Modules</h1>
@@ -112,6 +116,19 @@
                     </thead>
                     <tbody id="input-results-tbody"></tbody>
                 </table>
+                <div id="byproduct-results" style="display: none;">
+                    <h1>Byproducts</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quality</th>
+                                <th>Amount/Sec</th>
+                            </tr>
+                        </thead>
+                        <tbody id="byproduct-results-tbody"></tbody>
+                    </table>
+                </div>
                 <h1>Recipes</h1>
                 <table>
                     <thead>
