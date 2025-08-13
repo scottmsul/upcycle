@@ -1,4 +1,4 @@
-import GLPK from '../node_modules/glpk.js/dist/index.js';
+import GLPK from '../packages/glpk.js/dist/index.js';
 import { Solver } from './solver.js';
 import { parsed_data, defaults } from './data.js';
 import { Preferences } from './preferences.js';
