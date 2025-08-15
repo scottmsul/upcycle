@@ -1,29 +1,30 @@
-import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID, ALLOW_BYPRODUCTS_INPUT_ID } from "./ui/constants.js";
+import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID, ALLOW_BYPRODUCTS_INPUT_ID, CHECK_SPEED_BEACONS_INPUT_ID, SPEED_MODULE_TIER_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, BEACON_QUALITY_SELECT_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID } from "./ui/constants.js";
 import { get_item_table_data } from "./ui/itemTables.js";
 import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { get_max_quality_unlocked } from "./ui/quality.js";
-import { get_prod_module_bonus, get_prod_module_speed_penalty, get_quality_module_percent, MACHINE_QUALITY_SPEED_FACTORS, QUALITY_MODULE_SPEED_PENALTY } from "./util.js";
+import { get_checkbox_value, get_float_value, get_int_value } from "./ui/util.js";
 
 export class Preferences {
     constructor(parsed_data) {
         this.max_quality_unlocked = get_max_quality_unlocked();
 
-        let crafting_machine_quality = parseInt(window.document.getElementById(CRAFTING_MACHINE_QUALITY_SELECT_ID).value);
-        this.crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[crafting_machine_quality];
-        this.crafting_machine_cost = parseFloat(window.document.getElementById(CRAFTING_MACHINE_COST_INPUT_ID).value);
-        this.allow_byproducts = window.document.getElementById(ALLOW_BYPRODUCTS_INPUT_ID).checked;
+        this.crafting_machine_quality = get_int_value(CRAFTING_MACHINE_QUALITY_SELECT_ID);
+        this.crafting_machine_cost = get_float_value(CRAFTING_MACHINE_COST_INPUT_ID);
+        this.allow_byproducts = get_checkbox_value(ALLOW_BYPRODUCTS_INPUT_ID);
 
-        let quality_module_tier = parseInt(window.document.getElementById(QUALITY_MODULE_TIER_SELECT_ID).value);
-        let quality_module_quality = parseInt(window.document.getElementById(QUALITY_MODULE_QUALITY_SELECT_ID).value);
-        this.quality_probability = get_quality_module_percent(quality_module_tier, quality_module_quality);
-        this.speed_penalty_per_quality_module = QUALITY_MODULE_SPEED_PENALTY;
-        this.quality_module_cost = parseFloat(window.document.getElementById(QUALITY_MODULE_COST_INPUT_ID).value);
+        this.quality_module_tier = get_int_value(QUALITY_MODULE_TIER_SELECT_ID);
+        this.quality_module_quality = get_int_value(QUALITY_MODULE_QUALITY_SELECT_ID);
+        this.quality_module_cost = get_float_value(QUALITY_MODULE_COST_INPUT_ID);
 
-        let prod_module_tier = parseInt(window.document.getElementById(PROD_MODULE_TIER_SELECT_ID).value);
-        let prod_module_quality = parseInt(window.document.getElementById(PROD_MODULE_QUALITY_SELECT_ID).value);
-        this.prod_bonus = get_prod_module_bonus(prod_module_tier, prod_module_quality);
-        this.speed_penalty_per_prod_module = get_prod_module_speed_penalty(prod_module_tier);
-        this.prod_module_cost = parseFloat(window.document.getElementById(PROD_MODULE_COST_INPUT_ID).value);
+        this.prod_module_tier = get_int_value(PROD_MODULE_TIER_SELECT_ID);
+        this.prod_module_quality = get_int_value(PROD_MODULE_QUALITY_SELECT_ID);
+        this.prod_module_cost = get_float_value(PROD_MODULE_COST_INPUT_ID);
+
+        this.check_speed_beacons = get_checkbox_value(CHECK_SPEED_BEACONS_INPUT_ID);
+        this.speed_module_tier = get_int_value(SPEED_MODULE_TIER_SELECT_ID);
+        this.speed_module_quality = get_int_value(SPEED_MODULE_QUALITY_SELECT_ID);
+        this.speed_beacon_quality = get_int_value(BEACON_QUALITY_SELECT_ID);
+        this.max_beaconed_speed_modules = this.check_speed_beacons ? get_int_value(MAX_BEACONED_SPEED_MODULES_INPUT_ID) : 0;
 
         // for now just get the best building for each category
         this.preferred_crafting_machine_by_category = new Map();

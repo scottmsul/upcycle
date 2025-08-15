@@ -41,16 +41,56 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Quality</td>
-                        <td><select id="quality-module-tier"></select></td>
+                        <td>Quality: </td>
+                        <td><select id="quality-module-tier">
+                            <option value="0">quality-module-1</option>
+                            <option value="1">quality-module-2</option>
+                            <option value="2" selected="selected">quality-module-3</option>
+                        </select></td>
                         <td><select id="quality-module-quality"></select></td>
                         <td><input type="number" id="quality-module-cost" value="1"></td>
                     </tr>
                     <tr>
-                        <td>Productivity</td>
-                        <td><select id="prod-module-tier"></select></td>
-                        <td><select id="prod-module-quality"></select></td>
+                        <td>Productivity: </td>
+                        <td><select id="prod-module-tier">
+                            <option value="0">prod-module-1</option>
+                            <option value="1">prod-module-2</option>
+                            <option value="2" selected="selected">prod-module-3</option>
+                        </select></td>
+                        <td><select id="prod-module-quality">
+                        </select></td>
                         <td><input type="number" id="prod-module-cost" value="1"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="speed-beacons">
+            <h1>Speed Beacons</h1>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Check Speed Beacons: </td>
+                        <td><input type="checkbox" id="check-speed-beacons"></td>
+                    </tr>
+                    <tr>
+                        <td>Speed Module Tier: </td>
+                        <td><select id="speed-module-tier">
+                            <option value="0">speed-module-1</option>
+                            <option value="1">speed-module-2</option>
+                            <option value="2" selected="selected">speed-module-3</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>Speed Module Quality: </td>
+                        <td><select id="speed-module-quality"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Speed Beacon Quality: </td>
+                        <td><select id="beacon-quality"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Max Speed Modules: </td>
+                        <td><input type="number" id="max-beaconed-speed-modules" value="16"></td>
                     </tr>
                 </tbody>
             </table>
@@ -137,6 +177,8 @@
                             <th>Ingredient Quality</th>
                             <th>Productivity Modules</th>
                             <th>Quality Modules</th>
+                            <th>Beacons</th>
+                            <th>Speed Modules</th>
                             <th>Machines</th>
                             <th>Unit Cost</th>
                             <th>Total Cost</th>

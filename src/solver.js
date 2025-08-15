@@ -7,7 +7,7 @@
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
-import { calculate_expected_result_amount, calculate_module_speed_factor, calculate_quality_transition_probability, MAXIMUM_PROD_BONUS } from './util.js';
+import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers  } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
@@ -70,8 +70,10 @@ function get_all_distinct_recipes(parsed_data, preferences) {
             let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
             for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
                 let num_quality_modules = num_module_slots - num_prod_modules;
-                let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules);
-                distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+                for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= preferences.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
+                    let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
+                    distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+                }
             }
         }
     })
@@ -110,13 +112,11 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
 
     distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {
         let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
-        let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category)
-        let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
 
-        let module_speed_factor = calculate_module_speed_factor(distinct_recipe, preferences);
-        let crafting_machine_type_speed_factor = crafting_machine_data.crafting_speed;
-        let crafting_machine_quality_speed_factor = preferences.crafting_machine_quality_speed_factor;
-        let speed_factor = module_speed_factor * crafting_machine_type_speed_factor * crafting_machine_quality_speed_factor;
+        let recipe_modifiers = calculate_recipe_modifiers(distinct_recipe, parsed_data, preferences);
+        let speed_factor = recipe_modifiers.speed_factor;
+        let quality_percent = recipe_modifiers.quality_percent;
+        let prod_bonus = recipe_modifiers.prod_bonus;
 
         for(let ingredient_data of recipe_data.ingredients) {
             let item_data = parsed_data.items.get(ingredient_data.name);
@@ -136,11 +136,7 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
             let min_ending_quality = item_data.allows_quality ? distinct_recipe.recipe_quality : 0;
             let max_ending_quality = item_data.allows_quality ? preferences.max_quality_unlocked : 0;
             for(let ending_quality = min_ending_quality; ending_quality <= max_ending_quality; ending_quality++) {
-                let quality_percent = distinct_recipe.num_quality_modules*preferences.quality_probability;
                 let quality_transition_probability = calculate_quality_transition_probability(starting_quality, ending_quality, preferences.max_quality_unlocked, quality_percent);
-                let research_prod_bonus = preferences.productivity_research.has(distinct_recipe.recipe_key) ? preferences.productivity_research.get(distinct_recipe.recipe_key) : 0;
-                let total_prod_bonus = crafting_machine_data.prod_bonus + distinct_recipe.num_prod_modules * preferences.prod_bonus + research_prod_bonus;
-                let prod_bonus = Math.min(total_prod_bonus, MAXIMUM_PROD_BONUS);
                 let expected_result_amount = calculate_expected_result_amount(result_data, prod_bonus);
                 let result_amount_per_second_per_machine = speed_factor * expected_result_amount * quality_transition_probability / recipe_data.energy_required;
 
