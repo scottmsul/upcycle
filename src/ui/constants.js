@@ -16,6 +16,11 @@ export const SPEED_MODULE_QUALITY_SELECT_ID = "speed-module-quality";
 export const BEACON_QUALITY_SELECT_ID = "beacon-quality";
 export const MAX_BEACONED_SPEED_MODULES_INPUT_ID = "max-beaconed-speed-modules";
 
+export const PLANETS_TABLE_ID = 'planets-tbody';
+// the factorio json data has localized names for these planet keys
+// define here to control order of appearance
+export const PLANETS = ['nauvis', 'vulcanus', 'fulgora', 'gleba', 'aquilo', 'space-platform'];
+
 export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
 export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 

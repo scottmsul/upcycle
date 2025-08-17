@@ -1,3 +1,6 @@
+// things that affect whether a recipe/craftign machine is allowed or not
+const CONDITIONAL_SURFACE_PROPERTIES = ['gravity', 'magnetic-field', 'pressure'];
+
 const MACHINE_QUALITY_SPEED_FACTORS = [1.0, 1.3, 1.6, 1.9, 2.5];
 const BEACON_EFFICIENCIES = [1.5, 1.7, 1.9, 2.1, 2.5];
 const MINIMUM_MODULE_SPEED_FACTOR = 0.2;
@@ -109,4 +112,74 @@ export function calculate_quality_transition_probability(starting_quality, endin
     } else {
         throw new Error(`Reached impossible condition in calculate_quality_transition_probability. Starting_quality=${starting_quality}, ending_quality=${ending_quality}, max_quality_unlocked=${max_quality_unlocked}`);
     }
+}
+
+/*
+export function get_surface_property_ranges(parsed_data, preferences) {
+    if(preferences.planets.length == 0) {
+        return undefined;
+    }
+    let surface_property_ranges = new Map();
+
+    // initialize with first planet
+    let first_planet = preferences.planets[0];
+    for(let property of CONDITIONAL_SURFACE_PROPERTIES) {
+        let first_planet_value = first_planet[property];
+        surface_property_ranges.set(property, [first_planet_value, first_planet_value]);
+    }
+
+    // add other planets
+    for(let i=1; i < preferences.planets.length; i++) {
+        let curr_planet = preferences.planets[i];
+        for(let property of CONDITIONAL_SURFACE_PROPERTIES) {
+            let curr_planet_value = curr_planet[property];
+            let curr_range = surface_property_ranges.get(property);
+            let new_min = cu
+        }
+    }
+}
+    */
+
+export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, preferences) {
+    // there are two ways in which a recipe might not be allowed
+    // the first is by checking the surface_conditions of the recipe
+    // the second is by checking the surface_conditions of the crafting machine
+    // currently the code matches each recipe up to its preferred crafting machine first,
+    // then checks whether this combination is allowed
+    // theoretically this could cause issues if a recipe has multiple allowed crafting machines with different surface_properties,
+    // though in practice I don't think anything in the game has this issue
+
+    // probably more efficient ways to write this
+    let recipe_surface_conditions = recipe_data.surface_conditions || [];
+    let crafting_machine_surface_conditions = crafting_machine_data.surface_conditions || [];
+    let all_surface_conditions = recipe_surface_conditions.concat(crafting_machine_surface_conditions);
+
+    if(all_surface_conditions.length == 0) { return true; };
+
+    // need one planet which satisfies all the conditions
+    // note this is different than unioning all the planets properties
+    for(let planet_key of preferences.planets) {
+        let planet_data = parsed_data.planet(planet_key);
+        var all_satisfied = true;
+        for(let surface_condition of all_surface_conditions) {
+            // some planets (ie nauvis) don't have certain surface properties and should default to not being valid
+            if(!Object.hasOwn(planet_data.surface_properties, surface_condition.property)) {
+                all_satisfied = false;
+            }
+
+            if(Object.hasOwn(surface_condition, 'min')) {
+                if(surface_condition.min > planet_data.surface_properties[surface_condition.property]) {
+                    all_satisfied = false;
+                }
+            }
+            if(Object.hasOwn(surface_condition, 'max')) {
+                if(surface_condition.max < planet_data.surface_properties[surface_condition.property]) {
+                    all_satisfied = false;
+                }
+            }
+        }
+        if(all_satisfied) { return true };
+    }
+
+    return false;
 }

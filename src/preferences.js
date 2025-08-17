@@ -1,5 +1,6 @@
 import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID, ALLOW_BYPRODUCTS_INPUT_ID, CHECK_SPEED_BEACONS_INPUT_ID, SPEED_MODULE_TIER_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, BEACON_QUALITY_SELECT_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID } from "./ui/constants.js";
 import { get_item_table_data } from "./ui/itemTables.js";
+import { get_planets_table_data } from "./ui/planets.js";
 import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { get_max_quality_unlocked } from "./ui/quality.js";
 import { get_checkbox_value, get_float_value, get_int_value } from "./ui/util.js";
@@ -40,6 +41,9 @@ export class Preferences {
         });
 
         this.productivity_research = get_productivity_research_table_data();
+
+        // data structure is an array of planet keys
+        this.planets = get_planets_table_data();
 
         // may want to generalize these somehow
         // like if we wanted byproduct costs or fixed inputs

@@ -3,12 +3,14 @@ import { initialize_max_quality_unlocked_selector, initialize_quality_select_ele
 import { initialize_productivity_research } from "./productivityResearch.js";
 import { add_input_item, add_output_item } from "./itemTables.js";
 import { defaults } from "../data.js";
+import { initialize_planets } from "./planets.js";
 
 export function initialize_ui() {
     // run these each once to have some starting items
     initialize_max_quality_unlocked_selector();
     initialize_quality_selectors();
     initialize_productivity_research();
+    initialize_planets();
     add_input_item();
     add_output_item();
 }

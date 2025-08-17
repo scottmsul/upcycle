@@ -7,7 +7,7 @@
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
-import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers  } from './util.js';
+import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers, is_recipe_allowed  } from './util.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
@@ -64,15 +64,17 @@ function get_all_distinct_recipes(parsed_data, preferences) {
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
         let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category);
         let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
-        let num_module_slots = crafting_machine_data.module_slots;
-        let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? preferences.max_quality_unlocked : 0;
-        for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
-            let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
-            for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
-                let num_quality_modules = num_module_slots - num_prod_modules;
-                for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= preferences.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
-                    let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
-                    distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+        if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, preferences)) {
+            let num_module_slots = crafting_machine_data.module_slots;
+            let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? preferences.max_quality_unlocked : 0;
+            for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
+                let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
+                for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
+                    let num_quality_modules = num_module_slots - num_prod_modules;
+                    for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= preferences.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
+                        let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
+                        distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+                    }
                 }
             }
         }

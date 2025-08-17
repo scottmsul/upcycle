@@ -38,6 +38,11 @@ export class ParsedData {
                 this.recipes.set(recipe.key, recipe);
             }
         }
+
+        this.planets = new Map();
+        for(let planet of raw_data.planets) {
+            this.planets.set(planet.key, planet);
+        }
     }
 
     recipe(recipe_key) {
@@ -46,5 +51,9 @@ export class ParsedData {
 
     item(item_key) {
         return this.items.get(item_key);
+    }
+
+    planet(planet_key) {
+        return this.planets.get(planet_key);
     }
 }
