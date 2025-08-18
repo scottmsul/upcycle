@@ -57,9 +57,9 @@ export function display_results(preferences, solver, vars) {
     let byproduct_results_section = document.getElementById(BYPRODUCT_RESULTS_SECTION_ID);
     if(byproduct_results_data.size > 0) {
         byproduct_results_section.style.display = 'block';
-        byproduct_results_table.innerHTML = '';
 
         let byproduct_results_table = document.getElementById(BYPRODUCT_RESULTS_TABLE_ID);
+        byproduct_results_table.innerHTML = '';
 
         byproduct_results_data.forEach((amount, item_key, map) => {
             let row_element = document.createElement('tr');
