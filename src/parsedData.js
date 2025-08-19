@@ -43,6 +43,18 @@ export class ParsedData {
         for(let planet of raw_data.planets) {
             this.planets.set(planet.key, planet);
         }
+
+        // note the json data "resources" only includes mining and pumpjacks,
+        // whereas the UI's "resources" also includes plants, offshore, and asteroids
+        this.resources = new Map();
+        for(let resource of raw_data.resources) {
+            this.resources.set(resource.key, resource);
+        }
+
+        this.plants = new Map();
+        for(let plant of raw_data.plants) {
+            this.plants.set(plant.key, plant);
+        }
     }
 
     recipe(recipe_key) {
@@ -55,5 +67,13 @@ export class ParsedData {
 
     planet(planet_key) {
         return this.planets.get(planet_key);
+    }
+
+    resource(resource_key) {
+        return this.resources.get(resource_key);
+    }
+
+    plant(plant_key) {
+        return this.plants.get(plant_key);
     }
 }

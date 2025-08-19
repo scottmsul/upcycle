@@ -21,6 +21,14 @@ export const PLANETS_TABLE_ID = 'planets-tbody';
 // define here to control order of appearance
 export const PLANETS = ['nauvis', 'vulcanus', 'fulgora', 'gleba', 'aquilo', 'space-platform'];
 
+export const RESOURCES_TABLE_ID = 'resources-tbody';
+// Useful ad-hoc abstraction of resources
+export const MINING_RESOURCE_TYPE = 'mining';
+export const PUMPJACK_RESOURCE_TYPE = 'pumpjack';
+export const OFFSHORE_RESOURCE_TYPE = 'offshore';
+export const PLANT_RESOURCE_TYPE = 'plant';
+export const ASTEROID_RESOURCE_TYPE = 'asteroid';
+
 export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
 export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
 

@@ -3,6 +3,7 @@ import { get_item_table_data } from "./ui/itemTables.js";
 import { get_planets_table_data } from "./ui/planets.js";
 import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { get_max_quality_unlocked } from "./ui/quality.js";
+import { get_resources_table_data } from "./ui/resources.js";
 import { get_checkbox_value, get_float_value, get_int_value } from "./ui/util.js";
 
 export class Preferences {
@@ -45,9 +46,13 @@ export class Preferences {
         // data structure is an array of planet keys
         this.planets = get_planets_table_data();
 
+        // map from distinct item keys to costs
+        let resource_inputs = get_resources_table_data(this.planets);
+        let other_inputs = get_item_table_data(INPUT_ITEMS_TABLE_ID);
+        this.inputs = new Map([...resource_inputs, ...other_inputs]);
+
         // may want to generalize these somehow
         // like if we wanted byproduct costs or fixed inputs
-        this.inputs = get_item_table_data(INPUT_ITEMS_TABLE_ID);
         this.outputs = get_item_table_data(OUTPUT_ITEMS_TABLE_ID);
     }
 }

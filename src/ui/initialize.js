@@ -4,6 +4,7 @@ import { initialize_productivity_research } from "./productivityResearch.js";
 import { add_input_item, add_output_item } from "./itemTables.js";
 import { defaults } from "../data.js";
 import { initialize_planets } from "./planets.js";
+import { initialize_resources } from "./resources.js";
 
 export function initialize_ui() {
     // run these each once to have some starting items
@@ -11,6 +12,7 @@ export function initialize_ui() {
     initialize_quality_selectors();
     initialize_productivity_research();
     initialize_planets();
+    initialize_resources();
     add_input_item();
     add_output_item();
 }

@@ -1,12 +1,12 @@
 import GLPK from '../packages/glpk.js/dist/index.js';
 import { Solver } from './solver.js';
-import { parsed_data, defaults } from './data.js';
+import { parsed_data } from './data.js';
 import { Preferences } from './preferences.js';
 import { initialize_ui } from './ui/initialize.js';
 import { display_results } from './ui/results.js';
 import { add_input_item, add_output_item } from './ui/itemTables.js';
 
-initialize_ui(parsed_data, defaults);
+initialize_ui();
 
 function print(res) {
     const el = window.document.getElementById('out');
