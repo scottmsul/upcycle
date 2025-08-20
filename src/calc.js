@@ -28,35 +28,35 @@ const QUALITY_MODULE_SPEED_PENALTY = .05;
 const PROD_MODULE_SPEED_PENALTIES = [0.05, 0.1, 0.15];
 const SPEED_MODULE_QUALITY_PENALTIES = [.01, .015, .025];
 
-export function calculate_recipe_modifiers(distinct_recipe, parsed_data, preferences) {
+export function calculate_recipe_modifiers(distinct_recipe, parsed_data, solver_input) {
     let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
 
     let crafting_machine_key = distinct_recipe.crafting_machine_key;
     let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
     let crafting_machine_base_speed = crafting_machine_data.crafting_speed;
-    let crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[preferences.crafting_machine_quality];
+    let crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[solver_input.crafting_machine_quality];
     let crafting_machine_speed = crafting_machine_base_speed * crafting_machine_quality_speed_factor;
 
-    let beacon_efficiency = BEACON_EFFICIENCIES[preferences.speed_beacon_quality];
+    let beacon_efficiency = BEACON_EFFICIENCIES[solver_input.speed_beacon_quality];
     let num_effictive_speed_modules = calculate_num_effective_speed_modules(distinct_recipe.num_beaconed_speed_modules, beacon_efficiency);
 
-    let speed_beacon_speed_factor_modifier = num_effictive_speed_modules * SPEED_BONUSES[preferences.speed_module_tier][preferences.speed_module_quality];
+    let speed_beacon_speed_factor_modifier = num_effictive_speed_modules * SPEED_BONUSES[solver_input.speed_module_tier][solver_input.speed_module_quality];
     let quality_module_speed_factor_modifier = (-1.0) * distinct_recipe.num_quality_modules * QUALITY_MODULE_SPEED_PENALTY;
-    let prod_module_speed_factor_modifier = (-1.0) * distinct_recipe.num_prod_modules * PROD_MODULE_SPEED_PENALTIES[preferences.prod_module_tier];
+    let prod_module_speed_factor_modifier = (-1.0) * distinct_recipe.num_prod_modules * PROD_MODULE_SPEED_PENALTIES[solver_input.prod_module_tier];
     let total_module_speed_factor_modifier = speed_beacon_speed_factor_modifier + quality_module_speed_factor_modifier + prod_module_speed_factor_modifier;
     let module_speed_factor = Math.max(1.0 + total_module_speed_factor_modifier, MINIMUM_MODULE_SPEED_FACTOR);
 
     let speed_factor = crafting_machine_speed * module_speed_factor;
 
-    let quality_module_quality_percent = distinct_recipe.num_quality_modules * QUALITY_MODULE_PERCENTS[preferences.quality_module_tier][preferences.quality_module_quality];
-    let speed_beacon_quality_percent_penalty = num_effictive_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[preferences.speed_module_tier];
+    let quality_module_quality_percent = distinct_recipe.num_quality_modules * QUALITY_MODULE_PERCENTS[solver_input.quality_module_tier][solver_input.quality_module_quality];
+    let speed_beacon_quality_percent_penalty = num_effictive_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[solver_input.speed_module_tier];
     let quality_percent = Math.max(0.0, quality_module_quality_percent - speed_beacon_quality_percent_penalty);
 
     let crafting_machine_prod_bonus = crafting_machine_data.prod_bonus;
     let research_prod_bonus = PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.has(distinct_recipe.recipe_key) ?
-        preferences.productivity_research.get(PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.get(distinct_recipe.recipe_key))/100.0
+        solver_input.productivity_research.get(PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.get(distinct_recipe.recipe_key))/100.0
         : 0.0;
-    let module_prod_bonus = distinct_recipe.num_prod_modules * PROD_MODULE_BONUSES[preferences.prod_module_tier][preferences.prod_module_quality];
+    let module_prod_bonus = distinct_recipe.num_prod_modules * PROD_MODULE_BONUSES[solver_input.prod_module_tier][solver_input.prod_module_quality];
     let prod_bonus = Math.min(crafting_machine_prod_bonus + research_prod_bonus + module_prod_bonus, MAXIMUM_PROD_BONUS);
 
     return {
@@ -115,7 +115,7 @@ export function calculate_quality_transition_probability(starting_quality, endin
     }
 }
 
-export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, preferences) {
+export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input) {
     // there are two ways in which a recipe might not be allowed
     // the first is by checking the surface_conditions of the recipe
     // the second is by checking the surface_conditions of the crafting machine
@@ -133,7 +133,7 @@ export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_dat
 
     // need one planet which satisfies all the conditions
     // note this is different than unioning all the planets properties
-    preferences.planets.forEach((include_planet, planet_key, map) => {
+    solver_input.planets.forEach((include_planet, planet_key, map) => {
         if(include_planet) {
             let planet_data = parsed_data.planet(planet_key);
             var all_satisfied = true;

@@ -1,14 +1,14 @@
-import { RESOURCES } from "./data.js";
-import { get_distinct_item_key } from "./distinctItem.js";
-import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID, ALLOW_BYPRODUCTS_INPUT_ID, CHECK_SPEED_BEACONS_INPUT_ID, SPEED_MODULE_TIER_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, BEACON_QUALITY_SELECT_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID } from "./ui/constants.js";
-import { get_item_table_data } from "./ui/itemTables.js";
-import { get_planets_table_data } from "./ui/planets.js";
-import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
-import { get_max_quality_unlocked } from "./ui/quality.js";
-import { get_resources_table_data } from "./ui/resources.js";
-import { get_checkbox_value, get_float_value, get_int_value } from "./ui/util.js";
+import { RESOURCES } from "../data.js";
+import { get_distinct_item_key } from "../distinctItem.js";
+import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_TIER_SELECT_ID, PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, PROD_MODULE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, CRAFTING_MACHINE_COST_INPUT_ID, ALLOW_BYPRODUCTS_INPUT_ID, CHECK_SPEED_BEACONS_INPUT_ID, SPEED_MODULE_TIER_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, BEACON_QUALITY_SELECT_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID } from "../ui/constants.js";
+import { get_item_table_data } from "../ui/itemTables.js";
+import { get_planets_table_data } from "../ui/planets.js";
+import { get_productivity_research_table_data } from "../ui/productivityResearch.js";
+import { get_max_quality_unlocked } from "../ui/quality.js";
+import { get_resources_table_data } from "../ui/resources.js";
+import { get_checkbox_value, get_float_value, get_int_value } from "../ui/util.js";
 
-export class Preferences {
+export class SolverInput {
     constructor() {
         this.output_items = get_item_table_data(OUTPUT_ITEMS_TABLE_ID);
 
@@ -45,19 +45,19 @@ export class Preferences {
     }
 }
 
-export function get_combined_inputs(preferences) {
+export function get_combined_inputs(solver_input) {
     /**
      * Combines the resources and input_items into a single input->cost Map
      */
     let inputs = new Map();
-    preferences.resources.forEach((cost, resource_key, map) => {
+    solver_input.resources.forEach((cost, resource_key, map) => {
         let resource_data = RESOURCES.get(resource_key)
-        if(preferences.planets.get(resource_data.planet)) {
+        if(solver_input.planets.get(resource_data.planet)) {
             let distinct_item_key = get_distinct_item_key(resource_data.item, 0);
             inputs.set(distinct_item_key, cost);
         }
     })
-    preferences.input_items.forEach((cost, distinct_item_key, map) => {
+    solver_input.input_items.forEach((cost, distinct_item_key, map) => {
         inputs.set(distinct_item_key, cost);
     })
     return inputs;

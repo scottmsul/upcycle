@@ -1,7 +1,7 @@
-import { get_combined_inputs } from '../preferences.js';
+import { get_combined_inputs } from '../model/solverInput.js';
 import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID } from './constants.js';
 
-export function display_results(preferences, solver, vars) {
+export function display_results(solver_input, solver, vars) {
     let results_element = document.getElementById(RESULTS_ID);
     results_element.style.display = 'block'; // block isn't important, just making it not none
 
@@ -11,7 +11,7 @@ export function display_results(preferences, solver, vars) {
     let input_results_data = new Map();
     let byproduct_results_data = new Map();
     let recipe_results_data = new Map();
-    let inputs = get_combined_inputs(preferences);
+    let inputs = get_combined_inputs(solver_input);
     for(const [variable_key, amount] of Object.entries(vars)) {
         if(Math.abs(amount) > FLOATING_POINT_CUTOFF) {
             if(solver.distinct_items.has(variable_key)) {

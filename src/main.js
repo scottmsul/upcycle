@@ -1,7 +1,7 @@
 import GLPK from '../packages/glpk.js/dist/index.js';
 import { Solver } from './solver.js';
 import { parsed_data } from './data.js';
-import { Preferences } from './preferences.js';
+import { SolverInput } from './model/solverInput.js';
 import { initialize_ui } from './ui/initialize.js';
 import { display_results } from './ui/results.js';
 import { add_input_item, add_output_item } from './ui/itemTables.js';
@@ -18,9 +18,9 @@ async function solve_simple_factorio() {
     // one crafting recipe with one ingredient -> one product
     const glpk = await GLPK();
 
-    let preferences = new Preferences();
+    let solver_input = new SolverInput();
 
-    let solver = new Solver(parsed_data, preferences);
+    let solver = new Solver(parsed_data, solver_input);
 
     // glpk-specific code
     let glpk_formatted_variable_costs = [];
@@ -66,7 +66,7 @@ async function solve_simple_factorio() {
     };
 
     const results = await glpk.solve(lp, opt);
-    display_results(preferences, solver, results.result.vars);
+    display_results(solver_input, solver, results.result.vars);
 
     /*
     glpk.solve(lp, opt)
