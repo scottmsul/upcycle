@@ -31,6 +31,18 @@ export const PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP = new Map([
         'advanced-carbonic-asteroid-crushing', 'advanced-metallic-asteroid-crushing', 'advanced-oxide-asteroid-crushing']]
 ]);
 
+// the inverted table is useful in certain cases
+function initialize_productivity_research_recipe_item_map() {
+    let data = new Map();
+    PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP.forEach((recipe_keys, item_key, map) => {
+        for(let recipe_key of recipe_keys) {
+            data.set(recipe_key, item_key);
+        }
+    });
+    return data;
+}
+export const PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP = initialize_productivity_research_recipe_item_map();
+
 // Useful ad-hoc abstraction of resources
 export const MINING_RESOURCE_TYPE = 'mining';
 export const PUMPJACK_RESOURCE_TYPE = 'pumpjack';

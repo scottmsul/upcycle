@@ -1,3 +1,4 @@
+import { get_combined_inputs } from '../preferences.js';
 import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID } from './constants.js';
 
 export function display_results(preferences, solver, vars) {
@@ -10,10 +11,11 @@ export function display_results(preferences, solver, vars) {
     let input_results_data = new Map();
     let byproduct_results_data = new Map();
     let recipe_results_data = new Map();
+    let inputs = get_combined_inputs(preferences);
     for(const [variable_key, amount] of Object.entries(vars)) {
         if(Math.abs(amount) > FLOATING_POINT_CUTOFF) {
             if(solver.distinct_items.has(variable_key)) {
-                if(preferences.inputs.has(variable_key)) {
+                if(inputs.has(variable_key)) {
                     input_results_data.set(variable_key, amount);
                 } else {
                     byproduct_results_data.set(variable_key, amount);

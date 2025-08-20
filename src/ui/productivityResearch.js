@@ -27,11 +27,8 @@ export function get_productivity_research_table_data() {
         //<tr><td>
         let item_key = row.children[0].innerHTML;
         //<tr><td><input>
-        let amount = parseFloat(row.children[1].firstChild.value)/100.0;
-        let recipe_keys = PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP.get(item_key);
-        for(let recipe_key of recipe_keys) {
-            data.set(recipe_key, amount);
-        }
+        let amount = parseFloat(row.children[1].firstChild.value);
+        data.set(item_key, amount);
     }
     return data;
 }

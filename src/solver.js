@@ -8,6 +8,7 @@
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
 import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers, is_recipe_allowed  } from './calc.js';
+import { get_combined_inputs } from './preferences.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {
@@ -60,9 +61,23 @@ function get_all_distinct_recipes(parsed_data, preferences) {
      * with the logic for calculating true input/output amounts and solver costs later on.
      * Fluid handling to be added later.
      */
+
+    // for now just get the fastest building for each category
+    let preferred_crafting_machine_by_category = new Map();
+    parsed_data.crafting_categories_to_crafting_machines.forEach((crafting_machine_keys, crafting_category, map) => {
+        let best_crafting_machine_so_far = parsed_data.crafting_machines.get(crafting_machine_keys[0]);
+        for(let i=1; i<crafting_machine_keys.length; i++) {
+            let curr_crafting_machine = parsed_data.crafting_machines.get(crafting_machine_keys[i]);
+            if(curr_crafting_machine.crafting_speed > best_crafting_machine_so_far.crafting_speed) {
+                best_crafting_machine_so_far = curr_crafting_machine;
+            }
+        }
+        preferred_crafting_machine_by_category.set(crafting_category, best_crafting_machine_so_far.key);
+    });
+
     let distinct_recipes = new Map();
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
-        let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category);
+        let crafting_machine_key = preferred_crafting_machine_by_category.get(recipe_data.category);
         let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
         if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, preferences)) {
             let num_module_slots = crafting_machine_data.module_slots;
@@ -72,7 +87,7 @@ function get_all_distinct_recipes(parsed_data, preferences) {
                 for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
                     let num_quality_modules = num_module_slots - num_prod_modules;
                     for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= preferences.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
-                        let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
+                        let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, crafting_machine_key, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
                         distinct_recipes.set(distinct_recipe.key, distinct_recipe);
                     }
                 }
@@ -93,7 +108,7 @@ function get_distinct_item_constraints(distinct_items, preferences) {
      */
     let distinct_item_constraints = new Map();
     for(let distinct_item_key of distinct_items.keys()) {
-        let constraint_value = preferences.outputs.get(distinct_item_key) || 0.0;
+        let constraint_value = preferences.output_items.get(distinct_item_key) || 0.0;
         distinct_item_constraints.set(distinct_item_key, constraint_value);
     }
     return distinct_item_constraints;
@@ -154,7 +169,8 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
     // for each unit of an input free variable, we make 1 unit of that item
     // we use the input cost data structure to determine what the inputs are,
     // even though we don't require the actual cost value here
-    preferences.inputs.forEach( (cost, disinct_item_key, map) => {
+    let inputs = get_combined_inputs(preferences);
+    inputs.forEach( (cost, disinct_item_key, map) => {
         let input_item_coefficients = item_variable_coefficients.get(disinct_item_key);
         input_item_coefficients.set(disinct_item_key, 1.0);
     });
@@ -162,7 +178,7 @@ function get_item_variable_coefficients(distinct_items, distinct_recipes, parsed
     // if we allow byproducts then every single (non-input) item needs a variable which voids it
     if(preferences.allow_byproducts) {
         distinct_items.forEach( (distinct_item, distinct_item_key, map) => {
-            if(!preferences.inputs.has(distinct_item_key)) {
+            if(!inputs.has(distinct_item_key)) {
                 let byproduct_item_coefficients = item_variable_coefficients.get(distinct_item_key);
                 byproduct_item_coefficients.set(distinct_item_key, -1.0);
             }
@@ -176,14 +192,15 @@ function get_variable_costs(distinct_items, distinct_recipes, preferences) {
     let variable_costs = new Map();
 
     // input item variable costs
-    preferences.inputs.forEach( (cost, disinct_item_key, map) => {
+    let inputs = get_combined_inputs(preferences);
+    inputs.forEach( (cost, disinct_item_key, map) => {
         variable_costs.set(disinct_item_key, cost);
     });
 
     // if we allow byproducts then these get voided for free
     if(preferences.allow_byproducts) {
         distinct_items.forEach( (distinct_item, distinct_item_key, map) => {
-            if(!preferences.inputs.has(distinct_item_key)) {
+            if(!inputs.has(distinct_item_key)) {
                 variable_costs.set(distinct_item_key, 0.0);
             }
         });

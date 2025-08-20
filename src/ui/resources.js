@@ -19,6 +19,8 @@ export function initialize_resources() {
     RESOURCES.forEach((resource_data, resource_key, map) => {
         // planet, resource type, resource, cost
         let row_element = document.createElement('tr');
+        row_element.setAttribute('id', resource_key);
+
         let default_cost = resource_type_default_costs.get(resource_data.resource_type);
 
         row_element.appendChild(document.createElement('td'))
@@ -40,19 +42,16 @@ export function initialize_resources() {
     });
 }
 
-export function get_resources_table_data(planets) {
+export function get_resources_table_data() {
     let data = new Map();
     let table = window.document.getElementById(RESOURCES_TABLE_ID);
     for(let row of Array.from(table.children)) {
-        // planet, resource type, resource, cost
-        let planet = row.children[0].innerHTML;
-        let item = row.children[2].innerHTML;
+        let resource_key = row.id;
+
+        // planet, resource type, item, cost
         let cost = row.children[3].firstChild.value;
-        if(planets.includes(planet)) {
-            // the quality is needed throughout the solver, and resources only produce common items (at least for now - miners can have quality modules)
-            let distinct_item_key = get_distinct_item_key(item, 0);
-            data.set(distinct_item_key, cost);
-        }
+
+        data.set(resource_key, cost);
     }
     return data;
 }

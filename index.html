@@ -7,6 +7,22 @@
         <script type="module" src="./src/main.js"></script>
     </head>
     <body>
+        <div id="output-items">
+            <h1>Output Items</h1>
+            <p>What you want to upcycle</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quality</th>
+                        <th>Amount/Sec</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="output-items-tbody"></tbody>
+            </table>
+            <button id="add-output-item">+</button>
+        </div>
         <div id="preferences">
             <h1>Preferences</h1>
             <table>
@@ -146,21 +162,6 @@
                 <tbody id="input-items-tbody"></tbody>
             </table>
             <button id="add-input-item">+</button>
-        </div>
-        <div id="output-items">
-            <h1>Output Items</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quality</th>
-                        <th>Amount/Sec</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="output-items-tbody"></tbody>
-            </table>
-            <button id="add-output-item">+</button>
         </div>
         <div id="solver">
             <h1>Solver</h1>

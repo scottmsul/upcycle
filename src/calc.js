@@ -1,3 +1,5 @@
+import { PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP } from "./data.js";
+
 const MACHINE_QUALITY_SPEED_FACTORS = [1.0, 1.3, 1.6, 1.9, 2.5];
 const BEACON_EFFICIENCIES = [1.5, 1.7, 1.9, 2.1, 2.5];
 const MINIMUM_MODULE_SPEED_FACTOR = 0.2;
@@ -29,7 +31,7 @@ const SPEED_MODULE_QUALITY_PENALTIES = [.01, .015, .025];
 export function calculate_recipe_modifiers(distinct_recipe, parsed_data, preferences) {
     let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
 
-    let crafting_machine_key = preferences.preferred_crafting_machine_by_category.get(recipe_data.category)
+    let crafting_machine_key = distinct_recipe.crafting_machine_key;
     let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
     let crafting_machine_base_speed = crafting_machine_data.crafting_speed;
     let crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[preferences.crafting_machine_quality];
@@ -51,7 +53,9 @@ export function calculate_recipe_modifiers(distinct_recipe, parsed_data, prefere
     let quality_percent = Math.max(0.0, quality_module_quality_percent - speed_beacon_quality_percent_penalty);
 
     let crafting_machine_prod_bonus = crafting_machine_data.prod_bonus;
-    let research_prod_bonus = preferences.productivity_research.get(distinct_recipe.recipe_key) || 0.0;
+    let research_prod_bonus = PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.has(distinct_recipe.recipe_key) ?
+        preferences.productivity_research.get(PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.get(distinct_recipe.recipe_key))/100.0
+        : 0.0;
     let module_prod_bonus = distinct_recipe.num_prod_modules * PROD_MODULE_BONUSES[preferences.prod_module_tier][preferences.prod_module_quality];
     let prod_bonus = Math.min(crafting_machine_prod_bonus + research_prod_bonus + module_prod_bonus, MAXIMUM_PROD_BONUS);
 
@@ -129,28 +133,30 @@ export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_dat
 
     // need one planet which satisfies all the conditions
     // note this is different than unioning all the planets properties
-    for(let planet_key of preferences.planets) {
-        let planet_data = parsed_data.planet(planet_key);
-        var all_satisfied = true;
-        for(let surface_condition of all_surface_conditions) {
-            // some planets (ie nauvis) don't have certain surface properties and should default to not being valid
-            if(!Object.hasOwn(planet_data.surface_properties, surface_condition.property)) {
-                all_satisfied = false;
-            }
+    preferences.planets.forEach((include_planet, planet_key, map) => {
+        if(include_planet) {
+            let planet_data = parsed_data.planet(planet_key);
+            var all_satisfied = true;
+            for(let surface_condition of all_surface_conditions) {
+                // some planets (ie nauvis) don't have certain surface properties and should default to not being valid
+                if(!Object.hasOwn(planet_data.surface_properties, surface_condition.property)) {
+                    all_satisfied = false;
+                }
 
-            if(Object.hasOwn(surface_condition, 'min')) {
-                if(surface_condition.min > planet_data.surface_properties[surface_condition.property]) {
-                    all_satisfied = false;
+                if(Object.hasOwn(surface_condition, 'min')) {
+                    if(surface_condition.min > planet_data.surface_properties[surface_condition.property]) {
+                        all_satisfied = false;
+                    }
+                }
+                if(Object.hasOwn(surface_condition, 'max')) {
+                    if(surface_condition.max < planet_data.surface_properties[surface_condition.property]) {
+                        all_satisfied = false;
+                    }
                 }
             }
-            if(Object.hasOwn(surface_condition, 'max')) {
-                if(surface_condition.max < planet_data.surface_properties[surface_condition.property]) {
-                    all_satisfied = false;
-                }
-            }
+            if(all_satisfied) { return true };
         }
-        if(all_satisfied) { return true };
-    }
+    });
 
     return false;
 }

@@ -18,7 +18,7 @@ async function solve_simple_factorio() {
     // one crafting recipe with one ingredient -> one product
     const glpk = await GLPK();
 
-    let preferences = new Preferences(parsed_data);
+    let preferences = new Preferences();
 
     let solver = new Solver(parsed_data, preferences);
 
@@ -39,7 +39,7 @@ async function solve_simple_factorio() {
                 name: variable_key,
                 coef: coefficient
             });
-        })
+        });
         glpk_formatted_item_variable_coefficients.push({
             name: disinct_item_key,
             vars: glpk_formatted_coefficients,

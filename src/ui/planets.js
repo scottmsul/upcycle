@@ -19,14 +19,15 @@ export function initialize_planets() {
 }
 
 export function get_planets_table_data() {
-    let data = [];
+    let data = new Map();
     let table = window.document.getElementById(PLANETS_TABLE_ID);
     for(let row of Array.from(table.children)) {
+        //planet - <tr><td>.innerHTML
+        let planet = row.children[1].innerHTML;
         //checkbox - <tr><td><input>.checked
-        if(row.children[0].firstChild.checked) {
-            //planet_key - <tr><td>.innerHTML
-            data.push(row.children[1].innerHTML);
-        }
+        let include_planet = row.children[0].firstChild.checked;
+
+        data.set(planet, include_planet);
     }
     return data;
 }
