@@ -1,5 +1,3 @@
-import { ASTEROID_RESOURCE_TYPE, MINING_RESOURCE_TYPE, OFFSHORE_RESOURCE_TYPE, PLANT_RESOURCE_TYPE, PUMPJACK_RESOURCE_TYPE } from "./ui/constants.js";
-
 const MACHINE_QUALITY_SPEED_FACTORS = [1.0, 1.3, 1.6, 1.9, 2.5];
 const BEACON_EFFICIENCIES = [1.5, 1.7, 1.9, 2.1, 2.5];
 const MINIMUM_MODULE_SPEED_FACTOR = 0.2;
@@ -27,8 +25,6 @@ const SPEED_BONUSES = [
 const QUALITY_MODULE_SPEED_PENALTY = .05;
 const PROD_MODULE_SPEED_PENALTIES = [0.05, 0.1, 0.15];
 const SPEED_MODULE_QUALITY_PENALTIES = [.01, .015, .025];
-
-const SPACE_PLATFORM_RESOURCES = ['metallic-asteroid-chunk', 'carbonic-asteroid-chunk', 'oxide-asteroid-chunk', 'promethium-asteroid-chunk'];
 
 export function calculate_recipe_modifiers(distinct_recipe, parsed_data, preferences) {
     let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
@@ -157,78 +153,4 @@ export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_dat
     }
 
     return false;
-}
-
-export function get_all_resources(parsed_data, planets) {
-    /** returns a list of [{
-     *      'planet': (planet name),
-     *      'resource_type': (resource type),
-     *      'resource': (resource name),
-     *      'item': (item name)
-     * }]
-     */
-    let resources = [];
-    for(let planet of planets) {
-        let curr_resources = parsed_data.planet(planet).resources;
-
-        // show mining before pumpjack
-        let mining_resources = [];
-        let pumpjack_resources = [];
-        for(let resource_key of curr_resources.resource) {
-            let resource_data = parsed_data.resource(resource_key);
-            let resource_type = (resource_data.category == 'basic-fluid') ? PUMPJACK_RESOURCE_TYPE : MINING_RESOURCE_TYPE ;
-            for(let result of resource_data.results) {
-                let result_item_key = result.name;
-                let resource = {
-                    'planet': planet,
-                    'resource_type': resource_type,
-                    'resource': resource_data.key,
-                    'item': result_item_key
-
-                }
-                if(resource_type == PUMPJACK_RESOURCE_TYPE) {
-                    pumpjack_resources.push(resource);
-                } else {
-                    mining_resources.push(resource);
-                }
-            }
-        }
-        resources.push(...mining_resources);
-        resources.push(...pumpjack_resources);
-
-        for(let item_key of curr_resources.offshore) {
-            resources.push({
-                'planet': planet,
-                'resource_type': OFFSHORE_RESOURCE_TYPE,
-                'resource': item_key,
-                'item': item_key
-            });
-        }
-
-        for(let plant_key of curr_resources.plants) {
-            let plant_data = parsed_data.plant(plant_key);
-            for(let result of plant_data.results) {
-                let result_item_key = result.name;
-                resources.push({
-                    'planet': planet,
-                    'resource_type': PLANT_RESOURCE_TYPE,
-                    'resource': plant_key,
-                    'item': result_item_key
-                });
-            }
-        }
-
-        if(planet == 'space-platform') {
-            for(let result_item_key of SPACE_PLATFORM_RESOURCES) {
-                resources.push({
-                    'planet': planet,
-                    'resource_type': ASTEROID_RESOURCE_TYPE,
-                    'resource': result_item_key,
-                    'item': result_item_key
-                });
-            }
-        }
-    }
-
-    return resources;
 }

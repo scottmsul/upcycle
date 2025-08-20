@@ -1,4 +1,5 @@
-import { PLANETS, PLANETS_TABLE_ID } from "./constants.js";
+import { PLANETS } from "../data.js";
+import { PLANETS_TABLE_ID } from "./constants.js";
 
 export function initialize_planets() {
     let planets_table = window.document.getElementById(PLANETS_TABLE_ID);

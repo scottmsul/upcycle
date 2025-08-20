@@ -7,7 +7,7 @@
  */
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
-import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers, is_recipe_allowed  } from './util.js';
+import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers, is_recipe_allowed  } from './calc.js';
 
 export class Solver {
     constructor(parsed_data, preferences) {

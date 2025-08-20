@@ -1,5 +1,5 @@
-import { MIN_QUALITY_TYPE, MAX_QUALITY_TYPE, MAX_QUALITY_UNLOCKED_SELECT_ID, LOWEST_MAX_QUALITY_UNLOCKED, HIGHEST_MAX_QUALITY_UNLOCKED, QUALITY_FRIENDLY_NAMES } from "./constants.js";
-import { defaults } from "../data.js";
+import { MIN_QUALITY_TYPE, MAX_QUALITY_TYPE, MAX_QUALITY_UNLOCKED_SELECT_ID, QUALITY_FRIENDLY_NAMES } from "./constants.js";
+import { defaults, HIGHEST_MAX_QUALITY_UNLOCKED, LOWEST_MAX_QUALITY_UNLOCKED } from "../data.js";
 
 export function initialize_max_quality_unlocked_selector() {
     let select_element = window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID);

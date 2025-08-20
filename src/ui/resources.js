@@ -1,14 +1,12 @@
-import { defaults, parsed_data } from "../data.js";
+import { defaults, ASTEROID_RESOURCE_TYPE, MINING_RESOURCE_TYPE, OFFSHORE_RESOURCE_TYPE, PLANT_RESOURCE_TYPE, PUMPJACK_RESOURCE_TYPE, RESOURCES } from "../data.js";
 import { get_distinct_item_key } from "../distinctItem.js";
-import { get_all_resources } from "../util.js";
-import { ASTEROID_RESOURCE_TYPE, MINING_RESOURCE_TYPE, OFFSHORE_RESOURCE_TYPE, PLANETS, PLANT_RESOURCE_TYPE, PUMPJACK_RESOURCE_TYPE, RESOURCES_TABLE_ID } from "./constants.js";
+import { RESOURCES_TABLE_ID } from "./constants.js";
 
 // probably should refactor the codebase into some kind of MVC-like pattern
 // especially if we want selecting/de-selecting planets to hide/display rows in the resources table
 
 export function initialize_resources() {
     let resources_table = window.document.getElementById(RESOURCES_TABLE_ID);
-    let resources = get_all_resources(parsed_data, PLANETS);
 
     let resource_type_default_costs = new Map([
         [MINING_RESOURCE_TYPE, defaults.MINING_RESOURCE_COST],
@@ -18,19 +16,19 @@ export function initialize_resources() {
         [ASTEROID_RESOURCE_TYPE, defaults.ASTEROID_RESOURCE_COST]
     ]);
 
-    for(let resource of resources) {
+    RESOURCES.forEach((resource_data, resource_key, map) => {
         // planet, resource type, resource, cost
         let row_element = document.createElement('tr');
-        let default_cost = resource_type_default_costs.get(resource.resource_type);
+        let default_cost = resource_type_default_costs.get(resource_data.resource_type);
 
         row_element.appendChild(document.createElement('td'))
-            .innerHTML = resource.planet;
+            .innerHTML = resource_data.planet;
 
         row_element.appendChild(document.createElement('td'))
-            .innerHTML = resource.resource_type;
+            .innerHTML = resource_data.resource_type;
 
         row_element.appendChild(document.createElement('td'))
-            .innerHTML = resource.item;
+            .innerHTML = resource_data.item;
 
         let input_element = row_element
             .appendChild(document.createElement('td'))
@@ -39,7 +37,7 @@ export function initialize_resources() {
         input_element.setAttribute('value', default_cost);
 
         resources_table.appendChild(row_element);
-    }
+    });
 }
 
 export function get_resources_table_data(planets) {
