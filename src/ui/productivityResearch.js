@@ -33,3 +33,14 @@ export function get_productivity_research_table_data() {
     return data;
 }
 
+export function set_productivity_research_table_data(data) {
+    let table = window.document.getElementById(PRODUCTIVITY_RESEARCH_TABLE_ID);
+    for(let row of Array.from(table.children)) {
+        //<tr><td>
+        let item_key = row.children[0].innerHTML;
+        let new_amount = data.get(item_key);
+        //<tr><td><input>
+        row.children[1].firstChild.value = new_amount;
+    }
+}
+

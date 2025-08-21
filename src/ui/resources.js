@@ -55,3 +55,14 @@ export function get_resources_table_data() {
     }
     return data;
 }
+
+export function set_resources_table_data(data) {
+    let table = window.document.getElementById(RESOURCES_TABLE_ID);
+    for(let row of Array.from(table.children)) {
+        let resource_key = row.id;
+        let new_cost = data.get(resource_key);
+
+        // planet, resource type, item, cost
+        row.children[3].firstChild.value = new_cost;
+    }
+}

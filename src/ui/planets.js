@@ -31,3 +31,15 @@ export function get_planets_table_data() {
     }
     return data;
 }
+
+export function set_planets_table_data(data) {
+    let table = window.document.getElementById(PLANETS_TABLE_ID);
+    for(let row of Array.from(table.children)) {
+        //planet - <tr><td>.innerHTML
+        let planet = row.children[1].innerHTML;
+
+        let include_planet = data.get(planet);
+        //checkbox - <tr><td><input>.checked
+        row.children[0].firstChild.checked = include_planet;
+    }
+}
