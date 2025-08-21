@@ -6,10 +6,11 @@ import { initialize_ui } from './ui/initialize.js';
 import { display_results } from './ui/results.js';
 import { add_input_item, add_output_item } from './ui/itemTables.js';
 import { display_solver_input } from './ui/displaySolverInput.js';
+import { Controller } from './controller.js';
 
 initialize_ui();
-let solver_input = new SolverInput();
-display_solver_input(solver_input);
+let controller = new Controller();
+display_solver_input(controller.solver_input);
 
 function print(res) {
     const el = window.document.getElementById('out');
@@ -21,9 +22,7 @@ async function solve_simple_factorio() {
     // one crafting recipe with one ingredient -> one product
     const glpk = await GLPK();
 
-    let solver_input = new SolverInput();
-    solver_input.set_to_ui();
-
+    let solver_input = controller.solver_input;
     let solver = new Solver(parsed_data, solver_input);
 
     // glpk-specific code

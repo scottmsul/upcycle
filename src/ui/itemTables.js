@@ -64,7 +64,16 @@ function add_table_row(table, item_id, quality, cost) {
     delete_element.innerHTML = 'x';
 
     table.appendChild(row_element);
-    delete_element.onclick = () => { table.removeChild(row_element); };
+    delete_element.onclick = () => {
+        table.removeChild(row_element);
+        // by deleting a row we've changed the table, this lets the controller know to update state
+        let event = new Event('change');
+        table.dispatchEvent(event);
+    };
+
+    // by adding a row we've changed the table, this lets the controller know to update state
+    let event = new Event('change');
+    table.dispatchEvent(event);
 }
 
 function make_item_select(item_keys, default_item_id) {
