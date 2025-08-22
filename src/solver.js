@@ -108,8 +108,10 @@ function get_distinct_item_constraints(distinct_items, solver_input) {
      */
     let distinct_item_constraints = new Map();
     for(let distinct_item_key of distinct_items.keys()) {
-        let constraint_value = solver_input.output_items.get(distinct_item_key) || 0.0;
-        distinct_item_constraints.set(distinct_item_key, constraint_value);
+        distinct_item_constraints.set(distinct_item_key, 0.0);
+    }
+    for(let [distinct_item, output_amount_per_second] of solver_input.output_items) {
+        distinct_item_constraints.set(distinct_item.key, output_amount_per_second);
     }
     return distinct_item_constraints;
 }

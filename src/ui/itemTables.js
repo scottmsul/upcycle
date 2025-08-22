@@ -1,15 +1,14 @@
 import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID } from "./constants.js";
 import { parsed_data, defaults } from "../data.js";
-import { get_distinct_item_key, parse_distinct_item_key } from "../distinctItem.js";
+import { DistinctItem } from "../distinctItem.js";
 import { new_quality_select_element } from "./quality.js";
 
-export function display_item_table(table_id, distinct_item_cost_map) {
+export function display_item_table(table_id, data) {
     let table = window.document.getElementById(table_id);
     table.innerHTML = '';
-    distinct_item_cost_map.forEach((cost, distinct_item_key, map) => {
-        let distinct_item = parse_distinct_item_key(distinct_item_key);
-        add_table_row(table, distinct_item.item_key, distinct_item.item_quality, cost);
-    });
+    for(let [distinct_item, amount] of data) {
+        add_table_row(table, distinct_item.item_key, distinct_item.item_quality, amount);
+    }
 }
 
 export function add_input_item() {
@@ -29,20 +28,20 @@ export function add_output_item() {
 }
 
 export function get_item_table_data(table_id) {
-    let data = new Map();
+    let data = [];
     let table = window.document.getElementById(table_id);
     for(let row of Array.from(table.children)) {
         //<tr><th><select>
         let item_id = row.children[0].firstChild.value;
         let quality = parseInt(row.children[1].firstChild.value);
+        let distinct_item = new DistinctItem(item_id, quality);
         let amount = parseFloat(row.children[2].firstChild.value);
-        let key = get_distinct_item_key(item_id, quality);
-        data.set(key, amount);
+        data.push([distinct_item, amount]);
     }
     return data;
 }
 
-function add_table_row(table, item_id, quality, cost) {
+function add_table_row(table, item_id, quality, amount) {
     let row_element = document.createElement('tr');
     let item_keys = parsed_data.items.keys();
 
@@ -56,7 +55,7 @@ function add_table_row(table, item_id, quality, cost) {
 
     row_element
         .appendChild(document.createElement('th'))
-        .appendChild(make_numeric_input(cost));
+        .appendChild(make_numeric_input(amount));
 
     let delete_element = row_element
         .appendChild(document.createElement('th'))

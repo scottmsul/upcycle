@@ -1,5 +1,5 @@
 import { PLANETS, PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP, RESOURCES } from "../data.js";
-import { get_distinct_item_key } from "../distinctItem.js";
+import { DistinctItem, get_distinct_item_key } from "../distinctItem.js";
 
 export class SolverInput {
     /**
@@ -10,8 +10,11 @@ export class SolverInput {
          * Default values
          * Note quality=4 is legendary
          */
-        this.output_items = new Map();
-        this.output_items.set(get_distinct_item_key('iron-plate', 4), 1.0);
+
+        // list of [distinct_item, cost] tuples
+        // the UI doesn't enforce unique distinct items
+        this.output_items = [];
+        this.output_items.push([new DistinctItem('iron-plate', 4), 1.0]);
 
         this.max_quality_unlocked = 4;
         this.crafting_machine_quality = 4;
@@ -50,8 +53,9 @@ export class SolverInput {
             this.resources.set(resource_key, 0.0);
         }
 
-        // map from distinct item keys to costs
-        this.input_items = new Map();
+        // list of [distinct_item, cost] tuples
+        // the UI doesn't enforce unique distinct items
+        this.input_items = [];
     }
 }
 
@@ -67,8 +71,8 @@ export function get_combined_inputs(solver_input) {
             inputs.set(distinct_item_key, cost);
         }
     })
-    solver_input.input_items.forEach((cost, distinct_item_key, map) => {
-        inputs.set(distinct_item_key, cost);
-    })
+    for(let [input_distinct_item, cost] of solver_input.input_items) {
+        inputs.set(input_distinct_item.key, cost);
+    }
     return inputs;
 }
