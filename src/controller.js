@@ -5,7 +5,7 @@ import { add_table_row, get_item_table_data } from "./ui/itemTables.js";
 import { get_planets_table_data } from "./ui/planets.js";
 import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { update_quality_selectors_to_max_quality } from "./ui/quality.js";
-import { get_resources_table_data } from "./ui/resources.js";
+import { display_resources, get_resources_table_data } from "./ui/resources.js";
 
 export class Controller {
     constructor() {
@@ -34,7 +34,11 @@ export class Controller {
             [BEACON_QUALITY_SELECT_ID, (e) => this.solver_input.speed_beacon_quality = parseInt(e.target.value)],
             [MAX_BEACONED_SPEED_MODULES_INPUT_ID, (e) => this.solver_input.max_beaconed_speed_modules = parseInt(e.target.value)],
             [PRODUCTIVITY_RESEARCH_TABLE_ID, (e) => this.solver_input.productivity_research = get_productivity_research_table_data()],
-            [PLANETS_TABLE_ID, (e) => this.solver_input.planets = get_planets_table_data()],
+            [PLANETS_TABLE_ID, (e) => {
+                let planets = get_planets_table_data();
+                this.solver_input.planets = planets;
+                display_resources(this.solver_input.resources, planets);
+            }],
             [RESOURCES_TABLE_ID, (e) => this.solver_input.resources = get_resources_table_data()],
             [INPUT_ITEMS_TABLE_ID, (e) => this.solver_input.input_items = get_item_table_data(INPUT_ITEMS_TABLE_ID)]
         ];

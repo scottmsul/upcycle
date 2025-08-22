@@ -2,7 +2,7 @@ import { ALLOW_BYPRODUCTS_INPUT_ID, BEACON_QUALITY_SELECT_ID, CHECK_SPEED_BEACON
 import { display_item_table } from "./itemTables.js";
 import { set_planets_table_data } from "./planets.js";
 import { set_productivity_research_table_data } from "./productivityResearch.js";
-import { set_resources_table_data } from "./resources.js";
+import { display_resources } from "./resources.js";
 
 export function display_solver_input(solver_input) {
     display_item_table(OUTPUT_ITEMS_TABLE_ID, solver_input.output_items);
@@ -33,7 +33,7 @@ export function display_solver_input(solver_input) {
     set_planets_table_data(solver_input.planets);
 
     // map from resource keys to costs
-    set_resources_table_data(solver_input.resources);
+    display_resources(solver_input.resources, solver_input.planets);
 
     // map from distinct item keys to costs
     display_item_table(INPUT_ITEMS_TABLE_ID, solver_input.input_items);

@@ -54,27 +54,32 @@ export const SPACE_PLATFORM_RESOURCES = ['metallic-asteroid-chunk', 'carbonic-as
 
 function initialize_resources() {
     /** returns a map of {resource_name} -> {
-     *      'planet': (planet name),
+     *      'planets': (array of planet names),
      *      'resource_type': (resource type),
      *      'item': (item name)
      * }
+     *
      * The resource name is often the same as the item name but not always.
-     * We insert keys in the same order we want to display in the UI.
+     * We insert keys in the same ordering we want to display in the UI, which is:
+     *      - 1. group by resource type in fixed order of [mining, pumpjack, offshore, plant, asteroid]
+     *      - 2. sort by resource item name within each resource type group
      */
-    let resources = new Map();
+    let mining_resources = [];
+    let pumpjack_resources = [];
+    let offshore_resources = [];
+    let plant_resources = [];
+    let asteroid_resources = [];
+
     for(let planet of PLANETS) {
         let curr_resources = parsed_data.planet(planet).resources;
 
-        // show mining before pumpjack
-        let mining_resources = [];
-        let pumpjack_resources = [];
         for(let resource_key of curr_resources.resource) {
             let raw_resource_data = parsed_data.resource(resource_key);
             let resource_type = (raw_resource_data.category == 'basic-fluid') ? PUMPJACK_RESOURCE_TYPE : MINING_RESOURCE_TYPE ;
             for(let result of raw_resource_data.results) {
                 let resource_key = raw_resource_data.key;
                 let resource_data = {
-                    'planet': planet,
+                    'planets': [planet],
                     'resource_type': resource_type,
                     'item': result.name
 
@@ -86,17 +91,15 @@ function initialize_resources() {
                 }
             }
         }
-        mining_resources.forEach((resource) => resources.set(resource[0], resource[1]));
-        pumpjack_resources.forEach((resource) => resources.set(resource[0], resource[1]));
 
         for(let item_key of curr_resources.offshore) {
             let resource_key = item_key;
             let resource_data = {
-                'planet': planet,
+                'planets': [planet],
                 'resource_type': OFFSHORE_RESOURCE_TYPE,
                 'item': item_key
             };
-            resources.set(resource_key, resource_data);
+            offshore_resources.push([resource_key, resource_data]);
         }
 
         for(let plant_key of curr_resources.plants) {
@@ -104,11 +107,11 @@ function initialize_resources() {
             for(let result of plant_data.results) {
                 let resource_key = plant_key;
                 let resource_data = {
-                    'planet': planet,
+                    'planets': [planet],
                     'resource_type': PLANT_RESOURCE_TYPE,
                     'item': result.name
                 };
-                resources.set(resource_key, resource_data);
+                plant_resources.push([resource_key, resource_data]);
             }
         }
 
@@ -116,11 +119,25 @@ function initialize_resources() {
             for(let item_key of SPACE_PLATFORM_RESOURCES) {
                 let resource_key = item_key;
                 let resource_data = {
-                    'planet': planet,
+                    'planets': [planet],
                     'resource_type': ASTEROID_RESOURCE_TYPE,
                     'item': item_key
                 };
+                asteroid_resources.push([resource_key, resource_data]);
+            }
+        }
+    }
+
+    let resources = new Map();
+    for(let curr_resource_list of [mining_resources, pumpjack_resources, offshore_resources, plant_resources, asteroid_resources]) {
+        // display resources in alphabetical order within a resource type
+        curr_resource_list.sort((a,b) => a[0].localeCompare(b[0]));
+
+        for(let [resource_key, resource_data] of curr_resource_list) {
+            if(!resources.has(resource_key)) {
                 resources.set(resource_key, resource_data);
+            } else {
+                resources.get(resource_key).planets.push(resource_data.planets[0]);
             }
         }
     }

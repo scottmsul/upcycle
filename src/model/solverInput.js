@@ -66,7 +66,8 @@ export function get_combined_inputs(solver_input) {
     let inputs = new Map();
     solver_input.resources.forEach((cost, resource_key, map) => {
         let resource_data = RESOURCES.get(resource_key)
-        if(solver_input.planets.get(resource_data.planet)) {
+        let allowed_planets_with_resource = resource_data.planets.filter((planet) => solver_input.planets.get(planet));
+        if(allowed_planets_with_resource.length > 0) {
             let distinct_item_key = get_distinct_item_key(resource_data.item, 0);
             inputs.set(distinct_item_key, cost);
         }
