@@ -1,54 +1,62 @@
 import { MAX_QUALITY_UNLOCKED_SELECT_ID, QUALITY_FRIENDLY_NAMES } from "./constants.js";
-import { defaults, HIGHEST_MAX_QUALITY_UNLOCKED, LOWEST_MAX_QUALITY_UNLOCKED } from "../data.js";
+import { HIGHEST_MAX_QUALITY_UNLOCKED, LOWEST_MAX_QUALITY_UNLOCKED } from "../data.js";
+
+const QUALITY_SELECT_CLASS_NAME = 'quality-select';
 
 export function initialize_max_quality_unlocked_selector() {
+    // populates max quality selector from rare to legendary, does not set a value
     let select_element = window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID);
     for(let quality = LOWEST_MAX_QUALITY_UNLOCKED; quality <= HIGHEST_MAX_QUALITY_UNLOCKED; quality++) {
-        let opt = document.createElement("option");
-        opt.value = quality;
-        opt.innerHTML = QUALITY_FRIENDLY_NAMES[quality];
-        select_element.append(opt);
+        let option = document.createElement("option");
+        option.value = quality;
+        option.innerHTML = QUALITY_FRIENDLY_NAMES[quality];
+        select_element.append(option);
     }
-    select_element.value = defaults.MAX_QUALITY_UNLOCKED;
 }
 
-export function set_max_quality_unlocked(quality) {
-    window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID).value = quality;
-}
-
-export function get_max_quality_unlocked() {
-    return parseInt(window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID).value);
-}
-
-export function new_quality_select_element(initial_quality) {
-    let quality_select_element = document.createElement('select');
-    initialize_quality_select_element(quality_select_element, initial_quality);
-    return quality_select_element;
-}
-
-export function initialize_quality_select_element(quality_select_element, initial_quality) {
-    let initial_max_quality_unlocked = get_max_quality_unlocked();
-
-    set_quality_select_state(quality_select_element, initial_quality, initial_max_quality_unlocked)
-
-    // makes sure quality selectors can only select up to max_quality_unlocked
-    // uses a closure on quality_select_element
-    let max_quality_select_element = window.document.getElementById(MAX_QUALITY_UNLOCKED_SELECT_ID);
-    max_quality_select_element.addEventListener('change', (event) => {
-        let prev_quality_value = parseInt(quality_select_element.value);
-        let new_max_quality_unlocked = parseInt(event.target.value);
-        let new_quality_value = Math.min(prev_quality_value, new_max_quality_unlocked);
-        set_quality_select_state(quality_select_element, new_quality_value, new_max_quality_unlocked);
-    });
-}
-
-function set_quality_select_state(quality_select_element, quality_value, max_quality_unlocked) {
-    quality_select_element.innerHTML = '';
-    for(let quality = 0; quality <= max_quality_unlocked; quality++) {
-        let opt = document.createElement('option');
-        opt.value = quality;
-        opt.innerHTML = QUALITY_FRIENDLY_NAMES[quality];
-        quality_select_element.append(opt);
+export function initialize_quality_selector(select_element) {
+    select_element.classList.add(QUALITY_SELECT_CLASS_NAME);
+    for(let quality=0; quality <= HIGHEST_MAX_QUALITY_UNLOCKED; quality++) {
+        let option = document.createElement('option');
+        option.value = quality;
+        option.innerHTML = QUALITY_FRIENDLY_NAMES[quality];
+        let class_name = quality_option_class_name(quality);
+        option.classList.add(class_name);
+        select_element.append(option);
     }
-    quality_select_element.value = quality_value;
+}
+
+export function update_quality_selectors_to_max_quality(new_max_quality) {
+    console.log(`calling update_quality_selectors_to_max_quality with new_max_quality = ${new_max_quality}`);
+    // update any dropdowns that are higher than new_max_quality to be equal to new_max_quality
+    let select_elements = document.getElementsByClassName(QUALITY_SELECT_CLASS_NAME);
+    console.log(`number select_elements: ${select_elements.length}`);
+    for(let select_element of select_elements) {
+        if(parseInt(select_element.value) > new_max_quality) {
+            select_element.value = new_max_quality;
+            select_element.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+    }
+
+    // display any qualities of lower or equal value
+    for(let quality=LOWEST_MAX_QUALITY_UNLOCKED+1; quality<=new_max_quality; quality++) {
+        let class_name = quality_option_class_name(quality);
+        let option_elements = document.getElementsByClassName(class_name);
+        for(let option_element of option_elements) {
+            option_element.hidden = false;
+        }
+    }
+
+    // hide any qualities of higher value
+    for(let quality=new_max_quality+1; quality<=HIGHEST_MAX_QUALITY_UNLOCKED; quality++) {
+        let class_name = quality_option_class_name(quality);
+        let option_elements = document.getElementsByClassName(class_name);
+        for(let option_element of option_elements) {
+            option_element.hidden = true;
+        }
+    }
+}
+
+function quality_option_class_name(quality) {
+    return `quality-option-${quality}`;
 }

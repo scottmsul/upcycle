@@ -1,10 +1,8 @@
 import GLPK from '../packages/glpk.js/dist/index.js';
 import { Solver } from './solver.js';
 import { parsed_data } from './data.js';
-import { SolverInput } from './model/solverInput.js';
 import { initialize_ui } from './ui/initialize.js';
 import { display_results } from './ui/results.js';
-import { add_input_item, add_output_item } from './ui/itemTables.js';
 import { display_solver_input } from './ui/displaySolverInput.js';
 import { Controller } from './controller.js';
 
@@ -129,6 +127,4 @@ async function solve_glpk_example() {
 }
 
 //window.document.getElementById('solve').onclick = solve_glpk_example;
-window.document.getElementById('add-input-item').onclick = add_input_item;
-window.document.getElementById('add-output-item').onclick = add_output_item;
 window.document.getElementById('solve').onclick = solve_simple_factorio;

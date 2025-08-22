@@ -1,30 +1,13 @@
-import { INPUT_ITEMS_TABLE_ID, OUTPUT_ITEMS_TABLE_ID } from "./constants.js";
-import { parsed_data, defaults } from "../data.js";
+import { parsed_data } from "../data.js";
 import { DistinctItem } from "../distinctItem.js";
-import { new_quality_select_element } from "./quality.js";
+import { initialize_quality_selector } from "./quality.js";
 
 export function display_item_table(table_id, data) {
     let table = window.document.getElementById(table_id);
     table.innerHTML = '';
     for(let [distinct_item, amount] of data) {
-        add_table_row(table, distinct_item.item_key, distinct_item.item_quality, amount);
+        add_table_row(table_id, distinct_item.item_key, distinct_item.item_quality, amount);
     }
-}
-
-export function add_input_item() {
-    let table = window.document.getElementById(INPUT_ITEMS_TABLE_ID);
-    let default_input_item_id = defaults.INPUT_ITEM_ID;
-    let default_input_quality_type = defaults.INPUT_ITEM_QUALITY_TYPE;
-    let default_input_cost = defaults.INPUT_ITEM_COST;
-    add_table_row(table, default_input_item_id, default_input_quality_type, default_input_cost);
-}
-
-export function add_output_item() {
-    let table = window.document.getElementById(OUTPUT_ITEMS_TABLE_ID);
-    let default_output_item_id = defaults.OUTPUT_ITEM_ID;
-    let default_output_quality_type = defaults.OUTPUT_ITEM_QUALITY_TYPE;
-    let default_output_amount_per_second = defaults.OUTPUT_AMOUNT_PER_SECOND
-    add_table_row(table, default_output_item_id, default_output_quality_type, default_output_amount_per_second);
 }
 
 export function get_item_table_data(table_id) {
@@ -41,7 +24,8 @@ export function get_item_table_data(table_id) {
     return data;
 }
 
-function add_table_row(table, item_id, quality, amount) {
+export function add_table_row(table_id, item_id, quality, amount) {
+    let table = window.document.getElementById(table_id);
     let row_element = document.createElement('tr');
     let item_keys = parsed_data.items.keys();
 
@@ -51,7 +35,7 @@ function add_table_row(table, item_id, quality, amount) {
 
     row_element
         .appendChild(document.createElement('th'))
-        .appendChild(new_quality_select_element(quality));
+        .appendChild(make_quality_select(quality));
 
     row_element
         .appendChild(document.createElement('th'))
@@ -85,6 +69,13 @@ function make_item_select(item_keys, default_item_id) {
     }
     select_element.value = default_item_id;
     return select_element;
+}
+
+function make_quality_select(initial_quality) {
+    let quality_select = document.createElement('select');
+    initialize_quality_selector(quality_select);
+    quality_select.value = initial_quality;
+    return quality_select;
 }
 
 function make_numeric_input(default_value) {

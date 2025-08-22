@@ -1,7 +1,6 @@
 import { PROD_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, BEACON_QUALITY_SELECT_ID } from "./constants.js";
-import { initialize_max_quality_unlocked_selector, initialize_quality_select_element } from "./quality.js";
+import { initialize_max_quality_unlocked_selector, initialize_quality_selector } from "./quality.js";
 import { initialize_productivity_research } from "./productivityResearch.js";
-import { add_input_item, add_output_item } from "./itemTables.js";
 import { defaults } from "../data.js";
 import { initialize_planets } from "./planets.js";
 import { initialize_resources } from "./resources.js";
@@ -13,14 +12,12 @@ export function initialize_ui() {
     initialize_productivity_research();
     initialize_planets();
     initialize_resources();
-    add_input_item();
-    add_output_item();
 }
 
 function initialize_quality_selectors() {
-    initialize_quality_select_element(window.document.getElementById(CRAFTING_MACHINE_QUALITY_SELECT_ID), defaults.CRAFTING_MACHINE_QUALITY);
-    initialize_quality_select_element(window.document.getElementById(PROD_MODULE_QUALITY_SELECT_ID), defaults.PROD_MODULE_QUALITY_TYPE);
-    initialize_quality_select_element(window.document.getElementById(QUALITY_MODULE_QUALITY_SELECT_ID), defaults.QUALITY_MODULE_QUALITY_TYPE);
-    initialize_quality_select_element(window.document.getElementById(SPEED_MODULE_QUALITY_SELECT_ID), defaults.SPEED_MODULE_QUALITY_TYPE);
-    initialize_quality_select_element(window.document.getElementById(BEACON_QUALITY_SELECT_ID), defaults.SPEED_BEACON_QUALITY_TYPE);
+    initialize_quality_selector(window.document.getElementById(CRAFTING_MACHINE_QUALITY_SELECT_ID), defaults.CRAFTING_MACHINE_QUALITY);
+    initialize_quality_selector(window.document.getElementById(PROD_MODULE_QUALITY_SELECT_ID), defaults.PROD_MODULE_QUALITY_TYPE);
+    initialize_quality_selector(window.document.getElementById(QUALITY_MODULE_QUALITY_SELECT_ID), defaults.QUALITY_MODULE_QUALITY_TYPE);
+    initialize_quality_selector(window.document.getElementById(SPEED_MODULE_QUALITY_SELECT_ID), defaults.SPEED_MODULE_QUALITY_TYPE);
+    initialize_quality_selector(window.document.getElementById(BEACON_QUALITY_SELECT_ID), defaults.SPEED_BEACON_QUALITY_TYPE);
 }
