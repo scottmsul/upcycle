@@ -1,4 +1,5 @@
 import { RESOURCES } from "../data.js";
+import { DEFAULT_RESOURCE_COST } from "../model/constants.js";
 import { RESOURCES_TABLE_ID } from "./constants.js";
 
 export function display_resources(resources, planets) {
@@ -51,7 +52,7 @@ export function get_resources_table_data() {
         let resource_key = row.id;
 
         // planet, resource type, item, cost
-        let cost = row.children[3].firstChild.value;
+        let cost = parseFloat(row.children[3].firstChild.value);
 
         data.set(resource_key, cost);
     }
@@ -67,4 +68,22 @@ export function set_resources_table_data(data) {
         // planet, resource type, item, cost
         row.children[3].firstChild.value = new_cost;
     }
+}
+
+// returns null if not valid
+// sets bad values to 0
+export function resources_from_string(s) {
+    let input_obj = JSON.parse(s);
+    if(!Array.isArray(input_obj)) return null;
+    let input_map = new Map(input_obj);
+    let output_map = new Map();
+    for(let resource_key of RESOURCES.keys()) {
+        output_map.set(resource_key, DEFAULT_RESOURCE_COST);
+        if(!input_map.has(resource_key)) continue;
+        let input_cost = input_map.get(resource_key);
+        if(!(typeof input_cost === 'number')) continue;
+        if(input_cost < 0) continue;
+        output_map.set(resource_key, input_cost);
+    }
+    return output_map;
 }

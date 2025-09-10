@@ -32,6 +32,4 @@ export const PRODUCTIVITY_RESEARCH_TABLE_ID = 'productivity-research-tbody';
 
 export const FLOATING_POINT_CUTOFF = 1e-9;
 
-export const MIN_QUALITY_TYPE = 0;
-export const MAX_QUALITY_TYPE = 1;
 export const QUALITY_FRIENDLY_NAMES = ['common', 'uncommon', 'rare', 'epic', 'legendary'];

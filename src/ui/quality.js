@@ -27,10 +27,8 @@ export function initialize_quality_selector(select_element) {
 }
 
 export function update_quality_selectors_to_max_quality(new_max_quality) {
-    console.log(`calling update_quality_selectors_to_max_quality with new_max_quality = ${new_max_quality}`);
     // update any dropdowns that are higher than new_max_quality to be equal to new_max_quality
     let select_elements = document.getElementsByClassName(QUALITY_SELECT_CLASS_NAME);
-    console.log(`number select_elements: ${select_elements.length}`);
     for(let select_element of select_elements) {
         if(parseInt(select_element.value) > new_max_quality) {
             select_element.value = new_max_quality;

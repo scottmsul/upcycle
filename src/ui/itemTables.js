@@ -1,5 +1,6 @@
 import { parsed_data } from "../data.js";
-import { DistinctItem } from "../distinctItem.js";
+import { distinct_item_from_obj, DistinctItem } from "../distinctItem.js";
+import { float_from_string } from "../util.js";
 import { initialize_quality_selector } from "./quality.js";
 
 export function display_item_table(table_id, data) {
@@ -83,4 +84,20 @@ function make_numeric_input(default_value) {
     input_element.setAttribute('type', 'number');
     input_element.value = default_value;
     return input_element;
+}
+
+// returns null if not valid
+export function item_table_from_string(s) {
+    let input_obj = JSON.parse(s);
+    if(!Array.isArray(input_obj)) return null;
+    let output_obj = [];
+    for(let input_row of input_obj) {
+        if((!Array.isArray(input_row)) || (input_row.length != 2)) continue;
+        let distinct_item = distinct_item_from_obj(input_row[0]);
+        let amount = float_from_string(input_row[1]);
+        if((distinct_item === null) || (amount === null)) continue;
+        let output_row = [distinct_item, amount];
+        output_obj.push(output_row);
+    }
+    return output_obj;
 }

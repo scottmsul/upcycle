@@ -1,10 +1,3 @@
-import { ParsedData } from "../parsedData.js";
-
-export const defaults = {
-    INPUT_ITEM_ID: "item-1",
-    OUTPUT_ITEM_ID: "item-2",
-}
-
 export const raw_data = {
     "crafting_machines": [
         {

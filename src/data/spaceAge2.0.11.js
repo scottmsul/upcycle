@@ -1,10 +1,3 @@
-import { ParsedData } from "../parsedData.js"
-
-export const defaults = {
-    INPUT_ITEM_ID: "iron-plate",
-    OUTPUT_ITEM_ID: "iron-gear-wheel",
-}
-
 export const raw_data = {
     "agricultural_tower": [ {
         "energy_source": {

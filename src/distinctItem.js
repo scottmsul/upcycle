@@ -9,6 +9,11 @@ export class DistinctItem {
     }
 }
 
+export function distinct_item_from_obj(o) {
+    if(!('item_key' in o && 'item_quality' in o)) return null;
+    return new DistinctItem(o.item_key, o.item_quality);
+}
+
 export function get_distinct_item_key(item_key, item_quality) {
     return `item=${item_key}__quality=${item_quality}`;
 }

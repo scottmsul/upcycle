@@ -1,61 +1,62 @@
-import { PLANETS, PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP, RESOURCES } from "../data.js";
-import { DistinctItem, get_distinct_item_key } from "../distinctItem.js";
+import { RESOURCES } from "../data.js";
+import { get_distinct_item_key } from "../distinctItem.js";
+import { getLocalStorageBoolean, getLocalStorageFloat, getLocalStorageInt, getLocalStorageObject } from "./localStorageUtil.js";
+import { OUTPUT_ITEMS_KEY, MAX_QUALITY_UNLOCKED_KEY, CRAFTING_MACHINE_QUALITY_KEY, CRAFTING_MACHINE_COST_KEY, ALLOW_BYPRODUCTS_KEY, QUALITY_MODULE_TIER_KEY, QUALITY_MODULE_QUALITY_KEY, QUALITY_MODULE_COST_KEY, PROD_MODULE_TIER_KEY, PROD_MODULE_QUALITY_KEY, PROD_MODULE_COST_KEY, CHECK_SPEED_BEACONS_KEY, SPEED_MODULE_TIER_KEY, SPEED_MODULE_QUALITY_KEY, SPEED_BEACON_QUALITY_KEY, MAX_BEACONED_SPEED_MODULES_KEY, PRODUCTIVITY_RESEARCH_KEY, PLANETS_KEY, RESOURCES_KEY, INPUT_ITEMS_KEY, DEFAULT_OUTPUT_ITEMS, DEFAULT_MAX_QUALITY_UNLOCKED, DEFAULT_CRAFTING_MACHINE_QUALITY, DEFAULT_CRAFTING_MACHINE_COST, DEFAULT_ALLOW_BYPRODUCTS, DEFAULT_QUALITY_MODULE_TIER, DEFAULT_QUALITY_MODULE_QUALITY, DEFAULT_QUALITY_MODULE_COST, DEFAULT_PROD_MODULE_TIER, DEFAULT_PROD_MODULE_QUALITY, DEFAULT_PROD_MODULE_COST, DEFAULT_CHECK_SPEED_BEACONS, DEFAULT_SPEED_MODULE_TIER, DEFAULT_SPEED_MODULE_QUALITY, DEFAULT_SPEED_BEACON_QUALITY, DEFAULT_MAX_BEACONED_SPEED_MODULES, DEFAULT_PRODUCTIVITY_RESEARCH, DEFAULT_PLANETS, DEFAULT_RESOURCES } from './constants.js';
+import { item_table_from_string } from "../ui/itemTables.js";
+import { productivity_research_from_string } from "../ui/productivityResearch.js";
+import { planets_from_string } from "../ui/planets.js";
+import { resources_from_string } from "../ui/resources.js";
 
 export class SolverInput {
     /**
      * Contains all necessary state for the solver input
      */
     constructor() {
-        /**
-         * Default values
-         * Note quality=4 is legendary
-         */
-
         // list of [distinct_item, cost] tuples
         // the UI doesn't enforce unique distinct items
-        this.output_items = [];
-        this.output_items.push([new DistinctItem('iron-plate', 4), 1.0]);
+        this.output_items = getLocalStorageObject(OUTPUT_ITEMS_KEY, item_table_from_string, DEFAULT_OUTPUT_ITEMS);
 
-        this.max_quality_unlocked = 4;
-        this.crafting_machine_quality = 4;
-        this.crafting_machine_cost = 1.0
-        this.allow_byproducts = true;
+        this.max_quality_unlocked = getLocalStorageInt(MAX_QUALITY_UNLOCKED_KEY, 0, 4, DEFAULT_MAX_QUALITY_UNLOCKED);
+        this.crafting_machine_quality = getLocalStorageInt(CRAFTING_MACHINE_QUALITY_KEY, 0, 4, DEFAULT_CRAFTING_MACHINE_QUALITY);
+        this.crafting_machine_cost = getLocalStorageFloat(CRAFTING_MACHINE_COST_KEY, DEFAULT_CRAFTING_MACHINE_COST);
+        this.allow_byproducts = getLocalStorageBoolean(ALLOW_BYPRODUCTS_KEY, DEFAULT_ALLOW_BYPRODUCTS);
 
-        this.quality_module_tier = 2;
-        this.quality_module_quality = 4;
-        this.quality_module_cost = 0.0;
+        this.quality_module_tier = getLocalStorageInt(QUALITY_MODULE_TIER_KEY, 0, 2, DEFAULT_QUALITY_MODULE_TIER);
+        this.quality_module_quality = getLocalStorageInt(QUALITY_MODULE_QUALITY_KEY, 0, 4, DEFAULT_QUALITY_MODULE_QUALITY);
+        this.quality_module_cost = getLocalStorageFloat(QUALITY_MODULE_COST_KEY, DEFAULT_QUALITY_MODULE_COST);
 
-        this.prod_module_tier = 2;
-        this.prod_module_quality = 4;
-        this.prod_module_cost = 0.0;
+        this.prod_module_tier = getLocalStorageInt(PROD_MODULE_TIER_KEY, 0, 2, DEFAULT_PROD_MODULE_TIER);
+        this.prod_module_quality = getLocalStorageInt(PROD_MODULE_QUALITY_KEY, 0, 4, DEFAULT_PROD_MODULE_QUALITY);
+        this.prod_module_cost = getLocalStorageFloat(PROD_MODULE_COST_KEY, DEFAULT_PROD_MODULE_COST);
 
-        this.check_speed_beacons = true;
-        this.speed_module_tier = 2;
-        this.speed_module_quality = 4;
-        this.speed_beacon_quality = 4;
-        this.max_beaconed_speed_modules = 16;
+        this.check_speed_beacons = getLocalStorageBoolean(CHECK_SPEED_BEACONS_KEY, DEFAULT_CHECK_SPEED_BEACONS);
+        this.speed_module_tier = getLocalStorageInt(SPEED_MODULE_TIER_KEY, 0, 2, DEFAULT_SPEED_MODULE_TIER);
+        this.speed_module_quality = getLocalStorageInt(SPEED_MODULE_QUALITY_KEY, 0, 4, DEFAULT_SPEED_MODULE_QUALITY);
+        this.speed_beacon_quality = getLocalStorageInt(SPEED_BEACON_QUALITY_KEY, 0, 4, DEFAULT_SPEED_BEACON_QUALITY);
+        this.max_beaconed_speed_modules = getLocalStorageInt(MAX_BEACONED_SPEED_MODULES_KEY, 0, 16, DEFAULT_MAX_BEACONED_SPEED_MODULES);
 
         // map from prod research keys to percent bonuses
-        this.productivity_research = new Map();
-        for(let item_key of PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP.keys()) {
-            this.productivity_research.set(item_key, 0.0);
-        }
+        this.productivity_research = getLocalStorageObject(PRODUCTIVITY_RESEARCH_KEY, productivity_research_from_string, DEFAULT_PRODUCTIVITY_RESEARCH);
 
         // map from planets to bools
-        this.planets = new Map();
-        for(let planet of PLANETS) {
-            this.planets.set(planet, true);
-        }
+        this.planets = getLocalStorageObject(PLANETS_KEY, planets_from_string, DEFAULT_PLANETS);
 
         // map from resource keys to costs
-        this.resources = new Map();
-        for(let resource_key of RESOURCES.keys()) {
-            this.resources.set(resource_key, 0.0);
-        }
+        this.resources = getLocalStorageObject(RESOURCES_KEY, resources_from_string, DEFAULT_RESOURCES);
 
         // list of [distinct_item, cost] tuples
         // the UI doesn't enforce unique distinct items
-        this.input_items = [];
+        this.input_items = getLocalStorageObject(INPUT_ITEMS_KEY, item_table_from_string, []);
+    }
+
+    set_value(key, value) {
+        // replace all Maps with [(key,value)] arrays, their default serialization is just {}
+        function replacer(key, value) {
+            if(value instanceof Map) return Array.from(value.entries());
+            else return value;
+        }
+        localStorage.setItem(key, JSON.stringify(value, replacer));
+        this[key] = value;
     }
 }
 
