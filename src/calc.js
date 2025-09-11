@@ -133,7 +133,7 @@ export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_dat
 
     // need one planet which satisfies all the conditions
     // note this is different than unioning all the planets properties
-    solver_input.planets.forEach((include_planet, planet_key, map) => {
+    for(let [planet_key, include_planet] of solver_input.planets.entries()) {
         if(include_planet) {
             let planet_data = parsed_data.planet(planet_key);
             var all_satisfied = true;
@@ -156,7 +156,7 @@ export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_dat
             }
             if(all_satisfied) { return true };
         }
-    });
+    }
 
     return false;
 }
