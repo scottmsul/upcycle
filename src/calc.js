@@ -115,7 +115,15 @@ export function calculate_quality_transition_probability(starting_quality, endin
     }
 }
 
-export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input) {
+export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set) {
+    // if using a whitelist, then we ignore surface conditions entirely and only check against the input list
+    if(solver_input.whitelist_recipes) {
+        return solver_input_recipes_set.has(recipe_data.key);
+    }
+
+    // if using a blacklist, we return false if blacklisted, otherwise we move on to checking the surface conditions
+    if(solver_input_recipes_set.has(recipe_data.key)) return false;
+
     // there are two ways in which a recipe might not be allowed
     // the first is by checking the surface_conditions of the recipe
     // the second is by checking the surface_conditions of the crafting machine

@@ -22,6 +22,13 @@ export const RESOURCES_TABLE_ID = 'resources-tbody';
 
 export const INPUT_ITEMS_TABLE_ID = 'input-items-tbody';
 export const OUTPUT_ITEMS_TABLE_ID = 'output-items-tbody';
+export const ADD_INPUT_ITEM_BUTTON_ID = 'add-input-item';
+export const ADD_OUTPUT_ITEM_BUTTON_ID = 'add-output-item';
+
+export const BLACKLIST_RECIPES_INPUT_ID = 'blacklist-recipes';
+export const WHITELIST_RECIPES_INPUT_ID = 'whitelist-recipes';
+export const RECIPES_TABLE_ID = 'recipes-tbody';
+export const ADD_RECIPE_BUTTON_ID = 'add-recipe';
 
 export const RESULTS_ID = 'results';
 export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';

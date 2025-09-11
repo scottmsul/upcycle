@@ -1,11 +1,13 @@
 import { SolverInput } from "./model/solverInput.js";
-import { ALLOW_BYPRODUCTS_INPUT_ID, BEACON_QUALITY_SELECT_ID, CHECK_SPEED_BEACONS_INPUT_ID, CRAFTING_MACHINE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, INPUT_ITEMS_TABLE_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID, MAX_QUALITY_UNLOCKED_SELECT_ID, OUTPUT_ITEMS_TABLE_ID, PLANETS_TABLE_ID, PROD_MODULE_COST_INPUT_ID, PROD_MODULE_QUALITY_SELECT_ID, PROD_MODULE_TIER_SELECT_ID, PRODUCTIVITY_RESEARCH_TABLE_ID, QUALITY_MODULE_COST_INPUT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, RESOURCES_TABLE_ID, SPEED_MODULE_QUALITY_SELECT_ID, SPEED_MODULE_TIER_SELECT_ID } from "./ui/constants.js";
-import { add_table_row, get_item_table_data } from "./ui/itemTables.js";
+import { ADD_INPUT_ITEM_BUTTON_ID, ADD_OUTPUT_ITEM_BUTTON_ID, ADD_RECIPE_BUTTON_ID, ALLOW_BYPRODUCTS_INPUT_ID, BEACON_QUALITY_SELECT_ID, CHECK_SPEED_BEACONS_INPUT_ID, CRAFTING_MACHINE_COST_INPUT_ID, CRAFTING_MACHINE_QUALITY_SELECT_ID, INPUT_ITEMS_TABLE_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID, MAX_QUALITY_UNLOCKED_SELECT_ID, OUTPUT_ITEMS_TABLE_ID, PLANETS_TABLE_ID, PROD_MODULE_COST_INPUT_ID, PROD_MODULE_QUALITY_SELECT_ID, PROD_MODULE_TIER_SELECT_ID, PRODUCTIVITY_RESEARCH_TABLE_ID, QUALITY_MODULE_COST_INPUT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, RECIPES_TABLE_ID, RESOURCES_TABLE_ID, SPEED_MODULE_QUALITY_SELECT_ID, SPEED_MODULE_TIER_SELECT_ID, WHITELIST_RECIPES_INPUT_ID } from "./ui/constants.js";
+import { add_item_table_row, get_item_table_data } from "./ui/itemTables.js";
 import { get_planets_table_data } from "./ui/planets.js";
 import { get_productivity_research_table_data } from "./ui/productivityResearch.js";
 import { update_quality_selectors_to_max_quality } from "./ui/quality.js";
 import { display_resources, get_resources_table_data } from "./ui/resources.js";
-import { OUTPUT_ITEMS_KEY, MAX_QUALITY_UNLOCKED_KEY, CRAFTING_MACHINE_QUALITY_KEY, CRAFTING_MACHINE_COST_KEY, ALLOW_BYPRODUCTS_KEY, QUALITY_MODULE_TIER_KEY, QUALITY_MODULE_QUALITY_KEY, QUALITY_MODULE_COST_KEY, PROD_MODULE_TIER_KEY, PROD_MODULE_QUALITY_KEY, PROD_MODULE_COST_KEY, CHECK_SPEED_BEACONS_KEY, SPEED_MODULE_TIER_KEY, SPEED_MODULE_QUALITY_KEY, SPEED_BEACON_QUALITY_KEY, MAX_BEACONED_SPEED_MODULES_KEY, PRODUCTIVITY_RESEARCH_KEY, PLANETS_KEY, RESOURCES_KEY, INPUT_ITEMS_KEY, DEFAULT_INPUT_ITEM_ID, DEFAULT_INPUT_ITEM_QUALITY_TYPE, DEFAULT_INPUT_ITEM_COST, DEFAULT_OUTPUT_ITEM_QUALITY_TYPE, DEFAULT_OUTPUT_AMOUNT_PER_SECOND, DEFAULT_OUTPUT_ITEM_ID, MIN_QUALITY_TYPE } from './model/constants.js';
+import { OUTPUT_ITEMS_KEY, MAX_QUALITY_UNLOCKED_KEY, CRAFTING_MACHINE_QUALITY_KEY, CRAFTING_MACHINE_COST_KEY, ALLOW_BYPRODUCTS_KEY, QUALITY_MODULE_TIER_KEY, QUALITY_MODULE_QUALITY_KEY, QUALITY_MODULE_COST_KEY, PROD_MODULE_TIER_KEY, PROD_MODULE_QUALITY_KEY, PROD_MODULE_COST_KEY, CHECK_SPEED_BEACONS_KEY, SPEED_MODULE_TIER_KEY, SPEED_MODULE_QUALITY_KEY, SPEED_BEACON_QUALITY_KEY, MAX_BEACONED_SPEED_MODULES_KEY, PRODUCTIVITY_RESEARCH_KEY, PLANETS_KEY, RESOURCES_KEY, INPUT_ITEMS_KEY, DEFAULT_INPUT_ITEM_ID, DEFAULT_INPUT_ITEM_QUALITY_TYPE, DEFAULT_INPUT_ITEM_COST, DEFAULT_OUTPUT_ITEM_QUALITY_TYPE, DEFAULT_OUTPUT_AMOUNT_PER_SECOND, DEFAULT_OUTPUT_ITEM_ID, MIN_QUALITY_TYPE, DEFAULT_RECIPE_KEY, WHITELIST_RECIPES_KEY, RECIPES_KEY } from './model/constants.js';
+import { parsed_data } from "./data.js";
+import { add_recipe_table_row, get_recipe_table_data } from "./ui/recipes.js";
 
 export class Controller {
     constructor() {
@@ -40,22 +42,27 @@ export class Controller {
                 display_resources(this.solver_input.resources, planets);
             }],
             [RESOURCES_TABLE_ID, (e) => this.solver_input.set_value(RESOURCES_KEY, get_resources_table_data())],
-            [INPUT_ITEMS_TABLE_ID, (e) => this.solver_input.set_value(INPUT_ITEMS_KEY, get_item_table_data(INPUT_ITEMS_TABLE_ID))]
+            [INPUT_ITEMS_TABLE_ID, (e) => this.solver_input.set_value(INPUT_ITEMS_KEY, get_item_table_data(INPUT_ITEMS_TABLE_ID))],
+            [WHITELIST_RECIPES_INPUT_ID, (e) => this.solver_input.set_value(WHITELIST_RECIPES_KEY, e.target.checked)],
+            [RECIPES_TABLE_ID, (e) => this.solver_input.set_value(RECIPES_KEY, get_recipe_table_data())]
         ];
 
         for(let [table_id, event_listener] of event_listeners) {
             window.document.getElementById(table_id).addEventListener('change', event_listener);
         }
 
-        window.document.getElementById('add-input-item').onclick = (() => {
+        window.document.getElementById(ADD_INPUT_ITEM_BUTTON_ID).onclick = (() => {
             let quality = DEFAULT_INPUT_ITEM_QUALITY_TYPE == MIN_QUALITY_TYPE ? 0 : this.solver_input.max_quality_unlocked;
-            add_table_row(INPUT_ITEMS_TABLE_ID, DEFAULT_INPUT_ITEM_ID, quality, DEFAULT_INPUT_ITEM_COST);
+            add_item_table_row(INPUT_ITEMS_TABLE_ID, DEFAULT_INPUT_ITEM_ID, quality, DEFAULT_INPUT_ITEM_COST);
         });
 
-        window.document.getElementById('add-output-item').onclick = (() => {
+        window.document.getElementById(ADD_OUTPUT_ITEM_BUTTON_ID).onclick = (() => {
             let quality = DEFAULT_OUTPUT_ITEM_QUALITY_TYPE == MIN_QUALITY_TYPE ? 0 : this.solver_input.max_quality_unlocked;
-            add_table_row(OUTPUT_ITEMS_TABLE_ID, DEFAULT_OUTPUT_ITEM_ID, quality, DEFAULT_OUTPUT_AMOUNT_PER_SECOND);
+            add_item_table_row(OUTPUT_ITEMS_TABLE_ID, DEFAULT_OUTPUT_ITEM_ID, quality, DEFAULT_OUTPUT_AMOUNT_PER_SECOND);
         });
 
+        window.document.getElementById(ADD_RECIPE_BUTTON_ID).onclick = (() => {
+            add_recipe_table_row(DEFAULT_RECIPE_KEY);
+        });
     }
 }

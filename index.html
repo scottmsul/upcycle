@@ -162,6 +162,29 @@
             </table>
             <button id="add-input-item">+</button>
         </div>
+        <div id="recipes">
+            <h1>Recipes</h1>
+            <p>Run without specified recipes (Blacklist) or only with specified recipes (Whitelist). If using a Whitelist, planet-specific recipe checks are ignored.</p>
+            <div>
+                <input type="radio" name="recipes-type" id="blacklist-recipes" value="exclude-recipes" checked/>
+                <label>Blacklist</label>
+            </div>
+            <div>
+                <input type="radio" name="recipes-type" id="whitelist-recipes" value="include-recipes"/>
+                <label>Whitelist</label>
+            </div>
+            <br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Recipe</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="recipes-tbody"></tbody>
+            </table>
+            <button id="add-recipe">+</button>
+        </div>
         <div id="solver">
             <h1>Solver</h1>
             <button id="solve">solve</button>

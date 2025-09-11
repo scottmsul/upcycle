@@ -38,6 +38,9 @@ export const DEFAULT_RESOURCES = new Map(
 
 export const DEFAULT_INPUT_ITEMS = [];
 
+export const DEFAULT_WHITELIST_RECIPES = false;
+export const DEFAULT_RECIPES = [];
+
 // for clicking the 'add new (input/output) item' button
 export const MIN_QUALITY_TYPE = 0;
 export const MAX_QUALITY_TYPE = 1;
@@ -47,6 +50,9 @@ export const DEFAULT_INPUT_ITEM_COST = 1.0;
 export const DEFAULT_OUTPUT_ITEM_ID = 'iron-gear-wheel';
 export const DEFAULT_OUTPUT_ITEM_QUALITY_TYPE = MAX_QUALITY_TYPE;
 export const DEFAULT_OUTPUT_AMOUNT_PER_SECOND = 60.0;
+
+// for clicking the 'add new recipe' button
+export const DEFAULT_RECIPE_KEY = 'iron-gear-wheel';
 
 // for local storage
 export const OUTPUT_ITEMS_KEY = 'output_items';
@@ -69,3 +75,5 @@ export const PRODUCTIVITY_RESEARCH_KEY = 'productivity_research';
 export const PLANETS_KEY = 'planets';
 export const RESOURCES_KEY = 'resources';
 export const INPUT_ITEMS_KEY = 'input_items';
+export const WHITELIST_RECIPES_KEY = 'whitelist_recipes';
+export const RECIPES_KEY = 'recipes';

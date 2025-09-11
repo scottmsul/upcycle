@@ -7,7 +7,7 @@ export function display_item_table(table_id, data) {
     let table = window.document.getElementById(table_id);
     table.innerHTML = '';
     for(let [distinct_item, amount] of data) {
-        add_table_row(table_id, distinct_item.item_key, distinct_item.item_quality, amount);
+        add_item_table_row(table_id, distinct_item.item_key, distinct_item.item_quality, amount);
     }
 }
 
@@ -25,7 +25,7 @@ export function get_item_table_data(table_id) {
     return data;
 }
 
-export function add_table_row(table_id, item_id, quality, amount) {
+export function add_item_table_row(table_id, item_id, quality, amount) {
     let table = window.document.getElementById(table_id);
     let row_element = document.createElement('tr');
     let item_keys = parsed_data.items.keys();

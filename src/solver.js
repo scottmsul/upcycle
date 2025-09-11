@@ -75,11 +75,14 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
         preferred_crafting_machine_by_category.set(crafting_category, best_crafting_machine_so_far.key);
     });
 
+    // we convert the input recipes list to a set here so we only have to do it once
+    let solver_input_recipes_set = new Set(solver_input.recipes);
+
     let distinct_recipes = new Map();
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
         let crafting_machine_key = preferred_crafting_machine_by_category.get(recipe_data.category);
         let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
-        if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input)) {
+        if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set)) {
             let num_module_slots = crafting_machine_data.module_slots;
             let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? solver_input.max_quality_unlocked : 0;
             for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
