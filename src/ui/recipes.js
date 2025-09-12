@@ -1,5 +1,4 @@
-
-import { parsed_data } from "../data.js";
+import { parsed_data, RECIPE_SELECT_DATA } from "../data.js";
 import { RECIPES_TABLE_ID } from "./constants.js";
 
 export function display_recipe_table(data) {
@@ -24,11 +23,10 @@ export function get_recipe_table_data() {
 export function add_recipe_table_row(recipe_key) {
     let table = window.document.getElementById(RECIPES_TABLE_ID);
     let row_element = document.createElement('tr');
-    let recipe_keys = parsed_data.recipes.keys();
 
     row_element
         .appendChild(document.createElement('td'))
-        .appendChild(make_recipe_select(recipe_keys, recipe_key));
+        .appendChild(make_recipe_select(recipe_key));
 
     let delete_element = row_element
         .appendChild(document.createElement('td'))
@@ -48,12 +46,12 @@ export function add_recipe_table_row(recipe_key) {
     table.dispatchEvent(event);
 }
 
-function make_recipe_select(recipe_keys, default_recipe_key) {
+function make_recipe_select(default_recipe_key) {
     let select_element = document.createElement('select');
-    for(let recipe_key of recipe_keys) {
+    for(let recipe of RECIPE_SELECT_DATA) {
         let opt = document.createElement("option");
-        opt.value = recipe_key;
-        opt.innerHTML = recipe_key;
+        opt.value = recipe.recipe_key;
+        opt.innerHTML = recipe.localized_name;
         select_element.append(opt);
     }
     select_element.value = default_recipe_key;

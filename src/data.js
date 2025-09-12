@@ -159,7 +159,6 @@ function initialize_item_select_data() {
         }
     });
     let item_select_data = Array.from(item_keys_in_recipes.entries()).map(([item_key, localized_name]) => {
-        console.log(`localized_name: ${localized_name}`);
         return {
             'item_key': item_key,
             'localized_name': localized_name
@@ -170,3 +169,18 @@ function initialize_item_select_data() {
 }
 
 export const ITEM_SELECT_DATA = initialize_item_select_data();
+
+// prepares a list of [{recipe_key: string, localized_name: string}] sorted by localized name for recipe select dropdowns
+function initialize_recipe_select_data() {
+    let recipe_select_data = [];
+    parsed_data.recipes.forEach((recipe_data, recipe_key, map) => {
+        recipe_select_data.push({
+            recipe_key: recipe_key,
+            localized_name: recipe_data.localized_name.en
+        });
+    });
+    recipe_select_data.sort((a,b) => a.localized_name.localeCompare(b.localized_name));
+    return recipe_select_data;
+}
+
+export const RECIPE_SELECT_DATA = initialize_recipe_select_data();
