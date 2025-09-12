@@ -26,9 +26,10 @@ th + th { border-left: 1px solid lightgray; }
 tbody,
 tr + tr { border-top: 1px solid lightgray; }
 
+table th,
 table td {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 table tr th {
