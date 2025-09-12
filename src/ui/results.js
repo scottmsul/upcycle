@@ -43,15 +43,15 @@ export function display_results(solver_input, solver, vars) {
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = amount;
+            .innerHTML = format_number(amount);
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = unit_cost;
+            .innerHTML = format_number(unit_cost);
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = amount*unit_cost;
+            .innerHTML = format_number(amount*unit_cost);
 
         input_results_table.appendChild(row_element);
     });
@@ -77,7 +77,7 @@ export function display_results(solver_input, solver, vars) {
 
             row_element
                 .appendChild(document.createElement('td'))
-                .innerHTML = amount;
+                .innerHTML = format_number(amount);
 
             byproduct_results_table.appendChild(row_element);
         });
@@ -117,16 +117,24 @@ export function display_results(solver_input, solver, vars) {
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = amount;
+            .innerHTML = format_number(amount);
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = unit_cost;
+            .innerHTML = format_number(unit_cost);
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = amount*unit_cost;
+            .innerHTML = format_number(amount*unit_cost);
 
         recipe_results_table.appendChild(row_element);
     });
+}
+
+export function format_number(num) {
+    if(Number.isInteger(num)) return num.toFixed(0);
+    else if (num >= 1.0) return num.toFixed(2);
+    else if (num >= 0.1) return num.toFixed(3);
+    else if (num >= 0.01) return num.toFixed(4);
+    else return num.toExponential(2);
 }
