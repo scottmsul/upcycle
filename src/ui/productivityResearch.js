@@ -1,6 +1,5 @@
 import { PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP } from "../data.js";
 import { DEFAULT_PRODUCTIVITY_RESEARCH_AMOUNT } from "../model/constants.js";
-import { int_from_string } from "../util.js";
 import { PRODUCTIVITY_RESEARCH_TABLE_ID } from "./constants.js";
 
 export function initialize_productivity_research() {

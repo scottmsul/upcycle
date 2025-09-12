@@ -18,14 +18,14 @@ export const PLANETS = ['nauvis', 'vulcanus', 'fulgora', 'gleba', 'aquilo', 'spa
 
 // some hard-coded stuff involving item keys
 export const PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP = new Map([
-    ['steel-plate', ['steel-plate', 'casting-steel']],
-    ['low-density-structure', ['low-density-structure', 'casting-low-density-structure']],
-    ['scrap', ['scrap-recycling']],
-    ['processing-unit', ['processing-unit']],
-    ['plastic-bar', ['plastic-bar']],
-    ['rocket-fuel', ['rocket-fuel', 'rocket-fuel-from-jelly', 'ammonia-rocket-fuel']],
-    ['asteroid', ['carbonic-asteroid-crushing', 'metallic-asteroid-crushing', 'oxide-asteroid-crushing',
-        'advanced-carbonic-asteroid-crushing', 'advanced-metallic-asteroid-crushing', 'advanced-oxide-asteroid-crushing']]
+    ['Asteroid', ['carbonic-asteroid-crushing', 'metallic-asteroid-crushing', 'oxide-asteroid-crushing',
+        'advanced-carbonic-asteroid-crushing', 'advanced-metallic-asteroid-crushing', 'advanced-oxide-asteroid-crushing']],
+    ['Low density structure', ['low-density-structure', 'casting-low-density-structure']],
+    ['Plastic bar', ['plastic-bar']],
+    ['Processing unit', ['processing-unit']],
+    ['Rocket fuel', ['rocket-fuel', 'rocket-fuel-from-jelly', 'ammonia-rocket-fuel']],
+    ['Scrap', ['scrap-recycling']],
+    ['Steel plate', ['steel-plate', 'casting-steel']]
 ]);
 
 // the inverted table is useful in certain cases
