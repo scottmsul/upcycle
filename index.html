@@ -3,236 +3,238 @@
     <head>
         <title></title>
         <meta content="">
-        <style></style>
+        <link rel="stylesheet" href="style.css" />
         <script type="module" src="./src/main.js"></script>
     </head>
     <body>
-        <div id="output-items">
-            <h1>Output Items</h1>
-            <p>What you want to upcycle</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quality</th>
-                        <th>Amount/Sec</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="output-items-tbody"></tbody>
-            </table>
-            <button id="add-output-item">+</button>
-        </div>
-        <div id="preferences">
-            <h1>Preferences</h1>
-            <table>
-                <tr>
-                    <td>Max Quality Unlocked: </td>
-                    <td><select id="max-quality-unlocked"></select></td>
-                </tr>
-                <tr>
-                    <td>Crafting Machine Quality: </td>
-                    <td><select id="crafting-machine-quality"></select></td>
-                </tr>
-                <tr>
-                    <td>Crafting Machine Cost: </td>
-                    <td><input type="number" id="crafting-machine-cost" value="1"></td>
-                </tr>
-                <tr>
-                    <td>Allow Byproducts: </td>
-                    <td><input type="checkbox" id="allow-byproducts"></td>
-                </tr>
-            </table>
-        </div>
-        <div id="modules">
-            <h1>Modules</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Tier</th>
-                        <th>Quality</th>
-                        <th>Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Quality: </td>
-                        <td><select id="quality-module-tier">
-                            <option value="0">quality-module-1</option>
-                            <option value="1">quality-module-2</option>
-                            <option value="2" selected="selected">quality-module-3</option>
-                        </select></td>
-                        <td><select id="quality-module-quality"></select></td>
-                        <td><input type="number" id="quality-module-cost" value="1"></td>
-                    </tr>
-                    <tr>
-                        <td>Productivity: </td>
-                        <td><select id="prod-module-tier">
-                            <option value="0">prod-module-1</option>
-                            <option value="1">prod-module-2</option>
-                            <option value="2" selected="selected">prod-module-3</option>
-                        </select></td>
-                        <td><select id="prod-module-quality"></select></td>
-                        <td><input type="number" id="prod-module-cost" value="1"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="speed-beacons">
-            <h1>Speed Beacons</h1>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Check Speed Beacons: </td>
-                        <td><input type="checkbox" id="check-speed-beacons"></td>
-                    </tr>
-                    <tr>
-                        <td>Speed Module Tier: </td>
-                        <td><select id="speed-module-tier">
-                            <option value="0">speed-module-1</option>
-                            <option value="1">speed-module-2</option>
-                            <option value="2" selected="selected">speed-module-3</option>
-                        </select></td>
-                    </tr>
-                    <tr>
-                        <td>Speed Module Quality: </td>
-                        <td><select id="speed-module-quality"></select></td>
-                    </tr>
-                    <tr>
-                        <td>Speed Beacon Quality: </td>
-                        <td><select id="beacon-quality"></select></td>
-                    </tr>
-                    <tr>
-                        <td>Max Speed Modules: </td>
-                        <td><input type="number" id="max-beaconed-speed-modules" value="16"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="productivity-research">
-            <h1>Productivity Research</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Percent Bonus (0-300)</th>
-                    </tr>
-                </thead>
-                <tbody id="productivity-research-tbody">
-                </tbody>
-            </table>
-        </div>
-        <div id="planets">
-            <h1>Planets</h1>
-            <p>Includes a planet's recipes and resources</p>
-            <table>
-                <tbody id="planets-tbody">
-                </tbody>
-            </table>
-        </div>
-        <div id="resources">
-            <h1>Resources</h1>
-            <p>Overly simplified for now, ignores buildings</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Resource</th>
-                        <th>Resource Type</th>
-                        <th>Planets</th>
-                        <th>Cost</th>
-                    </tr>
-                </thead>
-                <tbody id="resources-tbody">
-                </tbody>
-            </table>
-        </div>
-        <div id="input-items">
-            <h1>Input Items</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quality</th>
-                        <th>Cost</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="input-items-tbody"></tbody>
-            </table>
-            <button id="add-input-item">+</button>
-        </div>
-        <div id="recipes">
-            <h1>Recipes</h1>
-            <p>Run without specified recipes (Blacklist) or only with specified recipes (Whitelist). If using a Whitelist, planet-specific recipe checks are ignored.</p>
-            <div>
-                <input type="radio" name="recipes-type" id="blacklist-recipes" value="exclude-recipes" checked/>
-                <label>Blacklist</label>
-            </div>
-            <div>
-                <input type="radio" name="recipes-type" id="whitelist-recipes" value="include-recipes"/>
-                <label>Whitelist</label>
-            </div>
-            <br>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Recipe</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody id="recipes-tbody"></tbody>
-            </table>
-            <button id="add-recipe">+</button>
-        </div>
-        <div id="solver">
-            <h1>Solver</h1>
-            <button id="solve">solve</button>
-            <br>
-            <div id="results" style="display: none;">
-                <h1>Inputs</h1>
+        <div class="app">
+            <div id="output-items">
+                <h1>Output Items</h1>
+                <p>What you want to upcycle</p>
                 <table>
                     <thead>
                         <tr>
                             <th>Item</th>
                             <th>Quality</th>
                             <th>Amount/Sec</th>
-                            <th>Unit Cost</th>
-                            <th>Total Cost</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody id="input-results-tbody"></tbody>
+                    <tbody id="output-items-tbody"></tbody>
                 </table>
-                <div id="byproduct-results" style="display: none;">
-                    <h1>Byproducts</h1>
+                <button id="add-output-item">+</button>
+            </div>
+            <div id="preferences">
+                <h1>Preferences</h1>
+                <table>
+                    <tr>
+                        <td>Max Quality Unlocked: </td>
+                        <td><select id="max-quality-unlocked"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Crafting Machine Quality: </td>
+                        <td><select id="crafting-machine-quality"></select></td>
+                    </tr>
+                    <tr>
+                        <td>Crafting Machine Cost: </td>
+                        <td><input type="number" id="crafting-machine-cost" value="1"></td>
+                    </tr>
+                    <tr>
+                        <td>Allow Byproducts: </td>
+                        <td><input type="checkbox" id="allow-byproducts"></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="modules">
+                <h1>Modules</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Tier</th>
+                            <th>Quality</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quality: </td>
+                            <td><select id="quality-module-tier">
+                                <option value="0">quality-module-1</option>
+                                <option value="1">quality-module-2</option>
+                                <option value="2" selected="selected">quality-module-3</option>
+                            </select></td>
+                            <td><select id="quality-module-quality"></select></td>
+                            <td><input type="number" id="quality-module-cost" value="1"></td>
+                        </tr>
+                        <tr>
+                            <td>Productivity: </td>
+                            <td><select id="prod-module-tier">
+                                <option value="0">prod-module-1</option>
+                                <option value="1">prod-module-2</option>
+                                <option value="2" selected="selected">prod-module-3</option>
+                            </select></td>
+                            <td><select id="prod-module-quality"></select></td>
+                            <td><input type="number" id="prod-module-cost" value="1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="speed-beacons">
+                <h1>Speed Beacons</h1>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Check Speed Beacons: </td>
+                            <td><input type="checkbox" id="check-speed-beacons"></td>
+                        </tr>
+                        <tr>
+                            <td>Speed Module Tier: </td>
+                            <td><select id="speed-module-tier">
+                                <option value="0">speed-module-1</option>
+                                <option value="1">speed-module-2</option>
+                                <option value="2" selected="selected">speed-module-3</option>
+                            </select></td>
+                        </tr>
+                        <tr>
+                            <td>Speed Module Quality: </td>
+                            <td><select id="speed-module-quality"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Speed Beacon Quality: </td>
+                            <td><select id="beacon-quality"></select></td>
+                        </tr>
+                        <tr>
+                            <td>Max Speed Modules: </td>
+                            <td><input type="number" id="max-beaconed-speed-modules" value="16"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="productivity-research">
+                <h1>Productivity Research</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Percent Bonus (0-300)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productivity-research-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="planets">
+                <h1>Planets</h1>
+                <p>Includes a planet's recipes and resources</p>
+                <table>
+                    <tbody id="planets-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="resources">
+                <h1>Resources</h1>
+                <p>Overly simplified for now, ignores buildings</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Resource Type</th>
+                            <th>Planets</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resources-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="input-items">
+                <h1>Input Items</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quality</th>
+                            <th>Cost</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="input-items-tbody"></tbody>
+                </table>
+                <button id="add-input-item">+</button>
+            </div>
+            <div id="recipes">
+                <h1>Recipes</h1>
+                <p>Run without specified recipes (Blacklist) or only with specified recipes (Whitelist). If using a Whitelist, planet-specific recipe checks are ignored.</p>
+                <div>
+                    <input type="radio" name="recipes-type" id="blacklist-recipes" value="exclude-recipes" checked/>
+                    <label>Blacklist</label>
+                </div>
+                <div>
+                    <input type="radio" name="recipes-type" id="whitelist-recipes" value="include-recipes"/>
+                    <label>Whitelist</label>
+                </div>
+                <br>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Recipe</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recipes-tbody"></tbody>
+                </table>
+                <button id="add-recipe">+</button>
+            </div>
+            <div id="solver">
+                <h1>Solver</h1>
+                <button id="solve">solve</button>
+                <br>
+                <div id="results" style="display: none;">
+                    <h1>Inputs</h1>
                     <table>
                         <thead>
                             <tr>
                                 <th>Item</th>
                                 <th>Quality</th>
                                 <th>Amount/Sec</th>
+                                <th>Unit Cost</th>
+                                <th>Total Cost</th>
                             </tr>
                         </thead>
-                        <tbody id="byproduct-results-tbody"></tbody>
+                        <tbody id="input-results-tbody"></tbody>
+                    </table>
+                    <div id="byproduct-results" style="display: none;">
+                        <h1>Byproducts</h1>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quality</th>
+                                    <th>Amount/Sec</th>
+                                </tr>
+                            </thead>
+                            <tbody id="byproduct-results-tbody"></tbody>
+                        </table>
+                    </div>
+                    <h1>Recipes</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Recipe</th>
+                                <th>Ingredient Quality</th>
+                                <th>Productivity Modules</th>
+                                <th>Quality Modules</th>
+                                <th>Beacons</th>
+                                <th>Speed Modules</th>
+                                <th>Machines</th>
+                                <th>Unit Cost</th>
+                                <th>Total Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recipe-results-tbody"></tbody>
                     </table>
                 </div>
-                <h1>Recipes</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Recipe</th>
-                            <th>Ingredient Quality</th>
-                            <th>Productivity Modules</th>
-                            <th>Quality Modules</th>
-                            <th>Beacons</th>
-                            <th>Speed Modules</th>
-                            <th>Machines</th>
-                            <th>Unit Cost</th>
-                            <th>Total Cost</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recipe-results-tbody"></tbody>
-                </table>
             </div>
         </div>
     </body>

@@ -15,7 +15,7 @@ export function get_item_table_data(table_id) {
     let data = [];
     let table = window.document.getElementById(table_id);
     for(let row of Array.from(table.children)) {
-        //<tr><th><select>
+        //<tr><td><select>
         let item_id = row.children[0].firstChild.value;
         let quality = parseInt(row.children[1].firstChild.value);
         let distinct_item = new DistinctItem(item_id, quality);
@@ -31,19 +31,19 @@ export function add_item_table_row(table_id, item_id, quality, amount) {
     let item_keys = parsed_data.items.keys();
 
     row_element
-        .appendChild(document.createElement('th'))
+        .appendChild(document.createElement('td'))
         .appendChild(make_item_select(item_keys, item_id));
 
     row_element
-        .appendChild(document.createElement('th'))
+        .appendChild(document.createElement('td'))
         .appendChild(make_quality_select(quality));
 
     row_element
-        .appendChild(document.createElement('th'))
+        .appendChild(document.createElement('td'))
         .appendChild(make_numeric_input(amount));
 
     let delete_element = row_element
-        .appendChild(document.createElement('th'))
+        .appendChild(document.createElement('td'))
         .appendChild(document.createElement('button'));
     delete_element.innerHTML = 'x';
 

@@ -1,0 +1,44 @@
+body {
+    background-color:lightsalmon;
+}
+
+.app {
+    font-family: "calibri";
+    margin-left: 10%;
+    margin-right: 10%;
+    padding-left: 48px;
+    padding-right: 48px;
+    padding-top: 10px;
+    margin-top: 24px;
+    padding-bottom: 24px;
+    margin-bottom: 48px;
+    background-color: white;
+    border-radius: 12px;
+}
+
+table {
+    border: 2px solid lightgray;
+    border-collapse: collapse;
+}
+
+td + td,
+th + th { border-left: 1px solid lightgray; }
+tbody,
+tr + tr { border-top: 1px solid lightgray; }
+
+table td {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+table tr th {
+    background-color: #fffeeb;
+}
+
+table tr:nth-child(even of :not([hidden])) td {
+    background-color: #fffeeb;
+}
+
+table tr:nth-child(odd of :not([hidden])) td {
+    background-color: #defeff;
+}

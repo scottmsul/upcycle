@@ -35,9 +35,9 @@ export function display_resources(resources, planets) {
         input_element.setAttribute('value', cost);
 
         if(allowed_planets_with_resource.length > 0) {
-            row_element.style.display = '';
+            row_element.removeAttribute('hidden');
         } else {
-            row_element.style.display = 'none';
+            row_element.setAttribute('hidden', '');
         }
 
         resources_table.appendChild(row_element);

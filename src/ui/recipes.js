@@ -14,7 +14,7 @@ export function get_recipe_table_data() {
     let data = [];
     let table = window.document.getElementById(RECIPES_TABLE_ID);
     for(let row of Array.from(table.children)) {
-        //<tr><th><select>
+        //<tr><td><select>
         let recipe_key = row.children[0].firstChild.value;
         data.push(recipe_key);
     }
@@ -27,11 +27,11 @@ export function add_recipe_table_row(recipe_key) {
     let recipe_keys = parsed_data.recipes.keys();
 
     row_element
-        .appendChild(document.createElement('th'))
+        .appendChild(document.createElement('td'))
         .appendChild(make_recipe_select(recipe_keys, recipe_key));
 
     let delete_element = row_element
-        .appendChild(document.createElement('th'))
+        .appendChild(document.createElement('td'))
         .appendChild(document.createElement('button'));
     delete_element.innerHTML = 'x';
 
