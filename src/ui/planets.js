@@ -1,4 +1,4 @@
-import { PLANETS } from "../data.js";
+import { parsed_data, PLANETS } from "../data.js";
 import { DEFAULT_INCLUDE_PLANET } from "../model/constants.js";
 import { PLANETS_TABLE_ID } from "./constants.js";
 
@@ -12,8 +12,9 @@ export function initialize_planets() {
         planet_checkbox.setAttribute('type', 'checkbox');
         planet_checkbox.setAttribute('checked', true);
 
-        row_element.appendChild(document.createElement('td'))
-            .innerHTML = planet_key;
+        let planet_element = row_element.appendChild(document.createElement('td'));
+        planet_element.id = planet_key;
+        planet_element.innerHTML = parsed_data.planets.get(planet_key).localized_name.en;
 
         planets_table.appendChild(row_element);
     }
@@ -24,7 +25,7 @@ export function get_planets_table_data() {
     let table = window.document.getElementById(PLANETS_TABLE_ID);
     for(let row of Array.from(table.children)) {
         //planet - <tr><td>.innerHTML
-        let planet = row.children[1].innerHTML;
+        let planet = row.children[1].id;
         //checkbox - <tr><td><input>.checked
         let include_planet = row.children[0].firstChild.checked;
 
