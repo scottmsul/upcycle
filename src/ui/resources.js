@@ -1,4 +1,4 @@
-import { RESOURCES } from "../data.js";
+import { parsed_data, RESOURCES } from "../data.js";
 import { DEFAULT_RESOURCE_COST } from "../model/constants.js";
 import { RESOURCES_TABLE_ID } from "./constants.js";
 
@@ -11,7 +11,9 @@ export function display_resources(resources, planets) {
     resources_table.innerHTML = '';
 
     RESOURCES.forEach((resource_data, resource_key, map) => {
-        let allowed_planets_with_resource = resource_data.planets.filter((planet) => planets.get(planet));
+        let allowed_planets_with_resource = resource_data.planets
+            .filter((planet) => planets.get(planet))
+            .map((planet) => parsed_data.planets.get(planet).localized_name.en);
 
         let cost = resources.get(resource_key);
 
@@ -20,7 +22,7 @@ export function display_resources(resources, planets) {
         row_element.setAttribute('id', resource_key);
 
         row_element.appendChild(document.createElement('td'))
-            .innerHTML = resource_data.item;
+            .innerHTML = parsed_data.items.get(resource_data.item).localized_name.en;
 
         row_element.appendChild(document.createElement('td'))
             .innerHTML = resource_data.resource_type;

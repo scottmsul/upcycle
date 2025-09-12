@@ -7,10 +7,6 @@ export const parsed_data = new ParsedData(imported_raw_data);
 export const LOWEST_MAX_QUALITY_UNLOCKED = 2;
 export const HIGHEST_MAX_QUALITY_UNLOCKED = 4;
 
-export const QUALITY_MODULE_TIERS = ['quality-module-1', 'quality-module-2', 'quality-module-3'];
-export const PROD_MODULE_TIERS = ['productivity-module-1', 'productivity-module-2', 'productivity-module-3'];
-export const SPEED_MODULE_TIERS = ['speed-module-1', 'speed-module-2', 'speed-module-3'];
-
 // the factorio json data has localized names for these planet keys
 // define here to control order of appearance
 // also include 'space-platform' as a 'planet' which while not semantically correct is a useful abstraction
@@ -41,11 +37,11 @@ function initialize_productivity_research_recipe_item_map() {
 export const PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP = initialize_productivity_research_recipe_item_map();
 
 // Useful ad-hoc abstraction of resources
-export const MINING_RESOURCE_TYPE = 'mining';
-export const PUMPJACK_RESOURCE_TYPE = 'pumpjack';
-export const OFFSHORE_RESOURCE_TYPE = 'offshore';
-export const PLANT_RESOURCE_TYPE = 'plant';
-export const ASTEROID_RESOURCE_TYPE = 'asteroid';
+export const MINING_RESOURCE_TYPE = 'Mining';
+export const PUMPJACK_RESOURCE_TYPE = 'Pumpjack';
+export const OFFSHORE_RESOURCE_TYPE = 'Offshore';
+export const PLANT_RESOURCE_TYPE = 'Plant';
+export const ASTEROID_RESOURCE_TYPE = 'Asteroid';
 
 export const SPACE_PLATFORM_RESOURCES = ['metallic-asteroid-chunk', 'carbonic-asteroid-chunk', 'oxide-asteroid-chunk', 'promethium-asteroid-chunk'];
 
