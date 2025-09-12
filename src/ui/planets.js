@@ -37,8 +37,8 @@ export function get_planets_table_data() {
 export function set_planets_table_data(data) {
     let table = window.document.getElementById(PLANETS_TABLE_ID);
     for(let row of Array.from(table.children)) {
-        //planet - <tr><td>.innerHTML
-        let planet = row.children[1].innerHTML;
+        //planet - <tr><td>.id
+        let planet = row.children[1].id;
 
         let include_planet = data.get(planet);
         //checkbox - <tr><td><input>.checked
