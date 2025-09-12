@@ -51,9 +51,9 @@ export const SPACE_PLATFORM_RESOURCES = ['metallic-asteroid-chunk', 'carbonic-as
 
 function initialize_resources() {
     /** returns a map of {resource_name} -> {
-     *      'planets': (array of planet names),
+     *      'planets': (array of planet keys),
      *      'resource_type': (resource type),
-     *      'item': (item name)
+     *      'item': (item key)
      * }
      *
      * The resource name is often the same as the item name but not always.
@@ -143,3 +143,34 @@ function initialize_resources() {
 }
 
 export const RESOURCES = initialize_resources();
+
+// prepares a list of [{item_key: string, localized_name: string}] sorted by localized name for item table dropdowns
+// only shows items that are used in recipes
+function initialize_item_select_data() {
+    let item_keys_in_recipes = new Map();
+    parsed_data.recipes.forEach((recipe_data, recipe_key, map) => {
+        for(let ingredient of recipe_data.ingredients) {
+            if(!item_keys_in_recipes.has(ingredient.name)) {
+                let ingredient_localized_name = parsed_data.item(ingredient.name).localized_name.en;
+                item_keys_in_recipes.set(ingredient.name, ingredient_localized_name);
+            }
+        }
+        for(let result of recipe_data.results) {
+            if(!item_keys_in_recipes.has(result.name)) {
+                let result_localized_name = parsed_data.item(result.name).localized_name.en;
+                item_keys_in_recipes.set(result.name, result_localized_name);
+            }
+        }
+    });
+    let item_select_data = Array.from(item_keys_in_recipes.entries()).map(([item_key, localized_name]) => {
+        console.log(`localized_name: ${localized_name}`);
+        return {
+            'item_key': item_key,
+            'localized_name': localized_name
+        };
+    });
+    item_select_data.sort((a,b) => a.localized_name.localeCompare(b.localized_name));
+    return item_select_data;
+}
+
+export const ITEM_SELECT_DATA = initialize_item_select_data();

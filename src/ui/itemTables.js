@@ -1,4 +1,4 @@
-import { parsed_data } from "../data.js";
+import { ITEM_SELECT_DATA } from "../data.js";
 import { distinct_item_from_obj, DistinctItem } from "../distinctItem.js";
 import { float_from_string } from "../util.js";
 import { initialize_quality_selector } from "./quality.js";
@@ -28,11 +28,10 @@ export function get_item_table_data(table_id) {
 export function add_item_table_row(table_id, item_id, quality, amount) {
     let table = window.document.getElementById(table_id);
     let row_element = document.createElement('tr');
-    let item_keys = parsed_data.items.keys();
 
     row_element
         .appendChild(document.createElement('td'))
-        .appendChild(make_item_select(item_keys, item_id));
+        .appendChild(make_item_select(item_id));
 
     row_element
         .appendChild(document.createElement('td'))
@@ -60,12 +59,12 @@ export function add_item_table_row(table_id, item_id, quality, amount) {
     table.dispatchEvent(event);
 }
 
-function make_item_select(item_keys, default_item_id) {
+function make_item_select(default_item_id) {
     let select_element = document.createElement('select');
-    for(let item_key of item_keys) {
+    for(let item_data of ITEM_SELECT_DATA) {
         let opt = document.createElement("option");
-        opt.value = item_key;
-        opt.innerHTML = item_key;
+        opt.value = item_data.item_key;
+        opt.innerHTML = item_data.localized_name;
         select_element.append(opt);
     }
     select_element.value = default_item_id;
