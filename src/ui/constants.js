@@ -39,4 +39,4 @@ export const PRODUCTIVITY_RESEARCH_TABLE_ID = 'productivity-research-tbody';
 
 export const FLOATING_POINT_CUTOFF = 1e-9;
 
-export const QUALITY_FRIENDLY_NAMES = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
+export const QUALITY_FRIENDLY_NAMES = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
