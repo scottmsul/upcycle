@@ -1,3 +1,4 @@
+import { parsed_data } from '../data.js';
 import { get_combined_inputs } from '../model/solverInput.js';
 import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID } from './constants.js';
 
@@ -35,7 +36,7 @@ export function display_results(solver_input, solver, vars) {
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = distinct_item.item_key;
+            .innerHTML = parsed_data.items.get(distinct_item.item_key).localized_name.en;
 
         row_element
             .appendChild(document.createElement('td'))
@@ -69,7 +70,7 @@ export function display_results(solver_input, solver, vars) {
 
             row_element
                 .appendChild(document.createElement('td'))
-                .innerHTML = distinct_item.item_key;
+                .innerHTML = parsed_data.items.get(distinct_item.item_key).localized_name.en;
 
             row_element
                 .appendChild(document.createElement('td'))
@@ -93,7 +94,7 @@ export function display_results(solver_input, solver, vars) {
 
         row_element
             .appendChild(document.createElement('td'))
-            .innerHTML = distinct_recipe.recipe_key;
+            .innerHTML = parsed_data.recipes.get(distinct_recipe.recipe_key).localized_name.en;
 
         row_element
             .appendChild(document.createElement('td'))
