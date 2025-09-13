@@ -102,6 +102,10 @@ export function display_results(solver_input, solver, vars) {
 
         row_element
             .appendChild(document.createElement('td'))
+            .innerHTML = parsed_data.crafting_machines.get(distinct_recipe.crafting_machine_key).localized_name.en;
+
+        row_element
+            .appendChild(document.createElement('td'))
             .innerHTML = distinct_recipe.num_prod_modules;
 
         row_element
