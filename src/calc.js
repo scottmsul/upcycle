@@ -29,12 +29,11 @@ const PROD_MODULE_SPEED_PENALTIES = [0.05, 0.1, 0.15];
 const SPEED_MODULE_QUALITY_PENALTIES = [.01, .015, .025];
 
 export function calculate_recipe_modifiers(distinct_recipe, parsed_data, solver_input) {
-    let recipe_data = parsed_data.recipe(distinct_recipe.recipe_key);
-
     let crafting_machine_key = distinct_recipe.crafting_machine_key;
     let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
     let crafting_machine_base_speed = crafting_machine_data.crafting_speed;
-    let crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[solver_input.crafting_machine_quality];
+    let crafting_machine_quality = solver_input.crafting_machines.get(crafting_machine_key).quality;
+    let crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[crafting_machine_quality];
     let crafting_machine_speed = crafting_machine_base_speed * crafting_machine_quality_speed_factor;
 
     let beacon_efficiency = BEACON_EFFICIENCIES[solver_input.speed_beacon_quality];

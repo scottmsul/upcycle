@@ -170,6 +170,21 @@ function initialize_item_select_data() {
 
 export const ITEM_SELECT_DATA = initialize_item_select_data();
 
+// prepares a list of [{crafting_machine_key: string, localized_name: string}] sorted by localized name for crafting machines table
+function initialize_crafting_machines_table_data() {
+    let crafting_machines_table_data = [];
+    parsed_data.crafting_machines.forEach((crafting_machine_data, crafting_machine_key, map) => {
+        crafting_machines_table_data.push({
+            crafting_machine_key: crafting_machine_key,
+            localized_name: crafting_machine_data.localized_name.en
+        });
+    });
+    crafting_machines_table_data.sort((a,b) => a.localized_name.localeCompare(b.localized_name));
+    return crafting_machines_table_data;
+}
+
+export const CRAFTING_MACHINES_TABLE_DATA = initialize_crafting_machines_table_data();
+
 // prepares a list of [{recipe_key: string, localized_name: string}] sorted by localized name for recipe select dropdowns
 function initialize_recipe_select_data() {
     let recipe_select_data = [];

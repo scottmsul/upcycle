@@ -1,7 +1,7 @@
 export const MAX_QUALITY_UNLOCKED_SELECT_ID = 'max-quality-unlocked';
-export const CRAFTING_MACHINE_QUALITY_SELECT_ID = 'crafting-machine-quality';
-export const CRAFTING_MACHINE_COST_INPUT_ID = 'crafting-machine-cost';
 export const ALLOW_BYPRODUCTS_INPUT_ID = 'allow-byproducts';
+
+export const CRAFTING_MACHINES_TABLE_ID = 'crafting-machines-tbody';
 
 export const QUALITY_MODULE_TIER_SELECT_ID = 'quality-module-tier';
 export const QUALITY_MODULE_QUALITY_SELECT_ID = 'quality-module-quality';

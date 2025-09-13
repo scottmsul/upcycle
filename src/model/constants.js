@@ -1,10 +1,22 @@
-import { PLANETS, PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP, RESOURCES } from "../data.js";
+import { parsed_data, PLANETS, PRODUCTIVITY_RESEARCH_ITEM_RECIPE_MAP, RESOURCES } from "../data.js";
 import { DistinctItem } from "../distinctItem.js";
 
 export const DEFAULT_OUTPUT_ITEMS = [[new DistinctItem('iron-plate', 4), 1.0]];
 export const DEFAULT_MAX_QUALITY_UNLOCKED = 4;
+
+export const DEFAULT_INCLUDE_CRAFTING_MACHINE = true;
 export const DEFAULT_CRAFTING_MACHINE_QUALITY = 4;
 export const DEFAULT_CRAFTING_MACHINE_COST = 1.0;
+export const DEFAULT_CRAFTING_MACHINES = new Map(
+    Array.from(parsed_data.crafting_machines.keys()).map(crafting_machine_key => {
+        return [crafting_machine_key, {
+            include: DEFAULT_INCLUDE_CRAFTING_MACHINE,
+            quality: DEFAULT_CRAFTING_MACHINE_QUALITY,
+            cost: DEFAULT_CRAFTING_MACHINE_COST
+        }];
+    })
+);
+
 export const DEFAULT_ALLOW_BYPRODUCTS = true;
 export const DEFAULT_QUALITY_MODULE_TIER = 2;
 export const DEFAULT_QUALITY_MODULE_QUALITY = 4;
@@ -56,9 +68,8 @@ export const DEFAULT_RECIPE_KEY = 'iron-gear-wheel';
 
 // for local storage
 export const OUTPUT_ITEMS_KEY = 'output_items';
+export const CRAFTING_MACHINES_KEY = 'crafting_machines';
 export const MAX_QUALITY_UNLOCKED_KEY = 'max_quality_unlocked';
-export const CRAFTING_MACHINE_QUALITY_KEY = 'crafting_machine_quality';
-export const CRAFTING_MACHINE_COST_KEY = 'crafting_machine_cost';
 export const ALLOW_BYPRODUCTS_KEY = 'allow_byproducts';
 export const QUALITY_MODULE_TIER_KEY = 'quality_module_tier';
 export const QUALITY_MODULE_QUALITY_KEY = 'quality_module_quality';

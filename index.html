@@ -32,17 +32,25 @@
                         <td><select id="max-quality-unlocked"></select></td>
                     </tr>
                     <tr>
-                        <td>Crafting Machine Quality: </td>
-                        <td><select id="crafting-machine-quality"></select></td>
-                    </tr>
-                    <tr>
-                        <td>Crafting Machine Cost: </td>
-                        <td><input type="number" id="crafting-machine-cost" value="1"></td>
-                    </tr>
-                    <tr>
                         <td>Allow Byproducts: </td>
                         <td><input type="checkbox" id="allow-byproducts"></td>
                     </tr>
+                </table>
+            </div>
+            <div id="crafting-machines">
+                <h1>Crafting Machines</h1>
+                <p>When multiple crafting machines are available, the solver defaults to the machine with the highest base speed. </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Crafting Machine</th>
+                            <th>Quality</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crafting-machines-tbody">
+                    </tbody>
                 </table>
             </div>
             <div id="modules">

@@ -26,6 +26,13 @@ export function initialize_quality_selector(select_element) {
     }
 }
 
+export function make_quality_select(initial_quality) {
+    let quality_select = document.createElement('select');
+    initialize_quality_selector(quality_select);
+    quality_select.value = initial_quality;
+    return quality_select;
+}
+
 export function update_quality_selectors_to_max_quality(new_max_quality) {
     // update any dropdowns that are higher than new_max_quality to be equal to new_max_quality
     let select_elements = document.getElementsByClassName(QUALITY_SELECT_CLASS_NAME);

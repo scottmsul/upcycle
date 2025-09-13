@@ -1,7 +1,8 @@
 import { ITEM_SELECT_DATA } from "../data.js";
 import { distinct_item_from_obj, DistinctItem } from "../distinctItem.js";
 import { float_from_string } from "../util.js";
-import { initialize_quality_selector } from "./quality.js";
+import { make_quality_select } from "./quality.js";
+import { make_numeric_input } from "./util.js";
 
 export function display_item_table(table_id, data) {
     let table = window.document.getElementById(table_id);
@@ -69,20 +70,6 @@ function make_item_select(default_item_id) {
     }
     select_element.value = default_item_id;
     return select_element;
-}
-
-function make_quality_select(initial_quality) {
-    let quality_select = document.createElement('select');
-    initialize_quality_selector(quality_select);
-    quality_select.value = initial_quality;
-    return quality_select;
-}
-
-function make_numeric_input(default_value) {
-    let input_element = document.createElement('input');
-    input_element.setAttribute('type', 'number');
-    input_element.value = default_value;
-    return input_element;
 }
 
 // returns null if not valid

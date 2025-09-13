@@ -62,12 +62,21 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
      * Fluid handling to be added later.
      */
 
+    let allowed_crafting_machines = new Set();
+    solver_input.crafting_machines.forEach((crafting_machine_input_data, crafting_machine_key, map) => {
+        if(crafting_machine_input_data.include) {
+            allowed_crafting_machines.add(crafting_machine_key);
+        }
+    });
+
     // for now just get the fastest building for each category
     let preferred_crafting_machine_by_category = new Map();
     parsed_data.crafting_categories_to_crafting_machines.forEach((crafting_machine_keys, crafting_category, map) => {
-        let best_crafting_machine_so_far = parsed_data.crafting_machines.get(crafting_machine_keys[0]);
-        for(let i=1; i<crafting_machine_keys.length; i++) {
-            let curr_crafting_machine = parsed_data.crafting_machines.get(crafting_machine_keys[i]);
+        let allowed_crafting_machine_keys = crafting_machine_keys.filter((key) => allowed_crafting_machines.has(key));
+        if(allowed_crafting_machine_keys.length == 0) return;
+        let best_crafting_machine_so_far = parsed_data.crafting_machines.get(allowed_crafting_machine_keys[0]);
+        for(let i=1; i<allowed_crafting_machine_keys.length; i++) {
+            let curr_crafting_machine = parsed_data.crafting_machines.get(allowed_crafting_machine_keys[i]);
             if(curr_crafting_machine.crafting_speed > best_crafting_machine_so_far.crafting_speed) {
                 best_crafting_machine_so_far = curr_crafting_machine;
             }
@@ -80,23 +89,26 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
 
     let distinct_recipes = new Map();
     parsed_data.recipes.forEach( (recipe_data, recipe_key, map) => {
-        let crafting_machine_key = preferred_crafting_machine_by_category.get(recipe_data.category);
-        let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
-        if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set)) {
-            let num_module_slots = crafting_machine_data.module_slots;
-            let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? solver_input.max_quality_unlocked : 0;
-            for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
-                let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
-                for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
-                    let num_quality_modules = num_module_slots - num_prod_modules;
-                    for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= solver_input.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
-                        let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, crafting_machine_key, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
-                        distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+        // because crafting machines can be deselected, some categories might not have a crafting machine
+        if(preferred_crafting_machine_by_category.has(recipe_data.category)) {
+            let crafting_machine_key = preferred_crafting_machine_by_category.get(recipe_data.category);
+            let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
+            if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set)) {
+                let num_module_slots = crafting_machine_data.module_slots;
+                let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? solver_input.max_quality_unlocked : 0;
+                for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
+                    let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
+                    for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
+                        let num_quality_modules = num_module_slots - num_prod_modules;
+                        for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= solver_input.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
+                            let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, crafting_machine_key, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
+                            distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+                        }
                     }
                 }
             }
         }
-    })
+    });
     return distinct_recipes;
 }
 
@@ -213,7 +225,8 @@ function get_variable_costs(distinct_items, distinct_recipes, solver_input) {
 
     // recipe variable costs
     distinct_recipes.forEach((distinct_recipe, distinct_recipe_key, map) => {
-        let crafting_machine_unit_cost = solver_input.crafting_machine_cost;
+        let crafting_machine_key = distinct_recipe.crafting_machine_key;
+        let crafting_machine_unit_cost = solver_input.crafting_machines.get(crafting_machine_key).cost;
         let quality_module_unit_cost = distinct_recipe.num_quality_modules * solver_input.quality_module_cost;
         let prod_module_unit_cost = distinct_recipe.num_prod_modules * solver_input.prod_module_cost;
         let recipe_unit_cost = crafting_machine_unit_cost + quality_module_unit_cost + prod_module_unit_cost;
