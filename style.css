@@ -16,6 +16,18 @@ body {
     border-radius: 12px;
 }
 
+h1 {
+    margin-bottom: 0;
+}
+
+hr {
+    border: none;
+    height: 1.5px;
+    color: darkgray;
+    background-color: darkgray;
+    margin-top: 0;
+}
+
 table {
     border: 2px solid lightgray;
     border-collapse: collapse;
@@ -42,4 +54,16 @@ table tr:nth-child(even of :not([hidden])) td {
 
 table tr:nth-child(odd of :not([hidden])) td {
     background-color: #defeff;
+}
+
+#solve {
+    font-size: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
+#solver-results {
+    display: none;
 }

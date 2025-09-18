@@ -5,10 +5,78 @@
  * with the Solver object containing all the variables and constraints needed to run a solver.
  * The job of actually translating this data into a specific packaged solver format is handled elsewhere.
  */
+import GLPK from '../packages/glpk.js/dist/index.js';
 import { DistinctItem, get_distinct_item_key } from './distinctItem.js';
 import { DistinctRecipe } from './distinctRecipe.js';
 import { calculate_expected_result_amount, calculate_quality_transition_probability, calculate_recipe_modifiers, is_recipe_allowed  } from './calc.js';
 import { get_combined_inputs } from './model/solverInput.js';
+import { parsed_data } from './data.js';
+
+export async function run_solver(solver_input) {
+    // copy in case the user updates the UI while the solver is running
+    // note this is a shallow copy, but the solver_input only updates with replacement, so should be good
+    let solver_input_copy = solver_input.copy();
+
+    // start with simple ad-hoc example, abstract stuff later
+    // one crafting recipe with one ingredient -> one product
+    const glpk = await GLPK();
+
+    let solver = new Solver(parsed_data, solver_input_copy);
+
+    // glpk-specific code
+    let glpk_formatted_variable_costs = [];
+    solver.variable_costs.forEach( (value, key, map) => {
+        glpk_formatted_variable_costs.push({
+            name: key,
+            coef: value
+        })
+    });
+
+    let glpk_formatted_item_variable_coefficients = [];
+    solver.item_variable_coefficients.forEach( (coefficients, disinct_item_key, map1) => {
+        let glpk_formatted_coefficients = [];
+        coefficients.forEach( (coefficient, variable_key, map2) => {
+            glpk_formatted_coefficients.push({
+                name: variable_key,
+                coef: coefficient
+            });
+        });
+        glpk_formatted_item_variable_coefficients.push({
+            name: disinct_item_key,
+            vars: glpk_formatted_coefficients,
+            bnds: {
+                type: glpk.GLP_FX,
+                ub: solver.distinct_item_constraints.get(disinct_item_key),
+                lb: solver.distinct_item_constraints.get(disinct_item_key)
+            }
+        });
+    });
+
+    const lp = {
+        name: 'LP',
+        objective: {
+            direction: glpk.GLP_MIN,
+            name: 'obj',
+            vars: glpk_formatted_variable_costs
+        },
+        subjectTo: glpk_formatted_item_variable_coefficients
+    }
+
+    const opt = {
+        msglev: glpk.GLP_MSG_DBG
+    };
+
+    const glpk_output = await glpk.solve(lp, opt);
+
+    const success = (glpk_output.result.status == glpk.GLP_OPT);
+
+    return {
+        solver_input: solver_input_copy,
+        solver: solver,
+        success: success,
+        glpk_output: glpk_output
+    };
+}
 
 export class Solver {
     constructor(parsed_data, solver_input) {

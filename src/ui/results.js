@@ -1,9 +1,14 @@
 import { parsed_data } from '../data.js';
 import { get_combined_inputs } from '../model/solverInput.js';
-import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID } from './constants.js';
+import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, SOLVER_RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID } from './constants.js';
+
+export function hide_results() {
+    let results_element = document.getElementById(SOLVER_RESULTS_ID);
+    results_element.style.display = 'none';
+}
 
 export function display_results(solver_input, solver, vars) {
-    let results_element = document.getElementById(RESULTS_ID);
+    let results_element = document.getElementById(SOLVER_RESULTS_ID);
     results_element.style.display = 'block'; // block isn't important, just making it not none
 
     let recipe_results_table = document.getElementById(RECIPE_RESULTS_TABLE_ID);

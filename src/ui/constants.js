@@ -1,3 +1,5 @@
+export const SOLVER_SETUP_ID = 'solver-setup';
+
 export const MAX_QUALITY_UNLOCKED_SELECT_ID = 'max-quality-unlocked';
 export const ALLOW_BYPRODUCTS_INPUT_ID = 'allow-byproducts';
 
@@ -30,7 +32,14 @@ export const WHITELIST_RECIPES_INPUT_ID = 'whitelist-recipes';
 export const RECIPES_TABLE_ID = 'recipes-tbody';
 export const ADD_RECIPE_BUTTON_ID = 'add-recipe';
 
-export const RESULTS_ID = 'results';
+export const RUN_SOLVER_BUTTON_ID = 'run-solver-button';
+export const SOLVER_STATUS_TEXT_ID = 'solver-status';
+export const SOLVER_STATUS_TEXT_NOT_RUN_YET = 'Solver status: not run yet';
+export const SOLVER_STATUS_TEXT_CURRENTLY_RUNNING = 'Solver status: currently running...';
+export const SOLVER_STATUS_TEXT_COMPLETE = 'Solver status: solve complete!';
+export const SOLVER_STATUS_TEXT_ERROR = 'Solver status: no solution found';
+
+export const SOLVER_RESULTS_ID = 'solver-results';
 export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';
 export const BYPRODUCT_RESULTS_SECTION_ID = 'byproduct-results';
 export const BYPRODUCT_RESULTS_TABLE_ID = 'byproduct-results-tbody';
