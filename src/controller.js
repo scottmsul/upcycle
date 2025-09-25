@@ -79,7 +79,7 @@ export class Controller {
             set_solver_status(SOLVER_STATUS_TEXT_CURRENTLY_RUNNING);
             const solve_result = await run_solver(this.solver_input);
             if(solve_result.success) {
-                display_results(solve_result.solver_input, solve_result.solver, solve_result.glpk_output.result.vars);
+                display_results(solve_result.solver_input, solve_result.solver, solve_result.glpk_output.result);
                 set_solver_status(SOLVER_STATUS_TEXT_COMPLETE);
             } else {
                 set_solver_status(SOLVER_STATUS_TEXT_ERROR);

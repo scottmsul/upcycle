@@ -67,3 +67,7 @@ table tr:nth-child(odd of :not([hidden])) td {
 #solver-results {
     display: none;
 }
+
+#total-cost {
+    font-size: 1.5em;
+}

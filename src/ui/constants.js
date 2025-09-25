@@ -40,6 +40,7 @@ export const SOLVER_STATUS_TEXT_COMPLETE = 'Solver status: solve complete!';
 export const SOLVER_STATUS_TEXT_ERROR = 'Solver status: no solution found';
 
 export const SOLVER_RESULTS_ID = 'solver-results';
+export const TOTAL_COST_ID = 'total-cost';
 export const INPUT_RESULTS_TABLE_ID = 'input-results-tbody';
 export const BYPRODUCT_RESULTS_SECTION_ID = 'byproduct-results';
 export const BYPRODUCT_RESULTS_TABLE_ID = 'byproduct-results-tbody';

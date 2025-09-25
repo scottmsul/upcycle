@@ -1,15 +1,18 @@
 import { parsed_data } from '../data.js';
 import { get_combined_inputs } from '../model/solverInput.js';
-import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, SOLVER_RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID } from './constants.js';
+import { FLOATING_POINT_CUTOFF, QUALITY_FRIENDLY_NAMES, SOLVER_RESULTS_ID, RECIPE_RESULTS_TABLE_ID, INPUT_ITEMS_TABLE_ID, INPUT_RESULTS_TABLE_ID, BYPRODUCT_RESULTS_SECTION_ID, BYPRODUCT_RESULTS_TABLE_ID, TOTAL_COST_ID } from './constants.js';
 
 export function hide_results() {
     let results_element = document.getElementById(SOLVER_RESULTS_ID);
     results_element.style.display = 'none';
 }
 
-export function display_results(solver_input, solver, vars) {
+export function display_results(solver_input, solver, glpk_result) {
     let results_element = document.getElementById(SOLVER_RESULTS_ID);
     results_element.style.display = 'block'; // block isn't important, just making it not none
+
+    let total_cost_element = document.getElementById(TOTAL_COST_ID);
+    total_cost_element.innerHTML = `Total Cost: ${format_number(glpk_result.z)}`;
 
     let recipe_results_table = document.getElementById(RECIPE_RESULTS_TABLE_ID);
     recipe_results_table.innerHTML = '';
@@ -18,7 +21,7 @@ export function display_results(solver_input, solver, vars) {
     let byproduct_results_data = new Map();
     let recipe_results_data = new Map();
     let inputs = get_combined_inputs(solver_input);
-    for(const [variable_key, amount] of Object.entries(vars)) {
+    for(const [variable_key, amount] of Object.entries(glpk_result.vars)) {
         if(Math.abs(amount) > FLOATING_POINT_CUTOFF) {
             if(solver.distinct_items.has(variable_key)) {
                 if(inputs.has(variable_key)) {
