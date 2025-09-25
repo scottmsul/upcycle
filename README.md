@@ -15,6 +15,8 @@ Nonetheless a linear solver can still be a very powerful tool, with some use cas
 
 The live web app can be found here: https://scottmsul.github.io/upcycle/
 
+The discord group can be found here: https://discord.gg/pejMjkjBK4
+
 # Usage
 
 First specify the high quality items you want to create in the **Output Items** area at the top.
