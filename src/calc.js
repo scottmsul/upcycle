@@ -36,20 +36,22 @@ export function calculate_recipe_modifiers(distinct_recipe, parsed_data, solver_
     let crafting_machine_quality_speed_factor = MACHINE_QUALITY_SPEED_FACTORS[crafting_machine_quality];
     let crafting_machine_speed = crafting_machine_base_speed * crafting_machine_quality_speed_factor;
 
-    let beacon_efficiency = BEACON_EFFICIENCIES[solver_input.speed_beacon_quality];
-    let num_effictive_speed_modules = calculate_num_effective_speed_modules(distinct_recipe.num_beaconed_speed_modules, beacon_efficiency);
+    let beacon_efficiency = BEACON_EFFICIENCIES[solver_input.beacon_quality];
+    let num_effective_beaconed_speed_modules = calculate_num_effective_beaconed_speed_modules(distinct_recipe.num_beaconed_speed_modules, beacon_efficiency);
 
-    let speed_beacon_speed_factor_modifier = num_effictive_speed_modules * SPEED_BONUSES[solver_input.speed_module_tier][solver_input.speed_module_quality];
+    let speed_beacon_speed_factor_modifier = num_effective_beaconed_speed_modules * SPEED_BONUSES[solver_input.beaconed_speed_module_tier][solver_input.beaconed_speed_module_quality];
+    let speed_module_speed_factor_modifier = distinct_recipe.num_speed_modules * SPEED_BONUSES[solver_input.speed_module_tier][solver_input.speed_module_quality];
     let quality_module_speed_factor_modifier = (-1.0) * distinct_recipe.num_quality_modules * QUALITY_MODULE_SPEED_PENALTY;
     let prod_module_speed_factor_modifier = (-1.0) * distinct_recipe.num_prod_modules * PROD_MODULE_SPEED_PENALTIES[solver_input.prod_module_tier];
-    let total_module_speed_factor_modifier = speed_beacon_speed_factor_modifier + quality_module_speed_factor_modifier + prod_module_speed_factor_modifier;
+    let total_module_speed_factor_modifier = speed_beacon_speed_factor_modifier + speed_module_speed_factor_modifier + quality_module_speed_factor_modifier + prod_module_speed_factor_modifier;
     let module_speed_factor = Math.max(1.0 + total_module_speed_factor_modifier, MINIMUM_MODULE_SPEED_FACTOR);
 
     let speed_factor = crafting_machine_speed * module_speed_factor;
 
     let quality_module_quality_percent = distinct_recipe.num_quality_modules * QUALITY_MODULE_PERCENTS[solver_input.quality_module_tier][solver_input.quality_module_quality];
-    let speed_beacon_quality_percent_penalty = num_effictive_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[solver_input.speed_module_tier];
-    let quality_percent = Math.max(0.0, quality_module_quality_percent - speed_beacon_quality_percent_penalty);
+    let speed_beacon_quality_percent_penalty = num_effective_beaconed_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[solver_input.beaconed_speed_module_tier];
+    let speed_module_quality_percent_penalty = distinct_recipe.num_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[solver_input.speed_module_tier];
+    let quality_percent = Math.max(0.0, quality_module_quality_percent - speed_beacon_quality_percent_penalty - speed_module_quality_percent_penalty);
 
     let crafting_machine_prod_bonus = crafting_machine_data.prod_bonus;
     let research_prod_bonus = PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.has(distinct_recipe.recipe_key) ?
@@ -65,13 +67,13 @@ export function calculate_recipe_modifiers(distinct_recipe, parsed_data, solver_
     };
 }
 
-function calculate_num_effective_speed_modules(num_beaconed_speed_modules, beacon_efficiency) {
+function calculate_num_effective_beaconed_speed_modules(num_beaconed_speed_modules, beacon_efficiency) {
     if(num_beaconed_speed_modules == 0) return 0;
 
     let num_beacons = Math.ceil(num_beaconed_speed_modules/2);
     let beacon_transmission_factor = beacon_efficiency * Math.pow(num_beacons, -0.5);
-    let num_effictive_speed_modules = num_beaconed_speed_modules * beacon_transmission_factor;
-    return num_effictive_speed_modules;
+    let num_effective_speed_modules = num_beaconed_speed_modules * beacon_transmission_factor;
+    return num_effective_speed_modules;
 }
 
 export function calculate_expected_result_amount(result_data, prod_bonus) {

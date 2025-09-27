@@ -11,10 +11,13 @@ export const QUALITY_MODULE_COST_INPUT_ID = 'quality-module-cost';
 export const PROD_MODULE_TIER_SELECT_ID = 'prod-module-tier';
 export const PROD_MODULE_QUALITY_SELECT_ID = 'prod-module-quality';
 export const PROD_MODULE_COST_INPUT_ID = 'prod-module-cost';
+export const SPEED_MODULE_TIER_SELECT_ID = 'speed-module-tier';
+export const SPEED_MODULE_QUALITY_SELECT_ID = 'speed-module-quality';
+export const SPEED_MODULE_COST_INPUT_ID = 'speed-module-cost';
 
 export const CHECK_SPEED_BEACONS_INPUT_ID = "check-speed-beacons";
-export const SPEED_MODULE_TIER_SELECT_ID = "speed-module-tier";
-export const SPEED_MODULE_QUALITY_SELECT_ID = "speed-module-quality";
+export const BEACONED_SPEED_MODULE_TIER_SELECT_ID = "beaconed-speed-module-tier";
+export const BEACONED_SPEED_MODULE_QUALITY_SELECT_ID = "beaconed-speed-module-quality";
 export const BEACON_QUALITY_SELECT_ID = "beacon-quality";
 export const MAX_BEACONED_SPEED_MODULES_INPUT_ID = "max-beaconed-speed-modules";
 

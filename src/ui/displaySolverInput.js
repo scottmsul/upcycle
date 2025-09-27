@@ -1,5 +1,5 @@
 import { parsed_data } from "../data.js";
-import { ALLOW_BYPRODUCTS_INPUT_ID, BEACON_QUALITY_SELECT_ID, BLACKLIST_RECIPES_INPUT_ID, CHECK_SPEED_BEACONS_INPUT_ID, INPUT_ITEMS_TABLE_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID, MAX_QUALITY_UNLOCKED_SELECT_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_COST_INPUT_ID, PROD_MODULE_QUALITY_SELECT_ID, PROD_MODULE_TIER_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, SPEED_MODULE_TIER_SELECT_ID, WHITELIST_RECIPES_INPUT_ID } from "./constants.js";
+import { ALLOW_BYPRODUCTS_INPUT_ID, BEACON_QUALITY_SELECT_ID, BLACKLIST_RECIPES_INPUT_ID, CHECK_SPEED_BEACONS_INPUT_ID, INPUT_ITEMS_TABLE_ID, MAX_BEACONED_SPEED_MODULES_INPUT_ID, MAX_QUALITY_UNLOCKED_SELECT_ID, OUTPUT_ITEMS_TABLE_ID, PROD_MODULE_COST_INPUT_ID, PROD_MODULE_QUALITY_SELECT_ID, PROD_MODULE_TIER_SELECT_ID, QUALITY_MODULE_COST_INPUT_ID, QUALITY_MODULE_QUALITY_SELECT_ID, QUALITY_MODULE_TIER_SELECT_ID, BEACONED_SPEED_MODULE_QUALITY_SELECT_ID, BEACONED_SPEED_MODULE_TIER_SELECT_ID, WHITELIST_RECIPES_INPUT_ID, SPEED_MODULE_TIER_SELECT_ID, SPEED_MODULE_QUALITY_SELECT_ID, SPEED_MODULE_COST_INPUT_ID } from "./constants.js";
 import { display_crafting_machine_data } from "./craftingMachines.js";
 import { display_item_table } from "./itemTables.js";
 import { set_planets_table_data } from "./planets.js";
@@ -23,10 +23,14 @@ export function display_solver_input(solver_input) {
     window.document.getElementById(PROD_MODULE_QUALITY_SELECT_ID).value = solver_input.prod_module_quality;
     window.document.getElementById(PROD_MODULE_COST_INPUT_ID).value = solver_input.prod_module_cost;
 
-    window.document.getElementById(CHECK_SPEED_BEACONS_INPUT_ID).checked = solver_input.check_speed_beacons;
     window.document.getElementById(SPEED_MODULE_TIER_SELECT_ID).value = solver_input.speed_module_tier;
     window.document.getElementById(SPEED_MODULE_QUALITY_SELECT_ID).value = solver_input.speed_module_quality;
-    window.document.getElementById(BEACON_QUALITY_SELECT_ID).value = solver_input.speed_beacon_quality;
+    window.document.getElementById(SPEED_MODULE_COST_INPUT_ID).value = solver_input.speed_module_cost;
+
+    window.document.getElementById(CHECK_SPEED_BEACONS_INPUT_ID).checked = solver_input.check_speed_beacons;
+    window.document.getElementById(BEACONED_SPEED_MODULE_TIER_SELECT_ID).value = solver_input.beaconed_speed_module_tier;
+    window.document.getElementById(BEACONED_SPEED_MODULE_QUALITY_SELECT_ID).value = solver_input.beaconed_speed_module_quality;
+    window.document.getElementById(BEACON_QUALITY_SELECT_ID).value = solver_input.beacon_quality;
     window.document.getElementById(MAX_BEACONED_SPEED_MODULES_INPUT_ID).value = solver_input.max_beaconed_speed_modules;
 
     // map from prod research keys to percent bonuses

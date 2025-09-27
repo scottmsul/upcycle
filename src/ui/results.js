@@ -122,6 +122,10 @@ export function display_results(solver_input, solver, glpk_result) {
 
         row_element
             .appendChild(document.createElement('td'))
+            .innerHTML = distinct_recipe.num_speed_modules;
+
+        row_element
+            .appendChild(document.createElement('td'))
             .innerHTML = Math.ceil(distinct_recipe.num_beaconed_speed_modules/2);
 
         row_element

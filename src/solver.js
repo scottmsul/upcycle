@@ -167,10 +167,17 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
                 for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
                     let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
                     for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
-                        let num_quality_modules = num_module_slots - num_prod_modules;
-                        for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= solver_input.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
-                            let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, crafting_machine_key, num_prod_modules, num_quality_modules, num_beaconed_speed_modules);
-                            distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+                        let num_allowed_quality_modules = (recipe_quality < max_recipe_quality) ? num_module_slots - num_prod_modules : 0;
+                        for(let num_quality_modules = 0; num_quality_modules <= num_allowed_quality_modules; num_quality_modules++) {
+                            let num_allowed_speed_modules = num_module_slots - num_prod_modules - num_quality_modules;
+                            //don't check empty module slots, too slow
+                            //for(let num_speed_modules = 0; num_speed_modules <= num_allowed_speed_modules; num_speed_modules++) {
+                            let num_speed_modules = num_allowed_speed_modules;
+                                for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= solver_input.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
+                                    let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, crafting_machine_key, num_prod_modules, num_quality_modules, num_speed_modules, num_beaconed_speed_modules);
+                                    distinct_recipes.set(distinct_recipe.key, distinct_recipe);
+                                }
+                            //}
                         }
                     }
                 }

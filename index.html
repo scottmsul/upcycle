@@ -98,6 +98,16 @@
                                 <td><select id="prod-module-quality"></select></td>
                                 <td><input type="number" id="prod-module-cost" value="1"></td>
                             </tr>
+                            <tr>
+                                <td>Speed: </td>
+                                <td><select id="speed-module-tier">
+                                    <option value="0">Speed module 1</option>
+                                    <option value="1">Speed module 2</option>
+                                    <option value="2" selected="selected">Speed module 3</option>
+                                </select></td>
+                                <td><select id="speed-module-quality"></select></td>
+                                <td><input type="number" id="speed-module-cost" value="1"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -110,19 +120,19 @@
                                 <td><input type="checkbox" id="check-speed-beacons"></td>
                             </tr>
                             <tr>
-                                <td>Speed Module Tier: </td>
-                                <td><select id="speed-module-tier">
+                                <td>Beaconed Speed Module Tier: </td>
+                                <td><select id="beaconed-speed-module-tier">
                                     <option value="0">Speed module 1</option>
                                     <option value="1">Speed module 2</option>
                                     <option value="2" selected="selected">Speed module 3</option>
                                 </select></td>
                             </tr>
                             <tr>
-                                <td>Speed Module Quality: </td>
-                                <td><select id="speed-module-quality"></select></td>
+                                <td>Beaconed Speed Module Quality: </td>
+                                <td><select id="beaconed-speed-module-quality"></select></td>
                             </tr>
                             <tr>
-                                <td>Speed Beacon Quality: </td>
+                                <td>Beacon Quality: </td>
                                 <td><select id="beacon-quality"></select></td>
                             </tr>
                             <tr>
@@ -258,8 +268,9 @@
                             <th>Crafting Machine</th>
                             <th>Productivity Modules</th>
                             <th>Quality Modules</th>
-                            <th>Beacons</th>
                             <th>Speed Modules</th>
+                            <th>Beacons</th>
+                            <th>Beaconed Speed Modules</th>
                             <th>Machines</th>
                             <th>Unit Cost</th>
                             <th>Total Cost</th>

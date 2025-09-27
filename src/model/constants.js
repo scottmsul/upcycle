@@ -24,10 +24,13 @@ export const DEFAULT_QUALITY_MODULE_COST = 0.0;
 export const DEFAULT_PROD_MODULE_TIER = 2;
 export const DEFAULT_PROD_MODULE_QUALITY = 4;
 export const DEFAULT_PROD_MODULE_COST = 0.0;
-export const DEFAULT_CHECK_SPEED_BEACONS = true;
 export const DEFAULT_SPEED_MODULE_TIER = 2;
 export const DEFAULT_SPEED_MODULE_QUALITY = 4;
-export const DEFAULT_SPEED_BEACON_QUALITY = 4;
+export const DEFAULT_SPEED_MODULE_COST = 0.0;
+export const DEFAULT_CHECK_SPEED_BEACONS = true;
+export const DEFAULT_BEACONED_SPEED_MODULE_TIER = 2;
+export const DEFAULT_BEACONED_SPEED_MODULE_QUALITY = 4;
+export const DEFAULT_BEACON_QUALITY = 4;
 export const DEFAULT_MAX_BEACONED_SPEED_MODULES = 16;
 
 // map from research productivity item names -> 0
@@ -77,10 +80,13 @@ export const QUALITY_MODULE_COST_KEY = 'quality_module_cost';
 export const PROD_MODULE_TIER_KEY = 'prod_module_tier';
 export const PROD_MODULE_QUALITY_KEY = 'prod_module_quality';
 export const PROD_MODULE_COST_KEY = 'prod_module_cost';
-export const CHECK_SPEED_BEACONS_KEY = 'check_speed_beacons';
 export const SPEED_MODULE_TIER_KEY = 'speed_module_tier';
 export const SPEED_MODULE_QUALITY_KEY = 'speed_module_quality';
-export const SPEED_BEACON_QUALITY_KEY = 'speed_beacon_quality';
+export const SPEED_MODULE_COST_KEY = 'speed_module_cost';
+export const CHECK_SPEED_BEACONS_KEY = 'check_speed_beacons';
+export const BEACONED_SPEED_MODULE_TIER_KEY = 'beaconed_speed_module_tier';
+export const BEACONED_SPEED_MODULE_QUALITY_KEY = 'beaconed_speed_module_quality';
+export const BEACON_QUALITY_KEY = 'beacon_quality';
 export const MAX_BEACONED_SPEED_MODULES_KEY = 'max_beaconed_speed_modules';
 export const PRODUCTIVITY_RESEARCH_KEY = 'productivity_research';
 export const PLANETS_KEY = 'planets';
@@ -93,7 +99,8 @@ export const ALL_SOLVER_INPUT_KEYS = [
     OUTPUT_ITEMS_KEY, MAX_QUALITY_UNLOCKED_KEY, ALLOW_BYPRODUCTS_KEY, CRAFTING_MACHINES_KEY,
     QUALITY_MODULE_TIER_KEY, QUALITY_MODULE_QUALITY_KEY, QUALITY_MODULE_COST_KEY,
     PROD_MODULE_TIER_KEY, PROD_MODULE_QUALITY_KEY, PROD_MODULE_COST_KEY,
-    CHECK_SPEED_BEACONS_KEY, SPEED_MODULE_TIER_KEY, SPEED_MODULE_QUALITY_KEY, SPEED_BEACON_QUALITY_KEY, MAX_BEACONED_SPEED_MODULES_KEY,
+    SPEED_MODULE_TIER_KEY, SPEED_MODULE_QUALITY_KEY, SPEED_MODULE_COST_KEY,
+    CHECK_SPEED_BEACONS_KEY, BEACONED_SPEED_MODULE_TIER_KEY, BEACONED_SPEED_MODULE_QUALITY_KEY, BEACON_QUALITY_KEY, MAX_BEACONED_SPEED_MODULES_KEY,
     PRODUCTIVITY_RESEARCH_KEY, PLANETS_KEY, RESOURCES_KEY, INPUT_ITEMS_KEY,
     WHITELIST_RECIPES_KEY, RECIPES_KEY
 ];
