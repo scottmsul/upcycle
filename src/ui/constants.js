@@ -1,5 +1,7 @@
 export const SOLVER_SETUP_ID = 'solver-setup';
 
+export const RESTORE_DEFAULTS_BUTTON_ID = 'restore-defaults';
+
 export const MAX_QUALITY_UNLOCKED_SELECT_ID = 'max-quality-unlocked';
 export const ALLOW_BYPRODUCTS_INPUT_ID = 'allow-byproducts';
 

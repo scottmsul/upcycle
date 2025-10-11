@@ -14,6 +14,10 @@ export class SolverInput {
      * Contains all necessary state for the solver input
      */
     constructor() {
+        this.initialize_values();
+    }
+
+    initialize_values() {
         // list of [distinct_item, cost] tuples
         // the UI doesn't enforce unique distinct items
         this.output_items = getLocalStorageObject(OUTPUT_ITEMS_KEY, item_table_from_string, DEFAULT_OUTPUT_ITEMS);
