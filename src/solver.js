@@ -163,12 +163,25 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
             let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
             if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set)) {
                 let num_module_slots = crafting_machine_data.module_slots;
-                let max_recipe_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality) ? solver_input.max_quality_unlocked : 0;
+                let recipe_allows_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality);
+
+                //if a recipe can accept both prod and qual, don't bother checking speed in machines
+                //main reason for this is combinatorial blow-up, plus speed can be enhanced thru beacons
+                //could make this a user option
+                let check_speed_modules_in_machines = !(recipe_allows_quality && recipe_data.allow_productivity);
+
+                // python has nice combinatorial functions for this sort of thing, not sure about js
+                let max_recipe_quality = recipe_allows_quality ? solver_input.max_quality_unlocked : 0;
                 for(let recipe_quality = 0; recipe_quality <= max_recipe_quality; recipe_quality++) {
                     let num_allowed_prod_modules = recipe_data.allow_productivity ? num_module_slots : 0;
                     for(let num_prod_modules = 0; num_prod_modules <= num_allowed_prod_modules; num_prod_modules++) {
+
                         let num_allowed_quality_modules = (recipe_quality < max_recipe_quality) ? num_module_slots - num_prod_modules : 0;
-                        for(let num_quality_modules = 0; num_quality_modules <= num_allowed_quality_modules; num_quality_modules++) {
+
+                        // a little tricky, by filling up all remaining module slots with quality we implicitly don't check speed
+                        let starting_num_quality_modules = check_speed_modules_in_machines ? 0 : num_allowed_quality_modules;
+
+                        for(let num_quality_modules = starting_num_quality_modules; num_quality_modules <= num_allowed_quality_modules; num_quality_modules++) {
                             let num_allowed_speed_modules = num_module_slots - num_prod_modules - num_quality_modules;
                             //don't check empty module slots, too slow
                             //for(let num_speed_modules = 0; num_speed_modules <= num_allowed_speed_modules; num_speed_modules++) {
