@@ -55,6 +55,11 @@ export class ParsedData {
         for(let plant of raw_data.plants) {
             this.plants.set(plant.key, plant);
         }
+
+        this.surface_properties = new Map();
+        for(let surface_property of raw_data.surface_properties) {
+            this.surface_properties.set(surface_property.name, surface_property);
+        }
     }
 
     recipe(recipe_key) {
@@ -75,5 +80,9 @@ export class ParsedData {
 
     plant(plant_key) {
         return this.plants.get(plant_key);
+    }
+
+    surface_property(surface_property_key) {
+        return this.surface_properties.get(surface_property_key);
     }
 }

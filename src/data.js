@@ -1,4 +1,4 @@
-import { raw_data as imported_raw_data } from './data/spaceAge2.0.11.js';
+import { raw_data as imported_raw_data } from './data/spaceAge2.0.55.js';
 import { ParsedData } from './parsedData.js';
 
 export const raw_data = imported_raw_data;

@@ -147,18 +147,18 @@ export function is_recipe_allowed(recipe_data, crafting_machine_data, parsed_dat
             let planet_data = parsed_data.planet(planet_key);
             var all_satisfied = true;
             for(let surface_condition of all_surface_conditions) {
-                // some planets (ie nauvis) don't have certain surface properties and should default to not being valid
-                if(!Object.hasOwn(planet_data.surface_properties, surface_condition.property)) {
-                    all_satisfied = false;
-                }
+                let property_name = surface_condition.property;
+                let surface_value = Object.hasOwn(planet_data.surface_properties, property_name)
+                        ? planet_data.surface_properties[property_name]
+                        : parsed_data.surface_properties.get(property_name).default_value;
 
                 if(Object.hasOwn(surface_condition, 'min')) {
-                    if(surface_condition.min > planet_data.surface_properties[surface_condition.property]) {
+                    if(surface_condition.min > surface_value) {
                         all_satisfied = false;
                     }
                 }
                 if(Object.hasOwn(surface_condition, 'max')) {
-                    if(surface_condition.max < planet_data.surface_properties[surface_condition.property]) {
+                    if(surface_condition.max < surface_value) {
                         all_satisfied = false;
                     }
                 }

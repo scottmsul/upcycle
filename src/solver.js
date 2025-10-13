@@ -161,7 +161,8 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
         if(preferred_crafting_machine_by_category.has(recipe_data.category)) {
             let crafting_machine_key = preferred_crafting_machine_by_category.get(recipe_data.category);
             let crafting_machine_data = parsed_data.crafting_machines.get(crafting_machine_key);
-            if(is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set)) {
+            let allowed = is_recipe_allowed(recipe_data, crafting_machine_data, parsed_data, solver_input, solver_input_recipes_set);
+            if(allowed) {
                 let num_module_slots = crafting_machine_data.module_slots;
                 let recipe_allows_quality = recipe_data.ingredients.some(o => parsed_data.items.get(o.name).allows_quality);
 
