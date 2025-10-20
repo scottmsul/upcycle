@@ -16,6 +16,15 @@ body {
     border-radius: 12px;
 }
 
+summary {
+    font-size: 2em;
+}
+
+.details-section {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
 h1 {
     margin-bottom: 0;
 }
