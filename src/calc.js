@@ -51,7 +51,10 @@ export function calculate_recipe_modifiers(distinct_recipe, parsed_data, solver_
     let quality_module_quality_percent = distinct_recipe.num_quality_modules * QUALITY_MODULE_PERCENTS[solver_input.quality_module_tier][solver_input.quality_module_quality];
     let speed_beacon_quality_percent_penalty = num_effective_beaconed_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[solver_input.beaconed_speed_module_tier];
     let speed_module_quality_percent_penalty = distinct_recipe.num_speed_modules * SPEED_MODULE_QUALITY_PENALTIES[solver_input.speed_module_tier];
-    let quality_percent = Math.max(0.0, quality_module_quality_percent - speed_beacon_quality_percent_penalty - speed_module_quality_percent_penalty);
+    let raw_quality_percent = Math.max(0.0, quality_module_quality_percent - speed_beacon_quality_percent_penalty - speed_module_quality_percent_penalty);
+    // needed to help resolve certain issues with floating point calculations
+    // for instance without this quality module 2s result in ~1e-17 quality instead of 0 and makes the solver stop working
+    let quality_percent = Math.round(raw_quality_percent * 1000000) / 1000000;
 
     let crafting_machine_prod_bonus = crafting_machine_data.prod_bonus;
     let research_prod_bonus = PRODUCTIVITY_RESEARCH_RECIPE_ITEM_MAP.has(distinct_recipe.recipe_key) ?
