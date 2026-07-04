@@ -182,12 +182,14 @@ function get_all_distinct_recipes(parsed_data, solver_input) {
                         // a little tricky, by filling up all remaining module slots with quality we implicitly don't check speed
                         let starting_num_quality_modules = check_speed_modules_in_machines ? 0 : num_allowed_quality_modules;
 
+                        let max_beaconed_speed_modules = solver_input.check_speed_beacons ? solver_input.max_beaconed_speed_modules : 0;
+
                         for(let num_quality_modules = starting_num_quality_modules; num_quality_modules <= num_allowed_quality_modules; num_quality_modules++) {
                             let num_allowed_speed_modules = num_module_slots - num_prod_modules - num_quality_modules;
                             //don't check empty module slots, too slow
                             //for(let num_speed_modules = 0; num_speed_modules <= num_allowed_speed_modules; num_speed_modules++) {
                             let num_speed_modules = num_allowed_speed_modules;
-                                for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= solver_input.max_beaconed_speed_modules; num_beaconed_speed_modules++) {
+                                for(let num_beaconed_speed_modules = 0; num_beaconed_speed_modules <= max_beaconed_speed_modules; num_beaconed_speed_modules++) {
                                     let distinct_recipe = new DistinctRecipe(recipe_key, recipe_quality, crafting_machine_key, num_prod_modules, num_quality_modules, num_speed_modules, num_beaconed_speed_modules);
                                     distinct_recipes.set(distinct_recipe.key, distinct_recipe);
                                 }
