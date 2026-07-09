@@ -17,6 +17,10 @@ export async function run_solver(solver_input) {
     // note this is a shallow copy, but the solver_input only updates with replacement, so should be good
     let solver_input_copy = solver_input.copy();
 
+    // allows the user to share their setup by copying the url
+    // note this doesn't affect anything locally
+    solver_input.update_url_get_parameters()
+
     // start with simple ad-hoc example, abstract stuff later
     // one crafting recipe with one ingredient -> one product
     const glpk = await GLPK();

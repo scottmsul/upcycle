@@ -65,13 +65,18 @@ export class SolverInput {
     }
 
     set_value(key, value) {
+        const value_string = this.convert_value_to_string(value);
+        localStorage.setItem(key, value_string);
+        this[key] = value;
+    }
+
+    convert_value_to_string(value) {
         // replace all Maps with [(key,value)] arrays, their default serialization is just {}
         function replacer(key, value) {
             if(value instanceof Map) return Array.from(value.entries());
             else return value;
         }
-        localStorage.setItem(key, JSON.stringify(value, replacer));
-        this[key] = value;
+        return JSON.stringify(value, replacer);
     }
 
     copy() {
@@ -80,6 +85,15 @@ export class SolverInput {
             copy_obj[solver_input_key] = this[solver_input_key];
         }
         return copy_obj;
+    }
+
+    update_url_get_parameters() {
+        const url = new URL(window.location.href);
+        for(let solver_input_key of ALL_SOLVER_INPUT_KEYS) {
+            const solver_input_value = this.convert_value_to_string(this[solver_input_key]);
+            url.searchParams.set(solver_input_key, solver_input_value);
+        }
+        window.history.pushState(null, '', url.toString());
     }
 }
 
